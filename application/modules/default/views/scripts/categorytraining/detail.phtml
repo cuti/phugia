@@ -1,0 +1,148 @@
+
+<script>
+$(document).ready(function(){
+
+    $('.datepicker-cmnd').datepicker();
+    $("#form-edit").validate({     
+            rules:{
+                // law_code:{
+                // required:true
+                // },
+                // law_certfication_no:{
+                // required:true
+                // }
+            },
+            errorClass: "help-inline",
+            errorElement: "span",
+            highlight:function(element, errorClass, validClass) {
+                $(element).parents('.control-group').addClass('error');
+            },
+            unhighlight: function(element, errorClass, validClass) {
+                $(element).parents('.control-group').removeClass('error');
+                $(element).parents('.control-group').addClass('success');
+            },
+            messages: {
+                //cus_cellphone: "Vui lòng nhập số điện thoại !",
+                // cus_identity_card: "Vui lòng nhập số CMND !",
+                law_code: "Vui lòng nhập mã luật sư !",
+                law_certfication_no: "Vui lòng nhập số chứng chỉ !",
+            },
+            submitHandler: function(form,e) {
+                console.log('Form submitted');
+                $.ajax({
+                      type: "POST",
+                      url: "<?php echo $this->BaseUrl?>/default/categorytraining/update/",
+                      data: $('#form-edit').serialize() ,
+                      cache: false,
+                      success: function(html)
+                      {   
+                        $("#message").html("Cập nhật chủ đề thành công");
+                        //alert("Cập nhật chủ đề thành công");
+                        //$(".message-success").show();
+                        // $("#message").html(html);
+                        // $("#model-warning").modal("show");                                    
+                      }
+                });
+                return false;                       
+            }
+        });
+});  
+
+</script>
+<form id="form-edit" class="form-horizontal">
+              <p id="message"></p>
+              <input type="hidden" name="cat_train_id" value="<?php echo $this->categorydata['cat_train_id']; ?>" /> 
+
+                    <label class="control-label">Chuyên đề : </label>
+
+                    <div class="controls">
+                        <textarea name="cat_train_name" id="cat_train_name" rows="10"><?php echo $this->categorydata['cat_train_name']; ?></textarea>
+<script type="text/javascript">
+// 给文本域赋值
+ $(function(){
+document.getElementById("cat_train_name").value='<?php echo $this->categorydata['cat_train_name']; ?>';
+ });
+ //动态读取输入的内容，给隐藏域赋值 
+ $(document).ready(function(){
+  CKEDITOR.instances.cat_train_name.on('blur', function( e ){
+   CKEDITOR.instances.cat_train_name.updateElement();//更新内容
+});
+}); 
+ //更新方法
+ function updateTextArea(){
+  CKEDITOR.instances.cat_train_name.updateElement();//更新内容
+ }
+ 
+</script>
+			<script type="text/javascript"> 
+    CKEDITOR.replace( 'cat_train_name',{ 
+        toolbar : 
+            [ 
+['Bold','Italic','Underline'],
+['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
+['Smiley'],
+['Font','FontSize'],
+['TextColor']
+             ]
+    }); 
+</script> 
+
+                        <!--<input type="text" class="span3" name="cat_train_name" id="cat_train_name" value="<?php echo $this->categorydata['cat_train_name']; ?>">-->
+                    </div>
+
+
+              <div class="control-group">
+                    <label class="control-label">Đợt bồi dưỡng:</label>
+                    <div class="controls">
+                    <input type="text" value="<?php echo $this->categorydata['cat_train_number']; ?>" id="cat_train_number"  name="cat_train_number" class="span3" placeholder="Vui lòng nhập đợt bồi dưỡng" />
+                    </div>
+                </div>  
+
+                <div class="control-group">
+                    <label class="control-label">Địa điểm:</label>
+                    <div class="controls">
+                    <input type="text" value="<?php echo $this->categorydata['cat_train_address']; ?>" id="cat_train_address"  name="cat_train_address" class="span3" placeholder="Vui lòng chọn địa điểm" />
+                    </div>
+                </div> 
+
+
+                <!-- <div class="control-group">        
+                    <label class="control-label">Ngày bắt đầu:</label>
+                    <div class="controls">
+                    <input type="text" value="<?php echo $this->categorydata['cat_train_fromdate']; ?>" id="cat_train_fromdate"  name="cat_train_fromdate" class="span3" placeholder="Vui lòng nhập đợt bồi dưỡng" />
+                    </div>
+                </div>  -->
+
+                 <!-- <div class="control-group">
+                          <label class="control-label">Ngày cấp cmnd:</label>
+                          <div class="controls">
+                            <div id="dpcmnd"  data-date="10/20/2012" class="input-append date datepicker-cmnd">
+
+                              <input disabled id="cus_identity_date" name="cus_identity_date" type="text" value="10/20/2012"  data-date-format="mm-dd-yyyy" class="span2" >
+                              <span class="add-on"><i class="icon-th"></i></span>
+                            </div>                           
+                          </div>
+                        </div>    -->
+
+              <label class="control-label">Trạng thái chủ đề:</label>
+                <div class="controls">
+                    <div class="row-fluid">
+                        <div class="span3">
+                        <label>                            
+                            <input type="radio" name="cat_train_active" value="1" <?php echo ($this->categorydata['cat_train_active'] == 1) ? 'checked' :'' ?>/>
+                    Hoạt động</label>
+                        </div>
+                        <div class="span6">
+                            <label>
+                            <input type="radio" name="cat_train_active" value="0" <?php echo ($this->categorydata['cat_train_active'] == 0) ? 'checked' :'' ?>/>
+                            Ngưng hoạt động</label> 
+                        </div>
+                    </div>
+                </div>  
+             
+
+
+              <!-- <div class="form-actions"> -->
+                <button style="float: right;" type="submit" class="btn">Lưu</button>
+              <!-- </div> -->
+            </form>

@@ -1,0 +1,37 @@
+
+<?php  
+    if($this->paymentofflines != null){
+        foreach ($this->paymentofflines as $pay) {           
+             $print = '';
+             if($pay['payment_joining_off_status'] != 1){               
+                $print = '<td><button onClick="printPaymentOfflineJoiningStatus('.$pay['payment_joining_off_id'].');"><i class="icon-print" ></i></button></td>';  
+             }else{
+                $print = '<td><button onClick="printPaymentOfflineJoiningStatus('.$pay['payment_joining_off_id'].');"><i class="icon-print" ></i></button></td>';  
+             }       
+
+             $text = ''; 
+             if($pay['payment_joining_off_status'] == 1){
+                $text = '<td>Đã thanh toán</td>';
+             }else{
+                $text = '<td>Chưa thanh toán</td>';  
+             }    
+
+             $payment_joining_off_created_date = ($pay['payment_joining_off_created_date'] != null && $pay['payment_joining_off_created_date'] != ''
+             && $pay['payment_joining_off_created_date'] != '1900-01-01 00:00:00') ? date('d/m/Y', strtotime($pay['payment_joining_off_created_date'])) : '';    
+
+
+             echo ' <tr class="gradeC">'.
+             '<td>'.$pay['cus_firstname'].' '.$pay['cus_lastname'].'</td>'.            
+             $text.
+             '<td>'.$payment_joining_off_created_date
+             .'</td>'.
+             '<td>'.$pay['name'].'</td>'.
+             '<td>'.number_format($pay['amount']).'</td>'.             
+             $print.
+        '</tr>';                            
+        }  
+    }
+
+?>   
+                            
+                               

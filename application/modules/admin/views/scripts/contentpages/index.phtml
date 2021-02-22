@@ -1,0 +1,133 @@
+
+<script>
+$(document).ready(function(){
+  $("#search").hide(); 
+  $(".searchfield").hide();
+});
+
+function editContent(id){
+  window.location.href = '<?php echo $this->BaseUrl?>/admin/contentpages/edit?content_id='+id;
+}  
+</script>
+<div id="content">
+  <div id="content-header">
+    <div id="breadcrumb"> <a href="#" title="Trang chủ" class="tip-bottom"><i class="icon-home"></i> Trang chủ</a> <a href="#" class="current">Quản lý nội dung</a> </div>
+    <h1>Quản lý nội dung</h1>
+  </div>
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <div class="span12">
+        <div class="widget-box">
+          <div class="widget-title">
+             <span class="icon"><i class="icon-th"></i></span> 
+            <h5>Quản lý nội dung</h5>
+          </div>
+          <div class="widget-content nopadding">
+            <table class="table table-bordered data-table">
+              <thead>
+                <tr>
+                  <th>Tiêu đề</th>
+                  <th>Nội dung</th>
+                  <th>Trạng thái</th>    
+                  <th>Hành động</th>              
+                </tr>
+              </thead>
+              <tbody>       
+                <?php  
+                      if($this->list != null){
+                          foreach ($this->list as $user) {
+
+                            $status = '';
+                            if($user['status'] == 0){
+                                $status = '<td>Ngưng hoạt động</td>';
+                             }else{
+                                $status = '<td>Hoạt động</td>';  
+                             }    
+
+  
+                            echo ' <tr class="gradeC">'.
+                            '<td>'.$user['title'].'</td>'.
+                            '<td>'.$user['description'].'</td>'.
+                             $status.
+                             '<td>'.'<button data-toggle="tooltip" title="Chỉnh sửa" onClick="editContent('.$user['content_id'].');"><i class="icon-edit"></i></button>'.' '. 
+                             '</tr>';                          
+                          
+                          }  
+                      }
+
+                  ?>
+              </tbody>
+            </table>
+          </div>
+        </div>        
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="model-warning" class="modal fade"  data-backdrop="static">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h5 class="modal-title" id="exampleModalLabel">Cập nhật mật khẩu</h5>
+        
+      </div>
+        
+        <div class="modal-body">
+            <p id="message">Bạn đã cập nhật thành công.</p>
+            <form id="form-edit" class="form-horizontal">
+                   <input type="hidden" name="user_id" id="user_id" />                       
+
+                    <div class="control-group">        
+                          <label class="control-label">Nhập mật khẩu mới:</label>
+                          <div class="controls">
+                            <input id="password" type="password" name="password" />
+                          </div>
+                      </div> 
+
+                    <div class="control-group">        
+                        <label class="control-label">Xác nhận mật khẩu mới:</label>
+                        <div class="controls">
+                        <input id="password2" type="password" name="password2" />
+                        </div>
+                    </div> 
+                              
+                    <!-- <div class="form-actions"> -->
+                      <button style="float: right;" type="submit" class="btn">Lưu</button>
+                    <!-- </div> -->
+                  </form>
+
+                  <form id="form-edit-lock" class="form-horizontal">
+                   <input type="hidden" name="user_id_lock" id="user_id_lock" />                       
+
+                     <label class="control-label">Trạng thái tài khoản</label>
+                        <div class="controls">
+                          <div class="row-fluid">
+                              <div class="span3">
+                                <label>
+                                    <input type="radio" name="user_status" value="active" checked/>
+                            Hoạt động</label>
+                              </div>
+                              <div class="span6">
+                                    <label>
+                                  <input type="radio" name="user_status" value="inactive"/>
+                                  Ngưng hoạt động</label> 
+                              </div>
+                          </div>                                               
+                        </div>    
+                              
+                    <!-- <div class="form-actions"> -->
+                      <button style="float: right;" type="submit" class="btn">Lưu</button>
+                    <!-- </div> -->
+                  </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary close-modal" data-dismiss="modal">Đóng</button>
+        </div>
+      
+    </div>
+  </div>
+</div>

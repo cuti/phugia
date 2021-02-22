@@ -1,0 +1,83 @@
+
+<script>
+$(document).ready(function(){
+
+    $("#form-edit").validate({     
+            rules:{
+                // law_code:{
+                // required:true
+                // },
+                // law_certfication_no:{
+                // required:true
+                // }
+            },
+            errorClass: "help-inline",
+            errorElement: "span",
+            highlight:function(element, errorClass, validClass) {
+                $(element).parents('.control-group').addClass('error');
+            },
+            unhighlight: function(element, errorClass, validClass) {
+                $(element).parents('.control-group').removeClass('error');
+                $(element).parents('.control-group').addClass('success');
+            },
+            messages: {
+                //cus_cellphone: "Vui lòng nhập số điện thoại !",
+                // cus_identity_card: "Vui lòng nhập số CMND !",
+                // law_code: "Vui lòng nhập mã luật sư !",
+                // law_certfication_no: "Vui lòng nhập số chứng chỉ !",
+            },
+            submitHandler: function(form,e) {
+                console.log('Form submitted');
+                $.ajax({
+                      type: "POST",
+                      url: "<?php echo $this->BaseUrl?>/default/joining/update/",
+                      data: $('#form-edit').serialize() ,
+                      cache: false,
+                      success: function(html)
+                      {   
+                        $("#message").html('Cập nhật đợt gia nhập thành công');  
+                        //alert("Cập nhật chủ đề thành công");
+                        //$(".message-success").show();
+                        // $("#message").html(html);
+                        // $("#model-warning").modal("show");                                    
+                      }
+                });
+                return false;                       
+            }
+        });
+});  
+
+</script>
+<form id="form-edit" class="form-horizontal">
+              <p id="message"></p> 
+              <input type="hidden" name="joining_id" value="<?php echo $this->joiningdata['joining_id']; ?>" /> 
+              <!-- <div class="control-group">
+                    <label class="control-label">Tên đợt gia nhập </label>
+                    <div class="controls">
+                        <input type="text" disabled class="span2" name="joining_name" id="joining_name" value="<?php echo $this->joiningdata['joining_name']; ?>">
+                    </div>
+              </div>           -->
+
+              <label class="control-label">Trạng thái khóa học</label>
+                <div class="controls">
+                    <div class="row-fluid">
+                        <div class="span3">
+                        <label>                            
+                            <input type="radio" name="joining_status" value="1" <?php echo ($this->joiningdata['joining_status'] == 1) ? 'checked' :'' ?>/>
+                    Hoạt động</label>
+                        </div>
+                        <div class="span6">
+                            <label>
+                            <input type="radio" name="joining_status" value="0" <?php echo ($this->joiningdata['joining_status'] == 0) ? 'checked' :'' ?>/>
+                            Ngưng hoạt động</label> 
+                        </div>
+                    </div>                                               
+                </div>  
+             
+
+             
+              <!-- <div class="form-actions"> -->
+                <button style="float: right;" type="submit" class="btn">Lưu</button>
+              <!-- </div> -->
+            </form>
+         

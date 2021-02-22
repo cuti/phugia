@@ -1,0 +1,321 @@
+<script>
+$(document).ready(function(){
+    
+	$('input[type=checkbox],input[type=radio],input[type=file]').uniform();
+  $("#search").hide();
+  $(".searchfield").hide();
+
+    $(".message-success").hide();
+
+    $("#model-warning").modal('hide');   
+
+    $(".close-modal").on('click',function(){
+      location.reload();
+    });
+
+    $(".cancel-form").on('click',function(){
+      window.location.href = '<?php echo $this->BaseUrl?>/default/categorytraining/index';
+    });    
+
+    var date = new Date();
+    var today = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+    $('.datepicker-ngaydaotao').datepicker({ format: 'dd/mm/yyyy' });
+    $('.datepicker-ngaydaotao').datepicker('setValue',  "<?php echo date("d/m/Y", strtotime($this->categorydata['cat_train_fromdate'])); ?>");
+
+    $(".close-modal").on('click',function(){
+        //location.reload();
+            window.location.href = '<?php echo $this->BaseUrl?>/default/categorytraining/index';
+        });
+
+        $(".cancel").on('click',function(){
+        //location.reload();
+            window.location.href = '<?php echo $this->BaseUrl?>/default/categorytraining/index';
+        });
+
+  $("#categorytranining_form").validate({  
+          ignore: [],    
+          rules:{
+            cat_train_number:{
+              required:true
+            },
+            cat_train_address:{
+              required:true
+            },
+            cat_train_hours:{
+              required:true
+            }
+          },
+          errorClass: "help-inline",
+          errorElement: "span",
+          highlight:function(element, errorClass, validClass) {
+            $(element).parents('.control-group').addClass('error');
+          },
+          unhighlight: function(element, errorClass, validClass) {
+            $(element).parents('.control-group').removeClass('error');
+            $(element).parents('.control-group').addClass('success');
+          },
+          messages: {
+            cat_train_number: "Vui lòng nhập đợt bồi dưỡng !",
+            //cat_train_name: "Vui lòng nhập tên nội dung bồi dưỡng !",
+            cat_train_address : "Vui lòng nhập địa điểm bồi dưỡng !",
+            cat_train_hours : "Nhập số giờ bồi dưỡng !"           
+          },
+          submitHandler: function(form,e) {
+             console.log('Form submitted');
+             console.log($('#categorytranining_form').serialize());
+             CKEDITOR.instances.cat_train_name.updateElement();
+            $.ajax({
+                  type: "POST",
+                  url: "<?php echo $this->BaseUrl?>/default/categorytraining/update/",
+                  data: $('#categorytranining_form').serialize() ,
+                  cache: false,
+                  success: function(html)
+                  {   
+                    //$("#message").html(html);
+                    $(".message-success").show();
+                    $("#model-warning").modal("show");                                                   
+                  }
+            });
+            return false;                       
+        }
+	});
+
+
+  function isNumber(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+  }
+
+
+
+});
+
+  function updateCategoryStatus($cat_id){
+    window.location.href = '<?php echo $this->BaseUrl?>/default/categorytraining/detailcatpage?cat_id='+$cat_id;
+    // alert("test code law");
+    //  console.log($cat_id);
+
+    //   var dataString = '?cat_id='+ $cat_id;
+    //    $.ajax({
+    //         type: "GET",
+    //         url: "<?php echo $this->BaseUrl?>/default/categorytraining/detail"+dataString ,
+    //         //data: dataString+'?format=html',
+    //         //dataType: 'json',
+    //         cache: false,
+    //         success: function(html)
+    //         { 
+    //           //alert(html);
+    //           $("#message").html(html);
+    //           $("#model-warning").modal('show');
+    //         }
+    //    });       
+
+
+    
+    
+  }
+
+   
+
+</script>
+
+<div id="model-warning" class="modal fade"  data-backdrop="static">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h5 class="modal-title" id="exampleModalLabel">Thông báo</h5>
+        
+      </div>
+        
+        <div class="modal-body">
+            <p id="message">Bạn đã chỉnh sửa thành công chủ đề mới.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary close-modal" data-dismiss="modal">Đóng</button>
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+<div id="content">
+  <div id="content-header">
+    <div id="breadcrumb"> <a href="" title="Trang chủ" class="tip-bottom"><i class="icon-home"></i></a> <a href="#" class="current">Nhập mới chủ đề bồi dưỡng</a> </div>
+    <!-- <h1>Quản lý luật sư</h1> -->
+  </div>
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <div class="alert alert-success alert-dismissible message-success">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Thông báo</strong> Bạn đã chỉnh sửa thành công chủ đề mới..
+      </div>	
+    </div>  	 
+
+    <div class="row-fluid">	  	
+      <div class="span12">		 
+        <div class="widget-box">
+            <div class="widget-title">
+              <span class="icon">
+                <i class="icon-th-list"></i>
+              </span>
+              <h5>Chỉnh sửa chủ đề bồi dưỡng</h5>
+            </div>
+            
+            <div class="widget-content nopadding"> 
+            <!-- <p>test code </p> -->
+              <div novalidate="novalidate" class="row-fluid form-horizontal">
+                <form id="categorytranining_form" method="post" action="" >
+                    <input type="hidden" name="crudation" value="update" />
+                    <input type="hidden" name="cat_train_id" value="<?php echo $this->categorydata['cat_train_id']; ?>" />
+                    <div class="span6">
+                        <!-- <input type="hidden" id="cus_id" name="cus_id"/> -->
+                        <div class="control-group">
+                          <label class="control-label">Đợt bồi dưỡng *:</label>
+                          <div class="controls">
+                              <input type="text" value="<?php echo $this->categorydata['cat_train_number']; ?>" name="cat_train_number" id="cat_train_number" class="span12" placeholder="Vui lòng nhập đợt bồi dưỡng " />
+                          </div>
+                        </div>
+                        <div class="control-group">
+                          <label class="control-label">Chuyên đề *:</label>
+                          <div class="controls">
+                              <textarea name="cat_train_name" id="cat_train_name" rows="10" cols="80"><?php echo $this->categorydata['cat_train_name']; ?></textarea>
+
+                              <!-- creating a CKEditor instance called myeditor -->
+                              <script type="text/javascript">
+                                  CKEDITOR.replace('cat_train_name');
+                              </script>
+                              <!-- <textarea name="cat_train_name" id="cat_train_name"></textarea> -->
+                          </div>
+                        </div>
+                        <div class="control-group">
+                          <label class="control-label">Người trình bày *:</label>
+                          <div class="controls">
+                              <textarea name="cat_trainer" id="cat_trainer" class="span12" rows="3" placeholder="Vui lòng nhập nội dung bồi dưỡng" cols="80"><?php echo $this->categorydata['cat_trainer']; ?></textarea>
+                              <!-- <input type="text" name="cat_trainer" value="<?php echo $this->categorydata['cat_trainer']; ?>" id="cat_trainer" class="span12" placeholder="Vui lòng nhập nội dung bồi dưỡng" /> -->
+                          </div>
+                        </div>
+                    </div>  
+                    <div class="span6">                       
+                        <div class="control-group">
+                          <label class="control-label">Địa điểm *:</label>
+                          <div class="controls">     
+                            <textarea name="cat_train_address" id="cat_train_address" class="span12" rows="3" placeholder="Vui lòng nhập địa điểm" cols="80"><?php echo $this->categorydata['cat_train_address']; ?></textarea>         
+                            <!-- <input type="text" name="cat_train_address" value="<?php echo $this->categorydata['cat_train_address']; ?>" id="cat_train_address" class="span12" placeholder="Vui lòng nhập địa điểm" /> -->
+                          </div>
+                        </div>   
+
+                        <div class="control-group">
+                          <label class="control-label">Số giờ bồi dưỡng *:</label>
+                          <div class="controls">              
+                            <input type="number" name="cat_train_hours" value="<?php echo $this->categorydata['cat_train_quantity']; ?>" id="cat_train_hours" class="span8" placeholder="Vui lòng nhập số giờ bồi dưỡng" />
+                          </div>
+                        </div>   
+
+                        <div class="control-group">
+                          <label class="control-label">Chọn ngày bồi dưỡng *:</label>
+                          <div class="controls">                  
+                            <div id="dp5" data-date="" class="input-append date datepicker-ngaydaotao">                    
+                              <input name="cat_train_fromdate" data-date-format="mm-dd-yyyy" class="span12" >
+                              <span class="add-on"><i class="icon-th"></i></span> </div>
+                          </div>
+                        </div> 
+
+                        <label class="control-label">Trạng thái:</label>
+                        <div class="controls">
+                            <div class="row-fluid">
+                               
+                                    <div class="span3">
+                                        <label>                            
+                                        <input type="radio" name="cat_train_active" value="1" <?php echo ($this->categorydata['cat_train_active'] == 1) ? 'checked' :'' ?>/>
+                                Đang hoạt động</label>
+                                    </div>
+                                    <div class="span6">
+                                        <label>
+                                        <input type="radio" name="cat_train_active" value="0" <?php echo ($this->categorydata['cat_train_active'] == 0) ? 'checked' :'' ?>/>
+                                        Ngưng hoạt động</label> 
+                                    </div>                               
+                            </div>                                               
+                        </div>                
+                    </div>               	  
+                </div>
+                <div class="row-fluid">
+                      <div class="form-actions">
+                                <div class="span4" >
+                                </div>
+                                <div class="span6">	             
+                                    <button type="submit" id="submit-form" class="btn">Lưu</button>			
+                                    <button type="button" class="btn cancel-form">Hủy</button>							 
+                                </div>
+                                <div class="span2" >
+                                </div>
+                              </div>  
+                      </div>
+                </div>  
+              </form>
+            </div>
+
+            <!--tab-->
+            <!-- <div class="widget-box">
+                <div class="widget-title">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a id="internship" data-toggle="tab" href="#tab1">Danh sách chủ đề</a></li>
+                                                
+                    </ul>
+                </div>
+                <div class="widget-content tab-content">
+                    <div id="tab1" class="tab-pane active">
+                        <div class="row-fluid">
+                          <div class="span12">    
+                            <div class="widget-box">
+                              <div class="widget-title">
+                                <span class="icon"><i class="icon-th"></i></span> 
+                                <h5>Danh sách nội dung bồi dưỡng</h5>
+                              </div>
+                              <div class="widget-content nopadding">
+                                <table class="table table-bordered data-table">
+                                    <thead>
+                                      <tr>
+                                        <th>Đợt bồi dưỡng</th>
+                                        <th>Tên nội dung bồi dưỡng</th>
+                                        <th>Địa điểm</th>                                      
+                                        <th>Trạng thái</th>
+                                        <th>Hành động</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody id="table-lawyer">   
+                                    <?php  
+                                          if($this->categories != null){
+                                              foreach ($this->categories as $cat) {                                           
+                                                  $text = ''; 
+                                                  if($cat['cat_train_active'] == 1){
+                                                      $text = '<td>Đang hoạt động</td>';
+                                                  }else{
+                                                      $text = '<td>Ngưng hoạt động</td>';  
+                                                  }    
+                                                  echo ' <tr class="gradeC">'.
+                                                  '<td>'.$cat['cat_train_number'].'</td>'.
+                                                  '<td>'.$cat['cat_train_name'].'</td>'.
+                                                  '<td>'.$cat['cat_train_address'].'</td>'.
+                                                  $text.                                               
+                                                  '<td class="center">'.
+                                                      '<button onClick="updateCategoryStatus('.$cat['cat_train_id'].');"><i class="icon-pencil"></i></button>'.' '.
+                                                      
+                                              '</tr>';                          
+                                              }  
+                                          }
+                                      ?>                             
+                              
+                                      </tbody>
+                                </table>                            
+                              </div>
+                            </div>                              
+                          </div>          
+                        </div>         
+                    </div>      
+                </div>
+            </div>   -->
+</div>
+

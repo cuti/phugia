@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-1">
+<style>
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #FAFAFA;
+    font: 10pt "Tahoma";
+    line-height:100%;
+}
+* {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+/* .content strong{
+    text-decoration: underline;
+line-height:80%;
+	
+} */
+.page {
+    /* width: 14cm; */
+    width: 21cm;
+    overflow:hidden;
+    /* max-height:116.5mm; */
+    max-height:148.5mm;
+    padding: 1.5cm;
+    margin-left:auto;
+    margin-right:auto;
+    background: white;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+.subpage {
+    padding: 1cm;
+    border: 5px red solid;
+    height: 237mm;
+    outline: 2cm #FFEAEA solid;
+}
+ @page {
+ size: A5 landscape;
+ margin: 10%;
+}
+button {
+    width:100px;
+    height: 24px;
+}
+.header {
+    overflow:hidden;
+}
+.logo {
+    /*background-color:#FFFFFF;*/
+    text-align:center;
+    float:left;
+}
+.company {
+    /*padding-top:24px;*/
+    /* text-transform:uppercase; */
+    background-color:#FFFFFF;
+    text-align:right;
+    float:right;
+    padding-right:30px;
+    font-size:13px;
+}
+.title {
+    text-align:center;
+    position:relative;
+    color:#0000FF;
+    font-size: 16px;
+    top:1px;
+}
+.footer-left {
+    text-align:center;
+    /* text-transform:uppercase; */
+    padding-top:15px;
+    position:relative;
+    height: 90px;
+    width:25%;
+    color:#000;
+    float:left;
+    font-size: 12px;
+    bottom:1px;
+}
+.footer-mid {
+    text-align:center;
+    /* text-transform:uppercase; */
+    padding-top:15px;
+    position:relative;
+    height: 90px;
+    width:30%;
+    color:#000;
+    float:left;
+    font-size: 12px;
+    bottom:1px;
+}
+.footer-right {
+    text-align:center;
+    /* text-transform:uppercase; */
+    padding-top:0px;
+    position:relative;
+    height: 90px;
+    width:45%;
+    color:#000;
+    font-size: 12px;
+    float:right;
+    bottom:1px;
+}
+.note{
+	padding-top:35px;
+	text-align: center;
+	 font-size: 11px;
+}
+.clear {
+    clear: both;
+
+}
+@media print {
+ @page {
+ margin: 0;
+ border: initial;
+ border-radius: initial;
+ width: initial;
+ min-height: initial;
+ box-shadow: initial;
+ background: initial;
+ page-break-after: always;
+}
+}
+</style>
+<body onload="window.print();">
+<div id="page" class="page">
+    <div class="header">
+        <div class="logo"><strong>ĐOÀN LUẬT SƯ <br/>
+         THÀNH PHỐ HỒ CHÍ MINH</strong><br/>
+         ----oOo----
+         </div>
+        <div class="company"><span style="text-decoration: underline;">Số</span> : <span style="font-style: italic;"><strong><?php echo $this->paymentlawyerofflinedata['payment_lawyer_off_code']; ?></strong></span> </div>
+    </div>
+ 
+  <div class="title">
+        <strong>BIÊN NHẬN</strong>
+        <br/>
+        *****
+<br/><br/><br/>
+  </div>  
+  <div class="content">
+    <p>Nhận của &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 
+    <strong><span style="font-style: italic;">Luật Sư</span> <span style="text-transform: uppercase;font-style: italic;"><?php echo $this->paymentlawyerofflinedata['cus_firstname'].' '.$this->paymentlawyerofflinedata['cus_lastname'].' '?> <?php echo '('. date('Y', strtotime($this->paymentlawyerofflinedata['cus_birthday'])).')'; ?></span></strong></p>
+    <p>Đợt gia nhập &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : <strong><span style="text-transform: uppercase;font-style: italic;"><?php echo $this->paymentlawyerofflinedata['law_joining_number'];  ?><span></strong>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Thẻ LS số : <strong><span style="text-transform: uppercase;text-align: center;font-style: italic;"><?php echo $this->paymentlawyerofflinedata['cus_lawyer_number'] ?><span></strong> 
+    </p>
+    <p>Loại phí   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                             : <strong><span style="font-style: italic;"><?php echo $this->paymentlawyerofflinedata['name'] ?></span></strong></p>
+    <!-- <p>Loại phí : <span style="text-decoration: underline;"><?php echo $this->paymentlawyerofflinedata['name'].' '.date('d/m/Y', strtotime($this->paymentlawyerofflinedata['payment_lawyer_off_created_date'])).' ' ?></span>
+       Số tháng đóng phí : <span style="text-decoration: underline;"><?php echo $this->paymentlawyerofflinedata['month'].' '; ?> tháng</span>
+    </p> -->
+    <p>
+       Từ tháng    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                            : <strong><span style="font-style: italic;"><?php echo $this->paymentlawyerofflinedata['startedmonth'].' đến '.$this->paymentlawyerofflinedata['endmonth'];?></span></strong>
+    </p>
+    <p>Số tiền    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                             : <strong><span style="font-style: italic;"><?php echo number_format($this->paymentlawyerofflinedata['amount']); ?></span></strong></p>
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <i>(Bằng chữ : <strong><?php echo $this->paymentlawyerofflinedata['amount_word']; ?> đồng )</strong></i></p>
+
+  </div>
+  
+  <div class="footer-left"> 
+    Người nộp </div>
+  <div class="footer-mid"> 
+    Người lập phiếu
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+	<br/>
+<br/>
+	<br/>    
+    <strong> LS Lê Thị Hòa</strong></div>  
+    <div class="footer-right"> TP Hồ Chí Minh, Ngày <?php echo date('d', strtotime($this->paymentlawyerofflinedata['payment_lawyer_off_created_date'])) ?> tháng <?php echo date('m', strtotime($this->paymentlawyerofflinedata['payment_lawyer_off_created_date'])) ?> năm <?php echo date('Y', strtotime($this->paymentlawyerofflinedata['payment_lawyer_off_created_date'])) ?><br>
+    Người nhận
+    <br/>
+	<br/>
+    <br/>
+    <br/>
+    <br/>     <br/>
+    <br/>
+    <strong>LS Kỷ Minh Đức</strong> </div> 
+    <div class="clear"></div>
+    <div class="note">	  
+    <span style="font-size:12px;font-style: italic;">Ghi chú: Đề nghị luật sư, luật sư tập sự lưu giữ biên nhận để tiện đối chiếu</span>
+	</div>
+</div>
+</body>
+
+</head>
+

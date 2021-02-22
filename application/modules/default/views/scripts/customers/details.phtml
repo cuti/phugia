@@ -1,0 +1,1305 @@
+<script>
+$(document).ready(function(){
+    
+	  $('input[type=radio],input[type=file]').uniform();
+
+    $(".save-edit").hide();
+
+    $('select').select2();
+
+     var cmnd_date = '';
+
+     
+    var date = new Date();
+    var today = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+    // $('.datepicker').datepicker('setValue', today);
+
+    $('.datepicker-cmnd').datepicker({ format: 'dd/mm/yyyy' });
+    //$('.datepicker-cmnd').datepicker('setValue', today);
+
+    $('.datepicker-birthday').datepicker({ format: 'dd/mm/yyyy' });
+    //$('.datepicker-birthday').datepicker('setValue', today);
+
+    $('.datepicker-passport').datepicker({ format: 'dd/mm/yyyy' });
+    //$('.datepicker-passport').datepicker('setValue', today);
+ 
+    $(".message-success").hide();
+
+    $("#model-warning").modal('hide');  
+
+    $("#message-attachment").hide();
+
+    $("#message-attachment2").hide();
+
+     $("#message-image").hide();
+
+     $(".lylich").hide();
+     $(".khac").hide();   
+
+     $("#customer_form").on("click", "#result", function () {
+        var two = $("#result").attr("checked", this.checked);
+        if(this.checked){
+          $("#cus_member").val(1);
+        }else{
+          $("#cus_member").val(0);
+        }
+        $.uniform.update(two);
+    });
+
+    //var load = false;
+    $("#search-global").keyup(function(e) {  
+        console.log($("#search-global").val()); 
+        $("#cus_id").val(''); 
+        var key = e.keyCode;
+
+        if (key == 40 || key == 38 || key == 13) {
+           return false;
+        }   
+        
+        var searchbox = $(this).val();
+        var dataString = 'searchword='+ searchbox + '&searchfield='+$("#search-field").val();
+        searchData(searchbox,dataString);   
+    });  
+
+    $('#search').on("keydown", "#search-global", function (e) {
+        console.log("event key down");
+        var $listItems = $('.display-box-search-result li');
+        //console.log($listItems);
+        var key = e.keyCode,
+        $selected = $listItems.filter('.hovered'),$current;
+
+        var $scrollable = $("#display-content-search-global");
+		    var scrollTop = $scrollable.scrollTop();
+
+        //console.log(scrollTop);
+
+        if (key != 40 && key != 38 && key != 13)
+            return;
+
+        //$listItems.removeClass('selected');
+
+        if (key == 40) // Down key
+        {
+            $listItems.removeClass('hovered');
+            if (!$selected.length || $selected.is(':last-child')) {
+                $current = $listItems.eq(0);
+            } else {
+                $current = $selected.next();
+            }
+            $current.addClass('hovered');
+            //console.log("Current : "+$current);
+            //console.log($current);
+            //$scrollable.scrollTop(scrollTop + 10);
+        } 
+        else if (key == 38) // Up key
+        {
+            $listItems.removeClass('hovered');
+            if (!$selected.length || $selected.is(':first-child')) {
+                $current = $listItems.last();
+            } else {
+                $current = $selected.prev();
+            }       
+            $current.addClass('hovered');
+            //console.log($('.display-box-search-result li').length);
+            //$scrollable.scrollTop(scrollTop - 10);
+
+        } 
+        else if (key == 13) // Enter key
+        {
+            $current = $listItems.filter('.hovered');
+            $current.trigger('click');
+            return false;
+        }
+
+        $("#display-content-search-global").scrollTop(0);//set to top
+        $("#display-content-search-global").scrollTop($('.hovered:first').offset().top-$("#display-content-search-global").height());       
+        
+    });
+
+    $('#display-content-search-global').on('click', function(event) {
+      console.log("action event");
+      var id = $(event.target).attr('id');
+      var dataString = '?searchword='+ id;
+       $.ajax({
+            type: "GET",
+            url: "<?php echo $this->BaseUrl?>/default/customers/detail"+dataString ,
+            //data: dataString+'?format=html',
+            dataType: 'json',
+            cache: false,
+            success: function(data)
+            {   
+ 
+              if(data.cus_id != null && data.cus_id != undefined){
+
+                     $("#cus_id").val(data.cus_id);
+                     loadDataForTab(data.cus_id,"#table-intership","intership");
+                     loadDataForTab(data.cus_id,"#table-intership-21","historylawyer");                     
+                     loadDataForTab(data.cus_id,"#table-lawyer","lawyer");
+                     loadDataForTab(data.cus_id,"#table-training","training");
+                     loadDataForTab(data.cus_id,"#table-reward","reward");
+                     loadDataForTab(data.cus_id,"#table-support","support");
+                     //$("#lawyer").click();
+                     //$("#internship").click();
+
+                     $("#cus_id2").val(data.cus_id);
+                     $("#cus_firstname2").val(data.cus_firstname);
+                     $("#cus_lastname2").val(data.cus_username);
+                     $("#cus_birthday2").val(data.cus_birthplace);
+                     $("#cus_country2").val(data.cus_country);
+                     $("#cus_cellphone2").val(data.cus_cellphone);
+                     $("#cus_identity_card2").val(data.cus_identity_card);
+
+                     $('#display-content-search-global').html('');
+                     //$("#search-global").val(data.cus_identity_card);
+                     if($("#search-field").val() != null && $("#search-field").val() == "name"){
+                      $("#search-global").val(data.cus_fullname);
+                     }else if($("#search-field").val() != null && $("#search-field").val() == "lawyer_number"){
+                      $("#search-global").val(data.cus_lawyer_number);
+                     }else if($("#search-field").val() != null && $("#search-field").val() == "identity_card"){
+                      $("#search-global").val(data.cus_identity_card);
+                     }else{
+                      $("#search-global").val(data.cus_cellphone);
+                     }
+
+                     $("#cus_cellphone").val(data.cus_cellphone);
+                     $("#cus_cellphone_old").val(data.cus_cellphone);
+                     
+                     $("#cus_firstname").val(data.cus_firstname);
+                     $("#cus_username").val(data.cus_username);
+                     $("#cus_lastname").val(data.cus_lastname);
+                     $("#cus_identity_card").val(data.cus_identity_card);
+                     $("#cus_identity_card_old").val(data.cus_identity_card);
+                     $("#cus_identity_place").val(data.cus_identity_place);
+                     $("#cus_identity_date").val(data.cus_identity_date);
+                     $("#cus_birthday").val(data.cus_birthday);
+                     $("#cus_birthplace").val(data.cus_birthplace);
+                     $("#cus_country").val(data.cus_country);
+                     $("#cus_nation").val(data.cus_nation);
+                     $("#cus_address_resident").val(data.cus_address_resident);
+                     $("#cus_address_resident_now").val(data.cus_address_resident_now);
+                     $("#cus_sex").val(data.cus_sex); 
+                     
+                     var nam = $("#cus_sex_nam").attr("checked", false);
+                     var nu = $("#cus_sex_nu").attr("checked", false);
+                     $.uniform.update(nam);
+                     $.uniform.update(nu);
+                     if(data.cus_sex == "Nam"){
+                        console.log(data.cus_sex);
+                        nam = $("#cus_sex_nam").attr("checked", true);
+                        $.uniform.update(nam);
+                     }else{
+                        console.log(data.cus_sex);
+                        nu = $("#cus_sex_nu").attr("checked", true);
+                        $.uniform.update(nu);
+                     }
+                     
+                     $("#cus_homephone").val(data.cus_homephone); 
+                     //$("#cus_passport_card").val(data.cus_passport_card); 
+                     //$("#cus_passport_place").val(data.cus_passport_place); 
+                     //$("#cus_passport_date").val(data.cus_passport_date); 
+                     $("#cus_educations").val(data.cus_educations);
+                     $("#cus_language_level").val(data.cus_language_level); 
+                     $("#cus_religion").val(data.cus_religion);
+                     $("#cus_organization").val(data.cus_organization);
+                     $("#cus_lawyer_number").val(data.cus_lawyer_number);
+
+                     $("#cus_joining_communist_youth").val(data.cus_joining_communist_youth); 
+                     $("#cus_joining_communist_prepare").val(data.cus_joining_communist_prepare);
+                     $("#cus_joining_communist").val(data.cus_joining_communist); 
+                     
+                     if(data.cus_member == '1'){
+                       $("#result-cus-member").val("Luật sư là thành viên của Đoàn LS HCM");
+                      // $('#uniform-result input[type=checkbox]').attr('checked',true);
+                      // $('#uniform-result input[type=checkbox]').parent().addClass('checked');
+                      
+                     }else if(data.cus_member == '0'){
+                      // $('#uniform-result input[type=checkbox]').attr('checked',false);
+                      // $('#uniform-result input[type=checkbox]').parent().removeClass('checked');
+                      $("#result-cus-member").val("Không phải thành viên của Đoàn LS HCM")
+                     }
+
+                     if(data.type_image != undefined){
+                        if(data.attachment_name_image != null){
+                            if(data.attachment_name_image != ''){
+                                $('#image-review').attr('src', data.attachment_name_image);
+                            }  
+                        }else{
+                          $('#image-review').attr('src', null);
+                          $("#message-image").hide(); 
+                        }                        
+                      
+                      $("#message-image").show(); 
+                     }else{
+                      $('#image-review').attr('src', "<?php echo $this->BaseUrl?>/files/images/photo.jpg");
+                     }
+
+                     if(data.type_pdf != undefined){
+                        if(data.attachment_name_pdf != null){
+                            if(data.attachment_name_pdf != ''){
+                                $('#linkLyLich').attr('href', data.attachment_name_pdf);
+                                $(".lylich").show();
+                                $("#message-attachment").show();
+                            }  
+                        }else{
+                          $('#linkLyLich').attr('href', null);
+                          $(".lylich").hide();
+                          $("#message-attachment").hide();
+                        } 
+                     }else{
+                          $('#linkLyLich').attr('href', null);
+                          $(".lylich").hide();
+                          $("#message-attachment").hide();
+                     }
+
+                     if(data.type_khac != undefined){
+                        if(data.attachment_name_khac != null){
+                            if(data.attachment_name_khac != ''){
+                                $('#linkKhac').attr('href', data.attachment_name_khac);
+                                $(".khac").show();
+                                $("#message-attachment2").show();
+                            }  
+                        }else{
+                          $('#linkKhac').attr('href', null);
+                          $(".khac").hide();
+                          $("#message-attachment2").hide();
+                        } 
+                     }else{
+                          $('#linkKhac').attr('href', null);
+                          $(".khac").hide();
+                          $("#message-attachment2").hide();
+                      } 
+                                
+                     //$("#cus_lawyer_hcm").val(data.cus_lawyer_hcm); 
+                     //$('#image-review').attr('src',data.);
+                     //console.log(data.cus_lawyer_hcm);
+                     $("#cus_email").val(data.cus_email);
+
+                     if(data.city_id != '' && data.city_id != null){                       
+                        $('#city_id select').val(data.city_id);
+                        $('#city_id select').trigger('change.select2');
+                     }
+
+                     if(data.language_id != '' && data.language_id != null){
+                        $('#language_id select').val(data.language_id);
+                        $('#language_id select').trigger('change.select2');
+                     }
+    
+              }
+              //console.log(data);             
+            }, error: function(msg){               
+            }           
+            });
+    });
+
+    
+   $("#customer_form").validate({     
+          rules:{
+            // cus_firstname:{
+            //   required:true
+            // },
+            // cus_lastname:{
+            //   required:true
+            // },
+            // cus_email:{
+            //   required:true,
+            //   email: true
+            // }
+          },
+          errorClass: "help-inline",
+          errorElement: "span",
+          highlight:function(element, errorClass, validClass) {
+            $(element).parents('.control-group').addClass('error');
+          },
+          unhighlight: function(element, errorClass, validClass) {
+            $(element).parents('.control-group').removeClass('error');
+            $(element).parents('.control-group').addClass('success');
+          },
+          messages: {
+            //cus_cellphone: "Vui lòng nhập số điện thoại !",
+            // cus_identity_card: "Vui lòng nhập số CMND !",
+            cus_firstname: "Vui lòng nhập tên !",
+            cus_lastname: "Vui lòng nhập họ !",
+            // cus_identity_place : "Vui lòng nhập nơi cấp CMND!",
+            // cus_identity_date :" Vui lòng chọn ngày cấp CMND!",
+            // cus_birthday: "Vui lòng chọn ngày sinh!",
+            // cus_birthplace:"Vui lòng nhập nơi sinh!",
+            cus_country:"Vui lòng nhập tỉnh thành!",
+            cus_nation:"Vui lòng nhập quốc tịch!",
+            cus_address_resident:"Vui lòng nhập địa chỉ cư trú!",
+            cus_email: "Vui lòng nhập email !"
+          },
+          submitHandler: function(form,e) {
+             console.log('Form submitted');
+             var formData = new FormData(form);
+            $.ajax({
+            url: '<?php echo $this->BaseUrl?>/default/customers/update/',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+              $("#message").html(data);
+              $("#model-warning").modal("show");
+            }
+            });
+            return false;                       
+        }
+	});
+
+      $("#form-internship").validate({
+          rules:{
+            cus_reason:{
+              required:true
+            }
+          },
+          errorClass: "help-inline",
+          errorElement: "span",
+          highlight:function(element, errorClass, validClass) {
+            $(element).parents('.control-group').addClass('error');
+          },
+          unhighlight: function(element, errorClass, validClass) {
+            $(element).parents('.control-group').removeClass('error');
+            $(element).parents('.control-group').addClass('success');
+          },
+          messages: {
+            cus_reason: "Vui lòng nhập lý do !!!"          
+          },
+          submitHandler: function(form,e) {
+            console.log('Form submitted');
+            var data = {
+              cus_id : $("#cus_id2").val(),   
+              cus_reward_discipline: $('input[name=cus_reward_discipline]:checked').val(),    
+              cus_reason: $("#cus_reason").val(),
+              law_help : $("#law_help").val(),
+              people_problem : $("#people_problem").val()
+
+            }
+            $.ajax({
+                  type: "POST",
+                  url: "<?php echo $this->BaseUrl?>/default/customers/createrewarddiscipline/",
+                  data: data ,
+                  cache: false,
+                  success: function(html)
+                  {   
+                    $("#message").html(html);
+                    $("#model-warning").modal("show");                              
+                  }
+            });
+            return false;                       
+        }
+	  });
+
+  function searchData(searchbox,dataString){
+    if(searchbox ==''){
+            $("#display-content-search-global").html('');
+            //load = true;
+        } else
+        {
+            $.ajax({
+                type: "POST",
+                url: "<?php echo $this->BaseUrl?>/default/customers/search/",
+                data: dataString,
+                cache: false,
+                success: function(html)
+                {   
+                  //$("#display-content-search-global").html('');
+                  //console.log(html.length);
+                  $("#display-content-search-global").html(html);                  
+                }
+            });
+            //load = true
+        }
+  }  
+
+
+  function loadDataForTab(cus_id,div_content,typetab){
+ 
+        var dataString = '?cus_id='+ cus_id;        
+        if(cus_id =='' || cus_id == undefined){
+            $("#table-intership").html('');
+        } else
+        {
+            var url = '';
+            if(typetab != '' && typetab == 'intership'){
+              url = "<?php echo $this->BaseUrl?>/default/intership/list"+dataString;
+            }else if(typetab != '' && typetab == 'lawyer' ){
+              url = "<?php echo $this->BaseUrl?>/default/lawyer/list"+dataString;
+            }else if(typetab != '' && typetab == 'training'){
+              url = "<?php echo $this->BaseUrl?>/default/certification/listcertification"+dataString;
+            }else if(typetab != '' && typetab == 'reward'){
+              url = "<?php echo $this->BaseUrl?>/default/customersreward/list"+dataString;
+            }else if(typetab != '' && typetab == 'support'){
+              url = "<?php echo $this->BaseUrl?>/default/customersupport/list"+dataString;
+            }else if(typetab != '' && typetab == 'historylawyer'){
+              url = "<?php echo $this->BaseUrl?>/default/lawyer/historyjoining"+dataString;
+            }
+            $.ajax({
+                type: "GET",
+                url: url,
+                //data: dataString,
+                //dataType: 'json',
+                cache: false,
+                success: function(html)
+                {   
+                  //alert(html);
+                  $(div_content).html(html);                  
+                }
+            });
+        }
+        return false;   
+  }
+
+  $("#people_problem").prop( "disabled", true );
+  $("#law_help").prop("disabled", true);
+  $('input[type="radio"]').click(function(){
+    if ($(this).is(':checked'))
+    {
+      if($(this).val() == 'khenthuong'){
+          $("#people_problem").prop( "disabled", true );
+          $("#law_help").prop("disabled", true);
+      }else{ 
+          $("#people_problem" ).prop( "disabled", false );
+          $("#law_help").prop("disabled", false);
+      }
+    }
+  });
+
+ 
+
+  function isNumber(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+  }
+
+  $(function () {
+    $(":file").change(function () {
+	if(this.id == "image"){
+          if (this.files && this.files[0]) {
+            var reader = new FileReader();
+            reader.onload = imageIsLoaded;
+            reader.readAsDataURL(this.files[0]);
+          }      
+	}  
+    });
+});
+
+function imageIsLoaded(e) {
+    $('#image-review').attr('src', e.target.result);
+};
+
+});
+
+function changeStatusLaw($id){
+  
+}
+
+function updateInternship($internship_id){
+  
+  console.log($internship_id);
+  var dataString = '?inter_id='+ $internship_id;
+      $.ajax({
+          type: "GET",
+          url: "<?php echo $this->BaseUrl?>/default/intership/detail"+dataString ,
+          //data: dataString+'?format=html',
+          //dataType: 'json',
+          cache: false,
+          success: function(html)
+          { 
+            //alert(html);
+            $("#message").html(html);
+            $("#model-warning").modal('show');
+          }
+      });       
+
+}
+
+function updateHistoryJoining($history_joining_id){
+  
+  console.log($history_joining_id);
+  var dataString = '?history_joining_id='+ $history_joining_id;
+      $.ajax({
+          type: "GET",
+          url: "<?php echo $this->BaseUrl?>/default/lawyer/detailhistory"+dataString ,
+          //data: dataString+'?format=html',
+          //dataType: 'json',
+          cache: false,
+          success: function(html)
+          { 
+            //alert(html);
+            $("#message").html(html);
+            $("#model-warning").modal('show');
+          }
+      });       
+
+}
+
+function updateLaw($cus_id,$law_id){
+  window.location.href = '<?php echo $this->BaseUrl?>/default/lawyer/detaillawyerpage?cus_id='+$cus_id+'&law_id='+$law_id;
+    // var dataString = '?law_id='+ $law_id;
+    //   $.ajax({
+    //       type: "GET",
+    //       url: "<?php echo $this->BaseUrl?>/default/lawyer/detail"+dataString ,
+    //       //data: dataString+'?format=html',
+    //       //dataType: 'json',
+    //       cache: false,
+    //       success: function(html)
+    //       { 
+    //         //alert(html);
+    //         $("#message").html(html);
+    //         $("#model-warning").modal('show');
+    //       }
+    //   });       
+
+}
+
+  function updateReward($id){
+      var dataString = '?id='+ $id;
+       $.ajax({
+            type: "GET",
+            url: "<?php echo $this->BaseUrl?>/default/customersreward/detail"+dataString ,
+            //data: dataString+'?format=html',
+            //dataType: 'json',
+            cache: false,
+            success: function(html)
+            { 
+              //alert(html);
+              $("#message").html(html);
+              $("#model-warning").modal('show');
+            }
+       });       
+
+  }
+
+  function printPaymentOfflineStatus($id){
+ 
+    var dataString = '?payment_training_off_id='+ $id;
+         $.ajax({
+              type: "GET",
+              timeout: 120000,
+              async:false,
+              dataType : 'html',
+              url: "<?php echo $this->BaseUrl?>/default/trainingmanagement/printtrainingpayment"+dataString ,
+              cache: false,
+              success: function(html)
+              {                 
+                  var mywindow = window.open('', 'Print-Window');
+
+                  mywindow.document.write('<html><head><title>' + document.title  + '</title>');
+                  mywindow.document.write('</head><body >');
+                  mywindow.document.write('<h1>' + document.title  + '</h1>');
+                  mywindow.document.write(html);
+                  mywindow.document.write('</body></html>');
+
+                  mywindow.document.close(); // necessary for IE >= 10
+                  mywindow.focus(); // necessary for IE >= 10*/
+
+                  mywindow.print();
+                  mywindow.close();
+
+              }
+        });
+  }
+
+   
+
+</script>
+
+<div id="model-warning" class="modal fade"  data-backdrop="static">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h5 class="modal-title" id="exampleModalLabel">Thông báo</h5>
+        
+      </div>
+        
+        <div class="modal-body">
+            <p id="message">Trong hệ thống đã tồn tại luật sư,hệ thống sẽ tải thông tin để bạn đăng kí tập sự.</p>
+        </div>
+        <div class="modal-footer">
+          <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button> -->
+          <button type="submit" class="btn btn-primary save-edit">Lưu</button>
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+<div id="content">
+  <div id="content-header">
+    <div id="breadcrumb"> <a href="" title="Trang chủ" class="tip-bottom"><i class="icon-home"></i></a> <a href="#" class="current">Cập nhật danh sách</a> </div>
+    <!-- <h1>Quản lý luật sư</h1> -->
+  </div>
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <div class="alert alert-success alert-dismissible message-success">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Thông báo</strong> Bạn đã cập nhật thành công một luật sư trong danh sách.
+      </div>	
+    </div>  
+
+    <div class="widget-box">
+        <div class="widget-title">
+            <ul class="nav nav-tabs">
+                <li class="active"><a data-toggle="tab" href="#tab12">Cập nhật thông tin</a></li>
+                <!-- <li><a data-toggle="tab" href="#tab22">Thêm khen thưởng kỷ luật</a></li> -->
+                <!-- <li><a data-toggle="tab" href="#tab32">Chỉnh sửa hình thức luật sư</a></li> -->
+            </ul>
+        </div>
+        <div class="widget-content tab-content">
+            <div id="tab12" class="tab-pane active">
+                <div class="row-fluid">	  	
+                    <div class="span12">		 
+                      <div class="widget-box">
+                          <div class="widget-title">
+                            <span class="icon">
+                              <i class="icon-th-list"></i>
+                            </span>
+                            <h5>Thông tin chung luật sư</h5>
+                          </div>
+                          
+                          <div class="widget-content nopadding"> 
+                            <form id="customer_form" action="" method="post" enctype="multipart/form-data" novalidate="novalidate">
+                              <div class="row-fluid form-horizontal">
+                                
+                                    <div class="span6">
+                                        <input type="hidden" id="cus_id" name="cus_id"/>
+                                        <input type="hidden" id="cus_cellphone_old" name="cus_cellphone_old"/>
+                                        <input type="hidden" id="cus_identity_card_old" name="cus_identity_card_old"/>
+                                        
+                                        <div class="control-group">
+                                          <label class="control-label">Họ tên lót :</label>
+                                          <div class="controls">
+                                            <input type="text" name="cus_firstname" id="cus_firstname" class="span8" placeholder="Họ luật sư" />
+                                          </div>
+                                        </div> 
+                                        
+                                        <div class="control-group">
+                                          <label class="control-label">Tên :</label>
+                                          <div class="controls">
+                                            <input type="text" name="cus_lastname" id="cus_lastname" class="span8" placeholder="Tên luật sư" />
+                                          </div>
+                                        </div>                                  
+
+                                         <div class="control-group">
+                                            <label class="control-label">Ngày sinh:</label>
+                                            <div class="controls">
+                                              <div  data-date="12-02-2012" class="input-append date datepicker-birthday">
+                                                <input id="cus_birthday" name="cus_birthday" type="text"  data-date-format="mm-dd-yyyy" class="span11" >
+                                                <span class="add-on"><i class="icon-th"></i></span>
+                                              </div>  
+                                              <!-- <input type="text" id="cus_birthday" name="cus_birthday"  class="span8" placeholder="Enter Password"  /> -->
+                                              
+                                              <!-- <div  data-date="12-02-2012" class="input-append date datepicker-birthday">
+                                                <input type="text" id="cus_birthday" name="cus_birthday" data-date-format="yyyy-mm-dd" class="span11" >
+                                                <span class="add-on"><i class="icon-th"></i></span> 
+                                              </div>                             -->
+                                            </div> 
+                                        </div>                            
+                                        
+                                        <!-- <div class="control-group">  
+                                            <label class="control-label">Nơi sinh (phường, xã, huyện):</label>
+                                            <div class="controls">
+                                              <input type="text" id="cus_birthplace" name="cus_birthplace"  class="span8" placeholder="Nơi sinh."  />
+                                            </div>
+                                        </div>     -->
+                                        
+                                        <div class="control-group">
+                                              <label class="control-label">Nơi sinh (tỉnh thành):</label>
+                                              <div id="city_id" class="controls">
+                                                <select class="span8" name="city_id">
+                                                <?php  
+                                                    foreach ($this->cities as $city) {
+                                                        echo '<option value="'.$city['city_id'].'" class="span8">'.$city['city_name'].'</option>';
+                                                    }
+                                                    ?>    
+                                                </select>
+                                              </div>  
+                                        </div>    
+                                        <!--
+                                        <div class="control-group">
+                                            <label class="control-label">Nguyên quán :</label>
+                                            <div class="controls">
+                                              <input type="text" id="cus_country" name="cus_country"  class="span8" placeholder="Nguyên quán."  />
+                                            </div>
+                                        </div>      -->                              
+
+                                        <div class="control-group">
+                                          <label class="control-label">Số CMND/Passport :</label>
+                                          <div class="controls">
+                                            <input type="text" name="cus_identity_card" id="cus_identity_card" class="span8" placeholder="Số CMND" />
+                                          </div>
+                                        </div>
+
+                                        <div class="control-group">
+                                          <label class="control-label">Ngày cấp CMND:</label>
+                                          <div class="controls">
+                                            <div id="dpcmnd"  data-date="12-02-2012" class="input-append date datepicker-cmnd">
+                                            
+                                              <input id="cus_identity_date" name="cus_identity_date" type="text" data-date-format="mm-dd-yyyy" class="span11" >
+                                              <span class="add-on"><i class="icon-th"></i></span>
+                                            </div>                           
+                                          </div>
+                                        </div>    
+
+                                        <div class="control-group">
+                                            <label class="control-label">Nơi cấp CMND:</label>
+                                            <div class="controls">
+                                              <input type="text" id="cus_identity_place" name="cus_identity_place" class="span8" placeholder="Nơi cấp CMND"/>
+                                            </div>
+                                        </div>                                                    
+                                        
+                                        <div class="control-group">
+                                          <label class="control-label">Số điện thoại :</label>
+                                          <div class="controls">
+                                              <input type="text" id="cus_cellphone" name="cus_cellphone" class="span8" placeholder="Số điện thoại" />
+                                          </div>
+                                        </div>
+
+                                         <div class="control-group">
+                                          <label class="control-label">Địa chỉ thường trú:</label>
+                                          <div class="controls">
+                                            <textarea id="cus_address_resident" name="cus_address_resident" class="span8" placeholder="Địa chỉ thường trú" ></textarea>
+                                          </div>
+                                        </div>
+
+                                        <div class="control-group">
+                                          <label class="control-label">Nơi ở hiện tại  :</label>
+                                          <div class="controls">
+                                            <textarea id="cus_address_resident_now" name="cus_address_resident_now" class="span8" placeholder="Nơi ở hiện tại" ></textarea>
+                                          </div>
+                                        </div>
+
+                                        <!-- <div class="control-group">
+                                          <label class="control-label">Mật khẩu</label>
+                                          <div class="controls">              
+                                            <input type="password" id="cus_password" name="cus_password" class="span8" placeholder="Vui lòng nhập mật khẩu" />
+                                          </div>
+                                        </div>   -->               
+
+                                        <label class="control-label">Giới tính:</label>
+                                        <div class="controls">
+                                          <div class="row-fluid">
+                                              <div class="span3">
+                                                <label>
+                                                    <input type="radio" id="cus_sex_nam" name="cus_sex" value="nam" />
+                                            Nam</label>
+                                              </div>
+                                              <div class="span6">
+                                                    <label>
+                                                  <input type="radio" id="cus_sex_nu" name="cus_sex" value="nu"/>
+                                                  Nữ</label> 
+                                              </div>
+                                          </div>                                               
+                                        </div>           
+
+                                        <div class="control-group">
+                                          <label class="control-label">Email :</label>
+                                          <div class="controls">
+                                            <input type="text" name="cus_email" id="cus_email" class="span8" placeholder="Vui lòng nhập email" />
+                                          </div>
+                                        </div>                                 
+
+                                        <div class="control-group">
+                                            <!-- <label class="control-label">Luật sư thuộc Đoàn LS HCM:</label> -->
+                                            <div class="controls">
+                                              <input type="text" disabled class="span8" id="result-cus-member">   
+                                            </div>        
+                                        </div>
+
+                                        <!-- <div class="control-group">
+                                          <label class="control-label">Đoàn LS hiện tại * :</label>
+                                          <div class="controls">
+                                            <textarea id="cus_organization" name="cus_organization" class="span8" placeholder="Đoàn LS" ></textarea>
+                                          </div>
+                                        </div> -->
+                                        <!-- <div class="control-group">
+                                        <label class="control-label" >Tổ chức hành nghề luật sư</label>                      
+                                        <div class="controls">
+                                              <select class="span8" id="cus_organization" name="cus_organization">
+                                              <?php  
+                                                  foreach ($this->organizations_data as $org) {
+                                                      echo '<option value="'.$org['organ_detail_id'].'" class="span8">'.$org['organ_name'].'</option>';
+                                                  }
+                                                  ?>    
+                                              </select>
+                                        </div>  
+                                      </div> 
+                                        
+                                        <div class="control-group">
+                                          <label class="control-label">Số thẻ LS:</label>
+                                          <div class="controls">              
+                                            <input type="text" disabled id="cus_lawyer_number" class="span8" placeholder="Số thẻ" />
+                                          </div>
+                                        </div>  -->
+                                        <!--<input type="hidden" name="cus_member"  id="cus_member" />-->
+                                       
+
+                                    </div>  
+                                    <div class="span6">
+                                        <div style="margin-left:33%;">                                  
+                                          <img id="image-review" src="<?php echo $this->BaseUrl?>/files/images/photo.jpg" class="img-thumbnail img-responsive" width="120" height="336">
+                                        </div>		
+
+                                        <div class="control-group lylich">
+                                            <div class="controls">
+                                                  <a id="linkLyLich" href=""> Nhấn để xem và tải lý lịch luật sư. </a>
+                                            </div>         
+                                        </div>
+
+                                        <div class="control-group khac">
+                                            <div class="controls">
+                                                  <a id="linkKhac" href=""> Nhấn để xem và tải lý lịch luật sư.( khác) </a>
+                                            </div>         
+                                        </div>
+
+                                        <div class="control-group">
+                                          <label class="control-label">Tên đăng nhâp:</label>
+                                          <div class="controls">              
+                                            <input type="text" disabled id="cus_username" class="span8" placeholder="Tên đăng nhập" />
+                                          </div>
+                                        </div>    
+
+                                                                                <div class="control-group">
+                                        <label class="control-label">Tôn giáo :</label>
+                                          <div class="controls">
+                                            <input type="text" id="cus_religion" name="cus_religion"  class="span8" placeholder="Vui lòng nhập tôn giáo."  />
+                                          </div>
+                                        </div>    
+
+                                      <!-- 
+                                        <div class="control-group">
+                                            <label class="control-label">Ngày vào đoàn TNCS HCM:</label>
+                                            <div class="controls">                                      
+                                              <div  data-date="12-02-2012" class="input-append date datepicker-birthday">
+                                                <input type="text" id="cus_joining_communist_youth" name="cus_joining_communist_youth" data-date-format="dd-mm-yyyy" class="span11" >
+                                                <span class="add-on"><i class="icon-th"></i></span> 
+                                              </div>                            
+                                            </div> 
+                                        </div>            		 -->
+
+                                        <div class="control-group">
+                                            <label class="control-label">Ngày vào Đảng dự bị:</label>
+                                            <div class="controls">
+                                              <!-- <input type="text" id="cus_birthday" name="cus_birthday"  class="span8" placeholder="Enter Password"  /> -->
+                                              
+                                              <div  data-date="12-02-2012" class="input-append date datepicker-birthday">
+                                                <input type="text" id="cus_joining_communist_prepare" name="cus_joining_communist_prepare" data-date-format="dd-mm-yyyy" class="span11" >
+                                                <span class="add-on"><i class="icon-th"></i></span> 
+                                              </div>                            
+                                            </div> 
+                                        </div>   
+
+                                          <div class="control-group">
+                                            <label class="control-label">Ngày vào Đảng chính thức:</label>
+                                            <div class="controls">
+                                              <!-- <input type="text" id="cus_birthday" name="cus_birthday"  class="span8" placeholder="Enter Password"  /> -->
+                                              
+                                              <div  data-date="12-02-2012" class="input-append date datepicker-birthday">
+                                                <input type="text" id="cus_joining_communist" name="cus_joining_communist" data-date-format="dd-mm-yyyy" class="span11" >
+                                                <span class="add-on"><i class="icon-th"></i></span> 
+                                              </div>                            
+                                            </div> 
+                                        </div>        
+                    
+                                            
+                                        <!-- <label class="control-label">Số passport :</label>
+                                        <div class="controls">
+                                          <input type="text" id="cus_passport_card" name="cus_passport_card" class="span8" placeholder="Số passport" />
+                                        </div>
+                                        <label class="control-label">Nơi cấp passport:</label>
+                                        <div class="controls">
+                                          <input type="text" id="cus_passport_place" name="cus_passport_place" class="span8" placeholder="Nơi cấp passport" />
+                                        </div>
+                                        <label class="control-label">Ngày cấp passport</label>
+                                        <div class="controls">
+                                              <div  data-date="10/20/2012" class="input-append date datepicker-passport">
+                                                <input id="cus_passport_date" name="cus_passport_date" type="text" value="10/20/2012"  data-date-format="mm-dd-yyyy" class="span11" >
+                                                <span class="add-on"><i class="icon-th"></i></span>
+                                              </div> 
+                                      
+                                        </div>  -->
+
+                                        <label class="control-label">Trình độ học vấn:</label>
+                                        <div class="controls">
+                                          <input type="text" id="cus_educations" name="cus_educations" class="span8" placeholder="Trình độ học vấn" />
+                                          <!-- <span class="help-block">Description field</span> </div> -->
+                                        </div>
+                                  
+                                        <div class="control-group"> 
+                                          <label class="control-label">Trình độ tiếng anh:</label>                                      
+                                          <div id="language_id" class="controls">
+                                            <select  class="span8" name="language_id">
+                                                  <?php  
+                                                      foreach ($this->languages as $la) {
+                                                          echo '<option value="'.$la['language_id'].'" class="span8">'.$la['language_name'].'</option>';
+                                                      }
+                                                  ?>    
+                                            </select>
+                                          </div>
+                                        </div>
+
+                                        <!-- <label class="control-label">Trình độ nghiệp vụ:</label>
+                                        <div class="controls">
+                                          <input type="text" id="cus_major" name="cus_major" class="span8" placeholder="Vui lòng nhập trình độ nghiệp vụ"/>
+                                          
+                                        </div>  -->
+                                        
+                                        <div class="control-group">
+                                            <label class="control-label">Dân tộc:</label>
+                                            <div class="controls">
+                                                <!-- <select name="cus_nation" style="width: 150px">                                     
+                                                    <option value="Việt Nam">Việt Nam</option>                                                                      
+                                                </select>	     -->
+                                                <input type="text" id="cus_nation" name="cus_nation"  class="span4" placeholder="Dân tộc."  />
+                                            </div>
+                                        </div>    
+
+                                        <div class="control-group">                
+                                            <label class="control-label">Số điện thoại (nhà riêng):</label>
+                                            <div class="controls">
+                                              <input type="text" id="cus_homephone" name="cus_homephone" class="span8" placeholder="Số điện thoại nhà riêng" />
+                                            </div>
+                                        </div>                                       
+                                       
+                                        <!-- <label class="control-label">Tập tin hình ảnh (3x4)</label>
+                                        <div class="controls">
+                                            <input type="file" name="image" size="19"/>
+                                            <input type="file" name="avatar"/> 
+                                        </div> -->
+
+                                        <div class="control-group">
+                                          <label class="control-label">Tập tin hình ảnh (3x4)</label>
+                                          <div class="controls">
+                                            <input type="file" id="image" name="image"  size="19" style="opacity: 0;"/>
+                                            <span id="message-image">Hình ảnh tồn tại trên hệ thống</span>        
+                                          </div>
+                                        </div>
+                                        <label class="control-label">Tập tin lý lịch (pdf)</label>
+                                        <div class="controls">
+                                          <input name="attachment" id="attachment" type="file" size="19" style="opacity: 0;"/>
+                                          <span id="message-attachment">Lý lịch tồn tại trên hệ thống</span>           
+                                        </div> 
+                                        <label class="control-label">Lý lịch 3(pdf)</label>
+                                        <div class="controls">
+                                          <input name="attachment2"  id="attachment2" type="file" size="19" style="opacity: 0;">
+                                          <span id="message-attachment2">Lý lịch tồn tại trên hệ thống</span> 
+                                        </div>   
+                                      
+                                    </div>  
+                                  
+                              </div>
+                              <div class="row-fluid">
+                                    <div class="form-actions">
+                                          <div class="span4" >
+                                          </div>
+                                          <div class="span6">	             
+                                              <button type="submit"  id="save" class="btn ">Lưu</button>			
+                                              <button type="button" class="btn ">Hủy</button>							 
+                                          </div>
+                                          <div class="span2" >
+                                          </div>
+                                    </div>  
+                              </div>
+                              
+                            </form>
+                          </div>
+
+                          <!-- tab-->
+                          <div class="widget-box">
+                              <div class="widget-title">
+                                  <ul class="nav nav-tabs">
+                                      <li class="active"><a id="internship" data-toggle="tab" href="#tab1">Trạng thái luật sư</a></li>
+                                      <li><a id="intership" data-toggle="tab" href="#tab21">Lịch sử gia nhập</a></li> 
+                                      <li><a id="intership" data-toggle="tab" href="#tab2">Lịch sử tập sự</a></li>                                     
+                                      <li><a id="lawyer-training" data-toggle="tab" href="#tab4">Bồi dưỡng</a></li>
+                                      <li><a id="lawyer-reward" data-toggle="tab" href="#tab5">Khen thưởng kỉ luật</a></li>
+                                      <li><a id="lawyer-reward" data-toggle="tab" href="#tab6">Trợ giúp pháp lý</a></li>
+                                      <!-- <li><a id="lawyer-reward" data-toggle="tab" href="#tab7">Tình trạng luật sư</a></li> -->
+                                      
+                                  </ul>
+                              </div>
+                              <div class="widget-content tab-content">
+                                  <div id="tab1" class="tab-pane active">
+                                      <div class="row-fluid">
+                                        <div class="span12">    
+                                          <div class="widget-box">
+                                              <div class="widget-title">
+                                                <span class="icon"><i class="icon-th"></i></span> 
+                                                <h5>Luật sư chính thức</h5>
+                                              </div>
+                                              <div class="widget-content nopadding">
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                      <tr>
+                                                        <th>Số chứng chỉ HN LS</th>
+                                                        <th>Tổ chức hành nghề</th>
+                                                        <!-- <th>Hình thức hoạt động</th> -->
+                                                        <th>Trạng thái</th>
+                                                        <!-- <th>Loại luật sư</th> -->
+                                                        <th>Ghi chú</th>
+                                                        <th>Đợt gia nhập</th>
+                                                        <th>Hành động</th>
+                                                      </tr>
+                                                    </thead>
+                                                    <tbody id="table-lawyer">                                 
+                                              
+                                                    </tbody>
+                                                </table>                            
+                                              </div>
+                                          </div>
+                                                  
+                                        </div>          
+                                      </div>         
+                                  </div>
+                                  <div id="tab21" class="tab-pane">
+                                      <div class="row-fluid">
+                                            <div class="span12">    
+                                              <div class="widget-box">
+                                                <div class="widget-title">
+                                                  <span class="icon"><i class="icon-th"></i></span> 
+                                                  <h5>Lịch sử gia nhập</h5>
+                                                </div>
+                                                <div class="widget-content nopadding">
+                                                  <table class="table table-bordered">
+                                                      <thead>
+                                                        <tr>
+                                                          <!-- <th>Rendering engine</th> -->
+                                                          <th>Ngày gia nhập</th>
+                                                          <th>Đợt gia nhập</th>
+                                                          <th>Ghi chú</th>
+                                                          <th>Hành động</th>
+                                                        </tr>
+                                                      </thead>
+                                                      <tbody id="table-intership-21">
+                                                                                
+                                                      </tbody>
+                                                  </table>                                 
+                                                </div>                                                                           
+                                              </div>                   
+                                            </div>                            
+                                      </div>
+                                  </div>
+                                  <div id="tab2" class="tab-pane">
+                                      <div class="row-fluid">
+                                            <div class="span12">    
+                                              <div class="widget-box">
+                                                <div class="widget-title">
+                                                  <span class="icon"><i class="icon-th"></i></span> 
+                                                  <h5>Luật sư tập sự</h5>
+                                                </div>
+                                                <div class="widget-content nopadding">
+                                                  <table class="table table-bordered">
+                                                      <thead>
+                                                        <tr>
+                                                          <!-- <th>Rendering engine</th> -->
+                                                          <th>Ngày đăng kí</th>
+                                                          <th>Đợt tập sự</th>
+                                                          <!-- <th>Luật sư hướng dẫn</th> -->
+                                                          <th>Hành động</th>
+                                                        </tr>
+                                                      </thead>
+                                                      <tbody id="table-intership">
+                                                                                
+                                                      </tbody>
+                                                  </table>                                 
+                                                </div>                                                                           
+                                              </div>                   
+                                            </div>                            
+                                      </div>
+                                  </div>
+
+                                  <div id="tab4" class="tab-pane">
+                                    <div class="row-fluid">
+                                      <div class="span12">    
+                                        <div class="widget-box">
+                                          <div class="widget-title">
+                                            <span class="icon"><i class="icon-th"></i></span> 
+                                            <h5>Bồi dưỡng</h5>
+                                          </div>
+                                          <div class="widget-content nopadding">
+                                              <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                      <th>Tên người đóng phí </th>
+                                                      <th>Mã số luật sư</th>
+                                                      <th>Ngày cấp mã luật sư</th>
+                                                      <th>Mã biên nhận</th>
+                                                      <th>Tên khóa học</th> 
+                                                      <th>Đợt bồi dưỡng </th>
+                                                      <th>Số chứng chỉ bồi dưỡng</th>
+                                                      <th>Thao tác</th> 
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="table-training">
+                                                                            
+                                                </tbody>
+                                              </table>                                 
+                                          </div>                                                                           
+                                        </div>                   
+                                      </div>                            
+                                    </div>
+                                  </div>  
+
+                                  <div id="tab5" class="tab-pane">
+                                      <div class="row-fluid">
+                                            <div class="span12">    
+                                              <div class="widget-box">
+                                                <div class="widget-title">
+                                                  <span class="icon"><i class="icon-th"></i></span> 
+                                                  <h5>Khen thưởng kỉ luật</h5>
+                                                </div>
+                                                <div class="widget-content nopadding">
+                                                  <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>                                 
+                                                          <th>Ngày </th>
+                                                          <th>Lý do </th>
+                                                          <th>Hình thức</th>
+                                                          <!-- <th>Hành động</th>                                   -->
+                                                        </tr>
+                                                      </thead>
+                                                      <tbody id="table-reward">
+                                                                                
+                                                      </tbody>
+                                                  </table>                                 
+                                                </div>                                                                           
+                                              </div>                   
+                                            </div>  
+                                      </div>
+                                  </div>  
+
+                                  <div id="tab6" class="tab-pane">
+                                      <div class="row-fluid">
+                                            <div class="span12">    
+                                              <div class="widget-box">
+                                                <div class="widget-title">
+                                                  <span class="icon"><i class="icon-th"></i></span> 
+                                                  <h5>Trợ giúp pháp lý</h5>
+                                                </div>
+                                                <div class="widget-content nopadding">
+                                                  <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>                                 
+                                                          <th>Số giờ</th>
+                                                          <th>Năm </th>
+                                                          <th>Nội dung</th>
+                                                          <!-- <th>Hành động</th>                                   -->
+                                                        </tr>
+                                                      </thead>
+                                                      <tbody id="table-support">
+                                                                                
+                                                      </tbody>
+                                                  </table>                                 
+                                                </div>                                                                           
+                                              </div>                   
+                                            </div>  
+                                      </div>
+                                  </div>  
+
+
+                                  <div id="tab7" class="tab-pane">
+                                      <div class="row-fluid">
+                                            <div class="span12">    
+                                              <div class="widget-box">
+                                                <div class="widget-title">
+                                                  <span class="icon"><i class="icon-th"></i></span> 
+                                                  <h5>Khen thưởng kỉ luật</h5>
+                                                </div>
+                                                <div class="widget-content nopadding">
+                                                  <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>                                 
+                                                          <th>Ngày </th>
+                                                          <th>Lý do </th>
+                                                          <th>Hình thức</th>
+                                                          <th>Hành động</th>                                  
+                                                        </tr>
+                                                      </thead>
+                                                      <tbody id="table-status">
+                                                                                
+                                                      </tbody>
+                                                  </table>                                 
+                                                </div>                                                                           
+                                              </div>                   
+                                            </div>  
+                                      </div>
+                                  </div>           
+                              </div>
+
+                          </div>
+                          <!--end tab  -->
+                      </div> 
+                    </div>    
+                </div>      
+            </div>   
+            <!-- <div id="tab22" class="tab-pane">
+
+            </div>   -->
+            <div id="tab32" class="tab-pane">
+            <div class="row-fluid">
+                <div class="span12">
+                  <div class="widget-box">
+                    <div class="widget-title">
+                      <span class="icon"><i class="icon-th"></i></span> 
+                      <h5>Danh sách luật sư </h5>
+                    </div>
+                    <div class="widget-content nopadding">
+                      <table class="table table-bordered data-table">
+                        <thead>
+                          <tr>
+                              <th>Tên </th>      
+                              <th>Số thẻ LS</th>                        
+                              <th>CMND</th>
+                              <th>Nơi cấp</th>
+                              <th>Số điện thoại</th>                    
+                              <th>Ngày sinh</th>  
+                              <th>Trạng thái </th>
+                              <th>Thao tác</th> 
+                          </tr>
+                        </thead>
+                        <tbody>  
+                  
+                          <?php  
+                              if($this->data != null){
+                                  foreach ($this->data as $pay) {           
+                                      // '<td>'.$pay['payment_lawyer_off_id'].'</td>'.
+                                   
+                                      $status = '';
+                                      if($pay['cus_status'] == 0){
+                                        $status = '<td>Ngưng hoạt động</td>';
+                                        }else{
+                                            $status = '<td>Hoạt động</td>';  
+                                        }   
+                                      $dateBirthdate = ($pay['cus_birthday'] != null && $pay['cus_birthday'] != ''
+                                        && $pay['cus_birthday'] != '1900-01-01 00:00:00') ? date('d/m/Y', strtotime($pay['cus_birthday'])) : '';   
+
+                                      echo ' <tr class="gradeC">'.
+                                      '<td>'.$pay['cus_firstname'].' '.$pay['cus_lastname'].'</td>'.
+                                      '<td>'.$pay['cus_lawyer_number'].'</td>'.
+                                      '<td>'.$pay['cus_identity_card'].'</td>'.   
+                                      '<td>'.$pay['cus_identity_place'].'</td>'.                                         
+                                      '<td>'.$pay['cus_cellphone'].'</td>'.   
+                                      '<td>'.$dateBirthdate
+                                      .'</td>'.  
+                                      $status.  
+                                      '<td>'. 
+                                      '<button data-toggle="tooltip" title="Đổi trạng thái luật sư" onClick="changeStatusLaw('.$pay['law_id'].');"><i class="icon-refresh"></i></button>'.                                                       
+                                  '</tr>';                            
+                                  }  
+                              }
+                          ?>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>        
+                </div>
+              </div>
+            </div>
+        </div>                            
+    </div>                      
+  </div>
+</div>
+

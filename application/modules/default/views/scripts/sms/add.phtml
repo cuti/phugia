@@ -1,0 +1,132 @@
+<script type="text/javascript">
+  $("#search").hide();
+  $(".searchfield").hide();
+function change (el) {
+var max_len = 160;
+if (el.value.length > max_len) {
+el.value = el.value.substr(0, max_len);
+}
+document.getElementById('char_cnt').innerHTML = el.value.length;
+document.getElementById('chars_left').innerHTML = max_len - el.value.length;
+return true;
+}
+function change1 (el1) {
+var max_len1 = 160;
+if (el1.value.length > max_len1) {
+el1.value = el1.value.substr(0, max_len1);
+}
+document.getElementById('char_cnt1').innerHTML = el1.value.length;
+document.getElementById('chars_left1').innerHTML = max_len1 - el1.value.length;
+return true;
+}
+</script>
+<div id="content">
+    <div id="content-header">
+        <div id="breadcrumb">
+            <a href="#" title="Trang chủ" class="tip-bottom"><i class="icon-home"></i></a>
+            <a href="#" class="current">Gửi tin nhắn</a>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <!-- open div general information-->
+            <div class="span12">
+                <div class="widget-box">
+                    <div class="widget-title">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#tab1">Gửi tin nhắn theo nhóm</a></li>
+                            <li><a data-toggle="tab" href="#tab2">Gửi tin nhắn theo số điện thoại</a></li>
+                            <!-- <li><a data-toggle="tab" href="#tab3">Tab3</a></li> -->
+                        </ul>
+                    </div>
+                    <div class="widget-content tab-content">
+                        <div id="tab1" class="tab-pane active">
+                            <div class="widget-title"><span class="icon"> <i class="icon-align-justify"></i> </span>
+                                <h5>Gửi tin nhắn theo nhóm</h5>
+                            </div>
+                            <div class="widget-content nopadding" id="detail-information">
+                                <!--start form-->
+                                <form action="" method="post">
+                                    <div class="row-fluid form-horizontal">
+                                        <div class="span6">
+                                            <label class="control-label">Chọn nhóm:</label>
+                                            <div class="controls">
+                                                <select name="group_id" class="select2 span8" required>
+                                                    <?php
+                                                    foreach ($this->groups as $group) {
+                                                        ?>
+                                                        <option value="<?= $group->group_id ?>"><?= $group->group_name ?></option>
+                                                    <?php } ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="span6">
+                                            <label class="control-label">Nội dung (không dấu):</label>
+                                            <div class="controls">
+                                                <textarea name="sms_content" rows="3" cols="45" maxlength="159" class="span8" required onkeyup="change(this);"></textarea>
+                                <br>Bạn đã nhập <span id="char_cnt" style="color:red;font-weight:bold">0</span> ký tự. Số ký tự còn lại <span id="chars_left" style="color:red;font-weight:bold"></span>.
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" value="send_group" name="type_sms">
+                                    <div class="row-fluid">
+                                        <div class="form-actions span12">
+                                            <div class="pull-right">
+                                                <button id="btnSendGroup" class="btn btn-primary">Gửi</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- end form -->
+                                </form>
+                            </div>
+                        </div>
+                        <div id="tab2" class="tab-pane">
+                            <div class="widget-title"><span class="icon"> <i class="icon-align-justify"></i> </span>
+                                <h5>Gửi tin nhắn theo số điện thoại</h5>
+                            </div>
+                            <div class="widget-content nopadding" id="detail-information">
+                                <!--start form-->
+                                <form action="" method="post">
+                                    <div class="row-fluid form-horizontal">
+                                        <div class="span6">
+                                            <label class="control-label">Số điện thoại:</label>
+                                            <div class="controls">
+                                                <input type="tel" id="person_mobile" name="person_mobile" class="span8"
+                                                    placeholder="Điện thoại bắt đầu từ 84, ví dụ: 84988888888" required>
+                                            </div>
+                                        </div>
+                                        <div class="span6">
+                                            <label class="control-label">Nội dung (không dấu):</label>
+                                            <div class="controls">
+                                                <textarea name="sms_content" rows="3" cols="45" maxlength="159" class="span8" required onkeyup="change1(this);"></textarea>
+                                <br>Bạn đã nhập <span id="char_cnt1" style="color:red;font-weight:bold">0</span> ký tự. Số ký tự còn lại <span id="chars_left1" style="color:red;font-weight:bold"></span>.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" value="send_mobile" name="type_sms">
+                                    <div class="row-fluid">
+                                        <div class="form-actions span12">
+                                            <div class="pull-right">
+                                                <button id="btnSendMobile" class="btn btn-success">Gửi</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- end form -->
+                                </form>
+                            </div>                      
+                        </div>
+                        <div id="tab3" class="tab-pane">                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+        $('.select2').select2();
+    });
+</script>
+

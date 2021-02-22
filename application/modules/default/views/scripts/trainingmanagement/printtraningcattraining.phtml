@@ -1,0 +1,278 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-1">
+<style>
+body {
+    margin: 0;
+    padding: 1cm 1cm 1cm 1cm;
+    background-color: #FAFAFA;
+    font: 13pt "Times New Roman";
+    line-height:100%;
+}
+*{
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+ .content strong{
+    
+    line-height:100%;
+    font-size:13pt;
+    font-family:
+    padding : 0 15px 0 0;
+	
+} 
+.page {
+    width: 297mm;
+    min-height: 180mm;
+    padding: 10mm 20mm 10mm 20mm;
+    margin: 0 auto;
+    margin-left:auto;
+    margin-right:auto;
+    background: white;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+.subpage {
+    padding: 1cm;
+    border: 5px red solid;
+    height: 180mm;
+    outline: 1.5cm #FFEAEA solid;
+}
+
+ @page {
+ size: A4 landscape;
+ margin: 5%;
+}
+
+button {
+    width:100px;
+    height: 24px;
+}
+.header {
+    overflow:hidden;
+	font-size:12pt;
+	font-weight:bold;
+	padding:0 40px 0 35px;
+}
+.logo {
+    /*background-color:#FFFFFF;*/
+    text-align:center;
+    float:left;
+    font-size:13pt;
+}
+.company {
+    /*padding-top:24px;*/
+    /* text-transform:uppercase; */
+    background-color:#FFFFFF;
+    text-align:center;
+    float:right;
+    font-size:13pt;
+    font-weight:bold;
+}
+.title {
+    text-align:center;
+    position:relative;
+    color:#0000FF;
+    font-size: 16pt;
+    top:1px;
+}
+.title1 {
+    text-align:center;
+    position:relative;
+    color:#0000FF;
+    font-size: 14pt;
+    top:1px;
+    font-weight:bold;
+}
+.footer-left {
+    text-align:center;
+    text-transform:uppercase;
+    padding-top:10px;
+    position:relative;
+    height: auto;
+    width:50%;
+    color:#000;
+    float:left;
+    font-size: 16pt;
+    bottom:1px;
+}
+.footer-right {
+    text-align:center;
+    padding-top:10px;
+    position:relative;
+    height: auto;
+    width:50%;
+    color:#000;
+    font-size: 16pt;
+    float:right;
+    bottom:1px;
+}
+@media print {
+ @page {
+ margin: 0;
+ border: initial;
+ border-radius: initial;
+ width: initial;
+ min-height: initial;
+ box-shadow: initial;
+ background: initial;
+ page-break-after: always;
+}
+}
+
+</style>
+<body onload="window.print();">
+    <?php foreach($this->certifications as $key=>$value): ?>
+            <?php 
+                if( $key > 0){
+                    //echo "<br>";
+                    //echo "<br>";
+                    
+                }
+            ?>
+            <div id="page<?php echo $key; ?>" class="page" style="border: double #000000 10px;width:100%;height:100%;">
+                
+                <div class="header">
+                    <div class="logo">ĐOÀN LUẬT SƯ <br/>
+                    THÀNH PHỐ HỒ CHÍ MINH<br/>
+                    ----o0o----
+                    </div>
+                    <div class="company">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM <BR>
+					Đốc lập - Tự do - Hạnh phúc <br>
+					-------------o0o-------------
+			
+
+
+                    </div>
+                </div>  
+		  <br/>
+                
+                <div class="title">
+                        <b>GIẤY CHỨNG NHẬN</b>
+		</div>
+
+                        <br/>
+		<div class="title1">
+                        Tham gia bồi dưỡng về chuyên môn, nghiệp vụ của luật sư
+		</div>
+                
+                <br/>
+                <div class="content">
+		    <tbody>
+		    <table width="100%" cellspacing="5" cellpadding="1" border="0" style="font-size:13pt;">
+		    <tr height="25">
+		    <td width="15%">Luật sư :
+		    </td>
+		    <td width="35%"><span style="text-transform: uppercase;"><?php echo $value['cus_firstname'].' '.$value['cus_lastname'] ?></span>
+		    </td>
+		    <td width="12%">Năm sinh :
+		    </td>
+		    <td width="38%"><strong><span style="text-transform: uppercase;"><?php echo date('Y', strtotime($value['cus_birthday'])); ?><span></strong>
+		    </td>
+		    </tr>
+		    <tr height="25">
+		    <td width="15%">Số thẻ luật sư :
+		    </td>
+		    <td width="35%"><strong><span><?php echo $value['cus_lawyer_number']; ?><span></strong>
+		    </td>
+		    <td width="12%">Cấp ngày :
+		    </td>
+		    <td width="38%"><strong><span><?php echo date('d/m/Y', strtotime($value['cus_date_lawyer_number']));  ?><span></strong>
+		    </td>
+		    </tr>
+		    <tr height="25" >
+			<?php if( $value['tinhthanh'] != '' && $value['tinhthanh'] != null): ?>
+				<td colspan="4">Thành viên Đoàn Luật Sư Tỉnh  <?php echo $value['tinhthanh']; ?>.		    
+				</td>
+				<!-- <p>Lỗi : </p> -->
+			<?php else: ?>
+				<td colspan="4">Thành viên Đoàn Luật Sư Thành Phố Hồ Chí Minh.		    
+				</td>
+			<?php endif; ?>
+		   
+		    </tr>
+	            <tr height="25" >
+		    <td colspan="4">Đã tham dự khóa bồi dưỡng (trao đổi kinh nghiệm hành nghề) về chuyên môn, nghiệp vụ của luật sư.
+		    
+		    </td>
+		    </tr>
+		    <tr height="25">
+		    <td width="15%" valign="top">Chuyên đề :
+		    </td>
+		    <td colspan="3"><strong><span><i><?php echo $value['cat_train_name'];  ?></i><span></strong>
+		    </td>
+		    </tr>
+		    <tr height="25">
+		    <td width="15%" valign="top">Trình bày :
+		    </td>
+		    <td colspan="3"><strong><span><i><?php echo $value['cat_trainer'];  ?></i><span></strong>
+		    </td>
+		    </tr>
+		    <tr height="25" >
+		    <td colspan="4"><i><b> Tổ chức ngày <?php echo date('d/m/Y', strtotime($value['cat_train_fromdate'])); ?> &nbsp; <?php echo $value['cat_train_address']; ?></b> </i>
+		    
+		    </td>
+		    </tr>
+		    <tr height="25" >
+		    <td colspan="4"><i><b> Giấy chứng nhận này có hiệu lực trên phạm vi toàn quốc, trong năm tham gia bồi dưỡng./.</b> </i>
+		    
+		    </td>
+		    </tr>
+		    </table>
+		    </tbody>
+                    <tbody>
+			<table width="100%" border="0">
+			<tr>
+			<td width="33%">
+			</td>
+			<td width="33%">
+			</td>
+			<td width="33%" align="center">
+				<i> Ngày <?php echo date('d', strtotime($value['payment_training_off_created_date'])) ?> tháng <?php echo date('m', strtotime($value['payment_training_off_created_date'])) ?> năm <?php echo date('Y', strtotime($value['payment_training_off_created_date'])) ?></i>
+			</td>	
+			</tr>
+			<tr>
+			<td>
+			</td>
+			<td>
+			
+			</td>
+			<td align="center" style="font-size:14pt;">
+				<b>CHỦ NHIỆM</b>
+			</td>	
+			</tr>
+			<tr>
+			<td>
+			</td>
+			<td>
+			
+			</td>
+			<td align="center">
+				<img id="image-review" src="<?php echo $this->BaseUrl?>/files/upload/chuky.png" align="center">
+			</td>	
+			</tr>
+			<tr>
+			<td style="font-size:14pt;">
+				Số:<?php echo $value['training_certification_number']."/"."GCN-ĐLSTPHCM";  ?>
+			</td>
+			<td>
+			
+			</td>
+			<td align="center" style="font-size:14pt;">
+				<b> Luật sư NGUYỄN VĂN TRUNG   </b>
+			</td>	
+			</tr>
+			</table>
+		    </tbody>
+                   
+                </div>                
+               
+              </div>
+    <?php endforeach; ?>
+   
+</body>
+
+</head>
+
+
+

@@ -1,0 +1,531 @@
+<script>
+$(document).ready(function(){
+  
+  $("#search").hide();
+  $(".searchfield").hide();
+
+  $('select').select2();
+
+  // $('.datepicker-start').datepicker();
+
+  // $('.datepicker-end').datepicker();
+  $('#dotgianhap').attr("disabled",true);
+  $('#dottapsu').attr("disabled",true);
+
+  $("#thanhvien").on("change", function () { 
+    //console.log("change");
+    //console.log($('#thanhvien').val());
+    if($('#thanhvien').val() == 1){
+      $('#dotgianhap').attr("disabled",false);
+      $('#dottapsu').val('');
+      $('#dottapsu').attr("disabled",true);
+    }else if($('#thanhvien').val() == 0){
+      $('#dottapsu').attr("disabled",false);
+      $('#dotgianhap').val('');
+      $('#dotgianhap').attr("disabled",true);
+    }else{
+      $('#dotgianhap').attr("disabled",true);
+      $('#dottapsu').attr("disabled",true);
+      $('#dotgianhap').val('');
+      $('#dottapsu').val('');
+    }
+  });
+
+  $('#xoaten').select2('disable');
+
+  $("#tinhtrang").on("change", function () {    
+    if($('#tinhtrang').val() == 7){
+      $('#xoaten').select2('enable');    
+    }else{
+      //$('#xoaten').select2();
+      //$("#xoaten").select2("destroy").select2();
+     // $("#xoaten").select2();
+     // $('#xoaten').trigger("change"); 
+      $('#xoaten').select2('disable');
+      console.log("chay vao");
+    }
+  });
+
+  var date = new Date();
+  var today = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  var today1 = new Date(date.getFullYear(), date.getMonth()-1, date.getDate());
+
+  $('.datepicker-start1').datepicker({ format: 'dd/mm/yyyy' }); // format to show
+  //$('.datepicker-start1').datepicker('setValue', today1);
+
+  $('.datepicker-end1').datepicker({ format: 'dd/mm/yyyy' }); // format to show
+  // $('.datepicker-end1').datepicker('setValue', today);
+
+  var enddate = $("#enddate").val();
+  var startdate = $("#startdate").val();
+  var hovalot = $("#hovalot").val();
+  var ten = $("#ten").val();
+  var gioitinh = $("#gioitinh").val();
+  var cmnd = $("#cmnd").val();
+  var thanhvien = $("#thanhvien").val();
+  var trinhdohv = $("#trinhdohv").val();
+  var diachilienhe = $("#diachilienhe").val();
+  var thuongtru = $("#thuongtru").val();
+  var lamviec = $("#lamviec").val();
+  var socchn = $("#socchn").val();
+  var dotgianhap = $("#dotgianhap").val();
+  var dottapsu = $("#dottapsu").val();
+  var diachi = $("#diachi").val();
+  var tinhtrang = $("#tinhtrang").val();
+  var dangvien = $("#dangvien").val();
+  var ngoaingu = $("#ngoaingu").val();
+  var xoaten = $("#xoaten").val();
+  // var phanloai = $("#phanloai").val();
+  //var sapxep = $("#sapxep").val();
+  var sothels = $("#sothels").val();
+
+  var dataString = '?enddate='+ enddate+'&startdate='+ startdate+'&hovalot='+ hovalot+'&ten='+ ten
+  +'&gioitinh='+ gioitinh+'&cmnd='+ cmnd+'&thanhvien='+ thanhvien+'&trinhdohv='+ trinhdohv
+  +'&diachilienhe='+ diachilienhe+'&thuongtru='+ thuongtru+'&lamviec='+ lamviec
+  +'&socchn='+ socchn+'&dotgianhap='+ dotgianhap+'&diachi='+ diachi+'&tinhtrang='+ tinhtrang+'&dangvien='+ dangvien
+  +'&ngoaingu='+ ngoaingu+'&phanloai='+'&sapxep='+'&sothels='+ sothels+'&dottapsu='+ dottapsu+'&xoaten='+ xoaten;
+  $("#downloadUrl").attr("href", "<?php echo $this->BaseUrl?>/default/report/searchcustomerexportexcel"+dataString);
+  var dataTable = $('#employee-grid').DataTable( {
+    "language": {
+            "lengthMenu": "Hiển thị _MENU_ dòng trên trang",
+            "zeroRecords": "Không tìm thấy",
+            "info": "Hiển thị trang _PAGE_ of _PAGES_",
+            "infoEmpty": "Không có dự liệu thích hợp",
+            "infoFiltered": "(lọc từ _MAX_ tổng số kết quả)",
+            "paginate": {
+                "first":      "Đầu",
+                "last":       "Cuối",
+                "next":       "Tới",
+                "previous":   "Sau"
+            }
+        },
+		"processing": true,
+    "serverSide": true,
+    "searching": false,
+    "aLengthMenu": [[10, 50, 75, -1], [10, 50, 75, "All"]],
+        "iDisplayLength": 10,
+    "ajax":{
+      url :"<?php echo $this->BaseUrl?>/default/report/listcustomerdatatable"+dataString, // json datasource
+      type: "post",  // method  , by default get
+      // done:function(){
+      //   $("#downloadUrl").attr("href", "<?php echo $this->BaseUrl?>/default/categorytraining/listtest"+dataString);
+      // },
+      error: function(){  // error handling
+        $(".employee-grid-error").html("");
+        $("#employee-grid").append('<tbody class="employee-grid-error"><tr><th colspan="3">Không tìm thấy kết quả</th></tr></tbody>');
+        $("#employee-grid_processing").css("display","none");        
+      } 
+    },
+    'columnDefs': [
+         {
+            'targets': 0,
+            'checkboxes': {
+               'selectRow': true
+            }
+         }
+      ],
+      'select': {
+         'style': 'multi'
+      }    
+    }
+  );
+
+  $('#filtertable').on('submit', function(e){
+      e.preventDefault();
+      
+      var enddate = $("#enddate").val();
+      var startdate = $("#startdate").val();
+      var hovalot = $("#hovalot").val();
+      var ten = $("#ten").val();
+      var gioitinh = $("#gioitinh").val();
+      var cmnd = $("#cmnd").val();
+      var thanhvien = $("#thanhvien").val();
+      var trinhdohv = $("#trinhdohv").val();
+      var diachilienhe = $("#diachilienhe").val();
+      var thuongtru = $("#thuongtru").val();
+      var lamviec = $("#lamviec").val();
+      var socchn = $("#socchn").val();
+      var dotgianhap = $("#dotgianhap").val();
+      var dottapsu = $("#dottapsu").val();
+      var diachi = $("#diachi").val();
+      var tinhtrang = $("#tinhtrang").val();
+      var dangvien = $("#dangvien").val();
+      var ngoaingu = $("#ngoaingu").val();
+      //var phanloai = $("#phanloai").val();
+      //var sapxep = $("#sapxep").val();
+      var sothels = $("#sothels").val();
+      var xoaten = $("#xoaten").val();
+
+
+       var dataString = '?enddate='+ enddate+'&startdate='+ startdate+'&hovalot='+ hovalot+'&ten='+ ten
+      +'&gioitinh='+ gioitinh+'&cmnd='+ cmnd+'&thanhvien='+ thanhvien+'&trinhdohv='+ trinhdohv
+      +'&diachilienhe='+ diachilienhe+'&thuongtru='+ thuongtru+'&lamviec='+ lamviec
+      +'&socchn='+ socchn+'&dotgianhap='+ dotgianhap+'&diachi='+ diachi+'&tinhtrang='+ tinhtrang+'&dangvien='+ dangvien
+      +'&ngoaingu='+ ngoaingu+'&phanloai='+'&sapxep='+'&sothels='+ sothels+'&dottapsu='+ dottapsu+'&xoaten='+ xoaten;
+      $("#downloadUrl").attr("href", "<?php echo $this->BaseUrl?>/default/report/searchcustomerexportexcel"+dataString);
+      dataTable.ajax.url( '<?php echo $this->BaseUrl?>/default/report/listcustomerdatatable'+dataString).load();
+    
+    });   
+
+    // $('.xuat-excel').on('click', function(e){     
+
+    //     e.preventDefault();
+
+    //     var form = this;
+
+    //     var rows_selected = dataTable.column(0).checkboxes.selected();
+
+    //     // Iterate over all selected checkboxes
+
+    //     var listIds = [];
+    //     $.each(rows_selected, function(index, rowId){
+    //       //console.log(rowId);
+    //       listIds.push(rowId);        
+    //     });
+
+    //     //if(listIds != null && listIds.length > 0 ){
+    //       // console.log("lenght"+listIds.length);
+    //       // $("#law_ids").val(listIds);
+    //       // $("#type").val('notien');
+    //       // $("#model-warning").modal("show");
+    //     //}else{
+    //       console.log("lenght"+listIds.length);
+    //       //$(".model-body").text("Chọn LS trước khi xóa tên");
+    //       //$("#model-warning").modal("show");
+    //     //}
+
+
+    // });
+    
+});
+</script>
+
+
+<div id="content">
+  <div id="content-header">
+    <div id="breadcrumb"> <a href="#" title="Trang chủ" class="tip-bottom"><i class="icon-home"></i> Trang chủ</a> <a href="#" class="current">Tìm kiếm luật sư</a> </div>
+    
+  </div>
+  
+  <div class="container-fluid">
+        <!-- <div class="widget-box"> -->
+            <!-- <div class="widget-title">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="#tab1">Danh sách LS </a></li>
+                   
+                </ul>
+            </div> -->
+            <!-- <div class="widget-content tab-content"> -->
+                <!-- <div id="tab1" class="tab-pane active"> -->
+                    <h3>Lọc - Tìm danh mục luật sư</h3>
+                    <div  style="margin-bottom:4%; " > 
+			<form method="post" id="filtertable" action="">
+			 <tbody>
+			<div style="background-color: #E5F6FF; border: 1px solid #41A1E1;padding:10px">
+                          <table cellpadding="2" cellspacing="0" style="font-size:13px;" width="100%">
+                            
+				 
+                                  <tr style="font-size:13px;">
+					<td style="font-weight:bold" nowrap>
+                                          Họ và lót:
+                                        </td>
+                                        <td nowrap>
+                                          <input type="text" id="hovalot" name="hovalot" placeholder="Nhập họ và lót" value="" style="font-size:13px;width:150px;float:left;valign:middle" maxlength="30" size="25">
+                                        </td>
+					<td style="font-weight:bold" nowrap>
+                                          Tên: 
+                                        </td>
+                                        <td nowrap>
+                                        <input type="text" id="ten" name="ten" placeholder="Nhập tên" value="" style="font-size:13px;width:100px;float:left;valign:middle"  maxlength="10" size="10">
+                                        </td>
+					<td style="font-weight:bold" nowrap>
+                                          Giới tính: 
+                                        </td>
+                                        <td valign="middle">      
+                                            <select id="gioitinh" name="gioitinh" style="font-size:13px; width:100px; float:left;valign:middle">
+                                                <option value="all">Tất cả</option>
+                                                <option value="nam">Nam</option>
+                                                <option value="nu">Nữ</option>
+                                            </select>
+                                        </td>
+					<td style="font-weight:bold" nowrap>
+                                           Ngày sinh từ ngày: 
+                                        </td>
+                                        <td>
+                                               <div id="sinhtu"  data-date="10/20/2018" class="input-append date datepicker-start1">
+                                                <input id="startdate" name="startdate" type="text" data-date-format="mm-dd-yyyy" class="span2" maxlength="10" size="10" style="font-size:13px;width:80px;">
+                                                <span class="add-on"><i class="icon-th"></i></span>
+                                            </div>
+                                        </td>
+					<td style="font-weight:bold" nowrap>
+                                           đến ngày: 
+                                        </td>
+                                        <td>                                           
+                                            <div id="sinhden"  data-date="10/20/2018" class="input-append date datepicker-end1">
+                                                <input id="enddate" name="enddate" type="text" data-date-format="mm-dd-yyyy" class="span2" maxlength="10" size="10" style="font-size:13px;width:80px;">
+                                                <span class="add-on"><i class="icon-th"></i></span>
+                                            </div>
+                                        </td>
+					
+
+                                    </tr>
+                                    <tr>
+					<td style="font-weight:bold" nowrap>
+                                           Số CMND:  
+                                        </td>
+                                        <td>
+                                        <input type="text" id="cmnd" name="cmnd" placeholder="Số CMND" value="" maxlength="12" size="12" style="font-size:13px;width:100px;">
+                                        </td>
+					<td style="font-weight:bold" nowrap>
+                                           Thà̀nh viên:
+                                        </td>
+                                        <td>    
+                                            <select name="thanhvien" id="thanhvien" style="font-size:13px;width:150px;">
+                                                 <option value="all">Tất cả</option>
+                                                <option value="1">Luật Sư</option>
+                                                <option value="0">Tập Sự</option>                                             
+                                            </select>
+                                        </td>
+					<td style="font-weight:bold">
+                                           Nơi sinh: 
+                                        </td>
+                                        <td>
+                                          
+                                          <select name="noisinh" id="noisinh" style="width: 150px">
+                                                 <option class="span8" value="all">Toàn quốc</option>
+                                                <?php  
+                                                  foreach ($this->cities as $city) {
+                                                      echo '<option value="'.$city['city_id'].'" class="span8">'.$city['city_name'].'</option>';
+                                                  }
+                                                ?>                                               
+                                            </select>
+                                        </td>
+					<td style="font-weight:bold">
+                                        Trình độ HV :   <br>                            
+                                         
+                                        </td>
+                                        <td style="font-weight:bold">
+                                                                  
+                                            <input type="text" id="trinhdohv" name="trinhdohv" placeholder="Vui lòng nhập trình độ HV" value="" style="font-size:13px;width:150px;float:left;valign:middle" maxlength="30">
+                                        </td>
+					<td style="font-weight:bold">
+                                            Thường trú
+                                        </td>
+                                        <td>     
+                                            <select name="thuongtru" id="thuongtru" style="width: 150px">
+                                            <option class="span8" value="all">Toàn quốc</option>
+                                                <?php  
+                                                  foreach ($this->cities as $city) {
+                                                      echo '<option value="'.$city['city_name'].'" class="span8">'.$city['city_name'].'</option>';
+                                                  }
+                                                ?>                                                
+                                            </select>
+                                        </td>
+					
+
+                                    </tr>
+                                    <tr>
+					
+					<td style="font-weight:bold">
+                                           Làm việc:  
+                                        </td>
+
+                                        <td>
+                                             
+                                             <select name="lamviec" id="lamviec" style="width: 150px">
+                                              <option class="span8" value="all">Toàn quốc</option>
+                                                <?php  
+                                                  foreach ($this->cities as $city) {
+                                                      echo '<option value="'.$city['city_name'].'" class="span8">'.$city['city_name'].'</option>';
+                                                  }
+                                                ?>                                                  
+                                            </select>
+                                        </td>
+					<td style="font-weight:bold">
+                                           Số CCHN: 
+                                        </td>
+                                        <td>
+                                          <input type="text" id="socchn" name="socchn" placeholder="Số CCHN" value="" style="font-size:13px;width:100px;">
+                                        </td>
+					<td style="font-weight:bold">
+                                           Số thẻ LS: 
+                                        </td>
+                                        <td>
+                                         <input type="text" id="sothels" name="sothels" placeholder="Số thẻ LS" value="" style="font-size:13px;width:100px;">
+                                        </td>
+					<td style="font-weight:bold">
+                                           Đợi gia nhập:  
+                                        </td>
+                                        <td> 
+                                         <input type="text" id="dotgianhap" name="dotgianhap" placeholder="Đợt gia nhập" value="" style="font-size:13px;width:100px;">
+                                        </td>
+                                        </td>
+					<td style="font-weight:bold">
+                                           Đợi tập sự:  
+                                        </td>
+                                        <td> 
+                                         <input type="text" id="dottapsu" name="dottapsu" placeholder="Đợt tập sự" value="" style="font-size:13px;width:100px;">
+                                        </td>					
+                                    </tr>
+                                    <tr>
+                                    <td style="font-weight:bold">
+                                          Địa chỉ:   
+                                        </td>
+                                        <td>
+                                        <input type="text" id="diachi" name="diachi" placeholder="Địa chỉ" value="" style="font-size:13px;width:150px;">
+                                        </td>
+					<td style="font-weight:bold">
+                                           Địa chỉ liên hệ:
+                                        </td>
+                                        <td>
+                                        
+                                            <select name="diachilienhe" id="diachilienhe" style="width: 150px">
+                                                <option  class="span8" value="all">Toàn quốc</option>
+                                                <?php  
+                                                  foreach ($this->cities as $city) {
+                                                      echo '<option value="'.$city['city_name'].'" class="span8">'.$city['city_name'].'</option>';
+                                                  }
+                                                ?>  
+                                                                                                
+                                            </select>
+                                        </td>
+					<td style="font-weight:bold">
+                                           Tình trạng:  
+                                        </td>
+                                        <td>
+                                          
+                                          <select name="tinhtrang" id="tinhtrang" style="width: 150px">
+                                              <?php
+                                                     echo '<option value="0" class="span8">Tất cả</option>';
+                                                    foreach ($this->lawStatus as $co) {
+                                                      //if($cat['category_fee_lawyer_id'] == 1){
+                                                        echo '<option value="'.$co['lawstatus_id'].'" class="span8">'.$co['lawstatus_name'].'</option>';
+                                                      //}
+                                                  }
+                                                ?>                                              
+                                            </select>
+                                        </td>
+                                        </td>
+					<td style="font-weight:bold">
+                                           Xóa tên:  
+                                        </td>
+                                        <td>
+                                          
+                                          <select name="xoaten" id="xoaten" style="width: 150px">                                           
+                                                    <option value="0" class="span8">Tất cả</option>;  
+                                                    <option value="1" class="span8">Do kỉ luật</option>;   
+                                                    <option value="2" class="span8">Do nợ đoàn phí</option>;                                                                                 
+                                            </select>
+                                        </td>
+
+					<td style="font-weight:bold">
+                                            Đảng viên:  
+                                        </td>
+                                        <td>
+                                       
+                                            <select name="dangvien" id="dangvien" style="width: 150px">
+                                                 <option value="all">Tất cả</option>
+                                                <!--<option value="nam">Nam</option>
+                                                <option value="nu">Nữ</option>   -->
+                                            </select>
+                                        </td>				
+					<!--<td style="font-weight:bold">
+                                           Phân loại:  
+                                        </td>
+                                        <td>
+                                          
+                                            <select name="phanloai" id="phanloai" style="width: 150px">
+                                                <option value="all">Tất cả</option>
+                                                <option value="luatsu">Luật Sư</option>
+                                                <option value="tapsu">Tập Sự</option>
+                                            </select>
+                                        </td>-->
+					<!--
+					<td>
+                                           Sắp xếp theo: 
+                                        </td>
+                                        <td>
+                                          
+                                            <select name="sapxep" id="sapxep" style="width: 150px">
+                                                <option value="ten">Tên</option>
+                                                <option value="nam">Nam</option>
+                                                <option value="nu">Nữ</option>   
+                                            </select>
+                                        </td> -->
+                                    </tr>
+                                    <tr>
+                                      <td style="font-weight:bold">
+                                           Ngoại ngữ:  
+                                        </td>
+                                        <td>
+                                          
+                                            <select name="ngoaingu" id="ngoaingu" style="width: 160px">
+                                            <option class="span8" value="all">Tất cả</option>
+                                              <?php
+                                                  foreach ($this->languages as $la) {                                                      
+                                                        echo '<option value="'.$la['language_id'].'" class="span8">'.$la['language_name'].'</option>';                                                     
+                                                  }
+                                                ?>                                                
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr height="50">
+                                      <td colspan="2">
+                                        
+                                      </td>
+				      <td colspan="4">
+					<button type="submit" class="btn" style="font-weight:bold; background-color:#99F2FA">Lọc dữ liệu</button>
+                                        <!-- <input type="submit" name="sbsearch" value="   Lọc dữ liệu   "> -->
+					&nbsp;<button type="reset" class="btn" style="font-weight:bold;background-color:#99F2FA">Nhập lại</button>
+                                        &nbsp;<a id="downloadUrl" href=""><button type="button" class="btn xuat-excel" style="font-weight:bold; background-color:#99F2FA">Xuất Excel</button></a>
+                                      </td>
+                                    </tr>
+			
+                            
+                          </table>
+			</div>
+			</tbody>
+                        </form>
+			
+                        <br>
+                        <br>
+
+                      <!--  Xuất file : <a id="downloadUrl" href=""><img src="<?php echo $this->BaseUrl?>/files/images/ico_excel.gif" border="0"></a>-->
+
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span12">
+                          <table id="employee-grid" class="table table-bordered"  cellpadding="0" cellspacing="0" border="0" class="display" width="100%">
+                                <thead>
+                                  <tr>
+                                      <th></th>
+                                      <!--<th>STT</th>-->
+                                      <th>Họ Tên </th>
+                                      <th>Năm sinh</th>                                     
+                                      <th>Số CMND</th>
+                                      <th>Đợt tập sự</th> 
+                                      <th>Đợt gia nhập</th>                                      
+                                      <th>Số thẻ LS</th>                                      
+                                      <th>Ngày cấp thẻ LS</th>  
+                                      <th>Số CCHN</th>                                  
+                                      <th>Ngày cấp số CCHN</th>                             
+                                      <th>Địa chỉ thường trú</th>
+                                      <th>Nơi ở hiện tại</th>  
+                                      <th>Số điện thoại (di động)</th>
+                                      <th>Email</th>
+                                      <th>Phí tập sự</th>
+                                      <th>Phí gia nhập</th>  
+                                      <th>Phí thành viên ( đóng tới tháng)</th>           
+                                  </tr>
+                                </thead>
+                          </table>
+                        </div>
+                    </div>  
+                <!-- </div>
+            </div>                             -->
+        <!-- </div> -->
+
+
+  
+  </div>
+</div>

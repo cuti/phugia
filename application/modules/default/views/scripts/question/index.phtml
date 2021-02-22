@@ -1,0 +1,92 @@
+
+<script>
+$(document).ready(function(){
+    $("#search").hide();
+  $(".searchfield").hide();
+  
+});
+
+function anwersQuestion($id){    
+  var dataString = '?id='+ $id;
+  $.ajax({
+      type: "GET",
+      url: "<?php echo $this->BaseUrl?>/default/question/detail"+dataString ,
+      cache: false,
+      success: function(html)
+      { 
+        //alert(html);
+        $("#content-detail").html(html);
+        $("#model-warning").modal('show');
+      }
+  });
+}
+</script>
+<div id="content">
+  <div id="content-header">
+    <div id="breadcrumb"> <a href="#" title="Trang chủ" class="tip-bottom"><i class="icon-home"></i> Trang chủ</a> <a href="#" class="current">Danh sách câu hỏi</a> </div>
+    <h1>Danh sách câu hỏi</h1>
+  </div>
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <div class="span12">
+        <div class="widget-box">
+          <div class="widget-title">
+             <span class="icon"><i class="icon-th"></i></span> 
+            <h5>Danh sách câu hỏi</h5>
+          </div>
+          <div class="widget-content nopadding">
+            <table class="table table-bordered data-table">
+              <thead>
+                <tr>
+                  <th>Câu hỏi</th>
+                  <th>Họ tên người hỏi</th>
+                  <th>Số điện thoại</th>    
+                  <th>Hành động</th>              
+                </tr>
+              </thead>
+              <tbody>       
+                <?php  
+                      if($this->questions != null && sizeof($this->questions)>0){
+                          foreach ($this->questions as $q) {
+
+                           echo ' <tr class="gradeC">'.
+                           '<td>'.$q['question_content'].'</td>'.  
+                            '<td>'.$q['cus_firstname'].' '.$q['cus_lastname'].'</td>'.
+                            '<td>'.$q['cus_cellphone'].'</td>'.                                                      
+                             '<td>'.'<button data-toggle="tooltip" title="Trả lời" onClick="anwersQuestion('.$q['question_id'].');"><i class="icon-envelope"></i></button>'.' '. 
+                            '</tr>';                          
+                          
+                          }  
+                      }
+
+                  ?>
+              </tbody>
+            </table>
+          </div>
+        </div>        
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="model-warning" class="modal fade"  data-backdrop="static">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h5 class="modal-title" id="exampleModalLabel">Trả lời câu hỏi<:/h5>        
+      </div>
+        
+        <div class="modal-body">           
+            <div id="content-detail">
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary close-modal" data-dismiss="modal">Đóng</button>
+        </div>
+      
+    </div>
+  </div>
+</div>

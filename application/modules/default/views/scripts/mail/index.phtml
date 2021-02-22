@@ -1,0 +1,86 @@
+<script>
+  $("#search").hide();
+  $(".searchfield").hide();
+</script>
+<div id="content">
+    <div id="content-header">
+        <div id="breadcrumb">
+            <a href="#" title="Trang chủ" class="tip-bottom"><i class="icon-home"></i></a>
+            <a href="#" class="current">Sms</a>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a id="internship" data-toggle="tab" href="#tab1">Danh sách mail</a></li>
+                    </ul>
+                </div>
+                <div class="widget-content tab-content">
+                    <div id="tab1" class="tab-pane active ">
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="widget-box">
+                                    <div class="widget-title">
+                                        <span class="icon"><i class="icon-th"></i></span>
+                                        <h5>Danh sách email đã gửi</h5>
+                                    </div>
+                                    <div class="widget-content nopadding">
+                                        <table class="table table-bordered data-table">
+                                            <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Tên người nhận</th>
+                                                <th>Email</th>
+                                                <th>Nội dung tin nhắn</th>
+                                                <th>Trạng thái</th>
+                                                <th>Ngày gửi</th>
+                                                <th>Kiểu gửi</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="table-lawyer">
+                                            <?php if(count($this->mail)) { ?>
+                                                <?php foreach ($this->mail as $index => $value) { ?>
+                                                    <tr class="gradeC">
+                                                        <td><?= $index + 1 ?></td>
+                                                        <?php
+                                                        if(!empty($value->person_id)) {
+                                                            $personModel = new Default_Model_PersonSms();
+                                                            $person = $personModel->fetchRow('person_id = '. $value->person_id)
+                                                            ?>
+                                                            <td><?= $person->person_name ?></td>
+                                                            <td><?= $person->person_email ?></td>
+                                                            <?php
+                                                        } else {
+                                                            $customerModel = new Default_Model_Customers();
+                                                            $customer = $customerModel->fetchRow('cus_id = ' . $value->customer_id);
+                                                            ?>
+                                                            <td><?= $customer->cus_fullname ?></td>
+                                                            <td><?= $customer->cus_email ?></td>
+                                                        <?php } ?>
+                                                        <td><?= $value->mail_subject ?></td>
+                                                        <td><?= ($value->mail_status == 1 ? 'Thành Công' : 'Thất Bại') ?></td>
+                                                        <td><?= $value->mail_datesend ?></td>
+                                                        <td><?= ($value->mail_type == 1 ? 'GROUP' : 'PERSON') ?></td>
+                                                    </tr>
+                                                <?php } ?>
+                                            <?php } else { ?>
+                                                <tr class="gradeC">
+                                                    <td>Không có dữ liệu</td>
+                                                </tr>
+                                            <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

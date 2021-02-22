@@ -1,0 +1,90 @@
+
+<script>
+$(document).ready(function(){
+
+    $("#form-edit").validate({     
+            rules:{
+                // law_code:{
+                // required:true
+                // },
+                // law_certfication_no:{
+                // required:true
+                // }
+            },
+            errorClass: "help-inline",
+            errorElement: "span",
+            highlight:function(element, errorClass, validClass) {
+                $(element).parents('.control-group').addClass('error');
+            },
+            unhighlight: function(element, errorClass, validClass) {
+                $(element).parents('.control-group').removeClass('error');
+                $(element).parents('.control-group').addClass('success');
+            },
+            messages: {
+                //cus_cellphone: "Vui lòng nhập số điện thoại !",
+                // cus_identity_card: "Vui lòng nhập số CMND !",
+                law_code: "Vui lòng nhập mã luật sư !",
+                law_certfication_no: "Vui lòng nhập số chứng chỉ !",
+            },
+            submitHandler: function(form,e) {
+                console.log('Form submitted');
+                $.ajax({
+                      type: "POST",
+                      url: "<?php echo $this->BaseUrl?>/default/categorytraining/update/",
+                      data: $('#form-edit').serialize() ,
+                      cache: false,
+                      success: function(html)
+                      {   
+                        $("#message").html("Cập nhật chủ đề thành công");
+                        //alert("Cập nhật chủ đề thành công");
+                        //$(".message-success").show();
+                        // $("#message").html(html);
+                        // $("#model-warning").modal("show");                                    
+                      }
+                });
+                return false;                       
+            }
+        });
+});  
+
+</script>
+<form id="form-edit" class="form-horizontal">
+              <p id="message"></p>
+              <input type="hidden" name="cat_train_id" value="<?php echo $this->categorydata['cat_train_id']; ?>" /> 
+              <div class="control-group">
+                    <label class="control-label">Tên người: </label>
+                    <div class="controls">
+                        <input type="text" disabled class="span2" name="cat_train_name" id="cat_train_name" value="<?php echo $this->categorydata['cat_train_name']; ?>">
+                    </div>
+              </div>
+
+              <div class="control-group">        
+                    <label class="control-label">Mã số chứng chỉ:</label>
+                    <div class="controls">
+                    <input type="text" disabled value="<?php echo $this->categorydata['cat_train_quantity']; ?>" id="cat_train_quantity"  name="cat_train_quantity" class="span2" placeholder="Vui lòng nhập mã số chứng chỉ" />
+                    </div>
+                </div>  
+
+              <label class="control-label">Trạng thái chủ đề</label>
+                <div class="controls">
+                    <div class="row-fluid">
+                        <div class="span3">
+                        <label>                            
+                            <input type="radio" name="cat_train_active" value="1" <?php echo ($this->categorydata['cat_train_active'] == 1) ? 'checked' :'' ?>/>
+                    Hoạt động</label>
+                        </div>
+                        <div class="span6">
+                            <label>
+                            <input type="radio" name="cat_train_active" value="0" <?php echo ($this->categorydata['cat_train_active'] == 0) ? 'checked' :'' ?>/>
+                            Ngưng hoạt động</label> 
+                        </div>
+                    </div>                                               
+                </div>  
+             
+
+             
+              <!-- <div class="form-actions"> -->
+                <button style="float: right;" type="submit" class="btn">Lưu</button>
+              <!-- </div> -->
+            </form>
+         

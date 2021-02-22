@@ -1,0 +1,52 @@
+<div id="header">
+  <h1><a href="dashboard.html">Maruti Admin</a></h1>
+</div>
+<!--close-Header-part--> 
+
+<!--top-Header-messaages-->
+<div class="btn-group rightzero"> <a class="top_message tip-left" title="Manage Files"><i class="icon-file"></i></a> <a class="top_message tip-bottom" title="Manage Users"><i class="icon-user"></i></a> <a class="top_message tip-bottom" title="Manage Comments"><i class="icon-comment"></i><span class="label label-important">5</span></a> <a class="top_message tip-bottom" title="Manage Orders"><i class="icon-shopping-cart"></i></a> </div>
+<!--close-top-Header-messaages--> 
+
+<!--top-Header-menu-->
+<div id="user-nav" class="navbar navbar-inverse">
+  <ul class="nav">
+    <li class=""><span class="login-name" class="text">Xin chào <?php echo $_SESSION['username']; ?></span></li>
+    <li class=""><a title="" href="<?php echo $this->BaseUrl?>/default/header/logout"><i class="icon icon-share-alt"></i> <span class="text">Thoát</span></a></li>
+  </ul>
+</div>
+<div id="search"> 
+  <input type="text" id="search-global" placeholder="Nhập số điện thoại hoặc CMND ..." onfocus="this.placeholder = ''" onblur="this.placeholder = 'Nhập số điện thoại hoặc CMND ...'" style="width:275px;"/>
+  <button type="submit" class="tip-left" title="Search"><i class="icon-search icon-white"></i></button>
+  <div id="display-content-search-global"></div>
+</div>
+<div class="searchfield" id="search" style="margin-right: -1%;margin-top: 3px;width: 20%;"> 
+  <span> 
+      <select id="search-field">
+        <option value="name">Tìm theo tên Luật Sư</option>    
+        <option value="cellphone">Tìm theo SĐT Di Động</option>        
+        <option value="identity_card">Tìm theo CMND</option>      
+        <option value="lawyer_number">Tìm theo Số thẻ Luật Sư</option>  
+      </select>
+ </span>
+</div>
+<!--close-top-Header-menu-->
+<div id="sidebar"><a href="<?php echo $this->BaseUrl?>/index" class="visible-phone"><i class="icon icon-home"></i> Dashboard</a>
+  <ul>
+  <li class="active"><a href="<?php echo $this->BaseUrl?>/index"><i class="icon icon-home"></i> <span></span></a> </li>
+  <?php
+  
+  //   foreach ($this->menu as $module) {
+  //     $s = '';
+  //        //echo $this->BaseUrl;
+  //         $mod =($this->controller==$module['module_controller'])?'active':'';    
+          
+  //         $s .='<li><a href="'.$this->BaseUrl.'/'.$module['module_controller'].'" class="'.$mod.'">'.'<i class="icon"></i> <span>'.$module['module_name'].'</span>'.'</a></li>';
+  //         echo 			$s;	
+  //         // <li class="active"><a href="index.html"><i class="icon"></i> <span>Dashboard</span></a> </li>
+
+  // }
+
+    echo $this->s;
+  ?>
+  </ul>
+</div>

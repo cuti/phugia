@@ -1,0 +1,1004 @@
+<script>
+$(document).ready(function(){
+    
+	$('input[type=checkbox],input[type=radio],input[type=file]').uniform();
+  
+  $('select').select2();
+    var date = new Date();
+    var today = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+      $("#search").hide();
+  $(".searchfield").hide();
+    
+    $(".message-success").hide();
+
+    $("#model-warning").modal('hide');
+
+   var validator = $("#customer_form").validate({     
+          rules:{
+            organ_name:{
+              required:true
+            },
+            organ_mobile:{
+              required:true
+            },
+            total_law:{
+              required:true
+            },
+            total_law_native:{
+              required:true
+            },
+            total_law_foreign:{
+              required:true
+            },
+            total_job_done:{
+              required:true
+            },
+            total_procedure:{
+              required:true
+            },
+            total_criminal:{
+              required:true
+            },
+            total_support_service:{
+              required:true
+            },
+            total_support:{
+              required:true 
+            },
+            amount:{
+              required:true  
+            },
+            amount_charge:{
+              required:true 
+            },
+            organ_email:{
+              required:true,
+              email: true
+            }            
+          },
+          errorClass: "help-inline",
+          errorElement: "span",
+          highlight:function(element, errorClass, validClass) {
+            $(element).parents('.control-group').addClass('error');
+          },
+          unhighlight: function(element, errorClass, validClass) {
+            $(element).parents('.control-group').removeClass('error');
+            $(element).parents('.control-group').addClass('success');
+          },
+          messages: {
+            organ_name: "Nhập tên tổ chức hành nghề LS !",
+            total_law: "Nhập tổng số LS của tổ chức!",
+            total_law_native: "Nhập số LS trong nước !",
+            total_law_foreign: "Nhập số LS nước ngoài!",
+            total_job_done : "Nhập tổng số việc!",
+            total_procedure :"Nhập tổng số việc tố tụng!",
+            total_criminal: "Nhập tổng số việc hình sự!",
+            total_support_service:"Nhập tổng số việc tư vấn và dịch vụ pháp lý!",
+            total_support:"Nhập tổng số việc trợ giúp!",
+            amount:"Nhập tống số doanh thu!",
+            amount_charge:"Nhập số tiền nộp thuế!",
+            organ_mobile: " Nhập số điện thoại!",          
+            organ_email: "Vui lòng nhập email !"
+          },
+          submitHandler: function(form,e) {
+             console.log('Form submitted');
+              $.ajax({
+                  type: "POST",
+                  url: "<?php echo $this->BaseUrl?>/default/organization/create/",
+                  data: $('#customer_form').serialize() ,
+                  cache: false,
+                  success: function(html)
+                  {   
+                    //alert(html);
+                    $(".modal-body").html(html);
+                    $("#model-warning").modal("show");
+                    $(".message-success").show();
+                                
+                  }
+            });
+            return false;                       
+        }
+	});
+
+  $(".cancel").click(function() {
+      validator.resetForm();
+  });
+
+
+
+  $("#customer_form3").validate({     
+          rules:{
+            // organ_name:{
+            //   required:true
+            // },
+            // organ_mobile:{
+            //   required:true
+            // },
+            total_law:{
+              required:true
+            },
+            total_law_native:{
+              required:true
+            },
+            total_law_foreign:{
+              required:true
+            },
+            total_job_done:{
+              required:true
+            },
+            total_procedure:{
+              required:true
+            },
+            total_criminal:{
+              required:true
+            },
+            total_support_service:{
+              required:true
+            },
+            total_support:{
+              required:true 
+            },
+            amount:{
+              required:true  
+            },
+            amount_charge:{
+              required:true 
+            }
+            // ,
+            // organ_email:{
+            //   required:true,
+            //   email: true
+            // }            
+          },
+          errorClass: "help-inline",
+          errorElement: "span",
+          highlight:function(element, errorClass, validClass) {
+            $(element).parents('.control-group').addClass('error');
+          },
+          unhighlight: function(element, errorClass, validClass) {
+            $(element).parents('.control-group').removeClass('error');
+            $(element).parents('.control-group').addClass('success');
+          },
+          messages: {
+            organ_name: "Nhập tên tổ chức hành nghề LS !",
+            total_law: "Nhập tổng số LS của tổ chức!",
+            total_law_native: "Nhập số LS trong nước !",
+            total_law_foreign: "Nhập số LS nước ngoài!",
+            total_job_done : "Nhập tổng số việc!",
+            total_procedure :"Nhập tổng số việc tố tụng!",
+            total_criminal: "Nhập tổng số việc hình sự!",
+            total_support_service:"Nhập tổng số việc tư vấn và dịch vụ pháp lý!",
+            total_support:"Nhập tổng số việc trợ giúp!",
+            amount:"Nhập tống số doanh thu!",
+            amount_charge:"Nhập số tiền nộp thuế!",
+            // organ_mobile: " Nhập số điện thoại!",          
+            // organ_email: "Vui lòng nhập email !"
+          },
+          submitHandler: function(form,e) {
+             console.log('Form submitted');
+              $.ajax({
+                  type: "POST",
+                  url: "<?php echo $this->BaseUrl?>/default/organization/addinformation/",
+                  data: $('#customer_form3').serialize() ,
+                  cache: false,
+                  success: function(html)
+                  {   
+                    //alert(html);
+                    $(".modal-body").html(html);
+                    $("#model-warning").modal("show");
+                    $(".message-success").show();
+                                
+                  }
+            });
+            return false;                       
+        }
+	});
+
+  $('.datepicker-ngaysinh').datepicker({ format: 'dd/mm/yyyy' }); 
+  $('.datepicker-ngaysinh').datepicker(   
+    'setValue', today
+  );
+
+  $('.datepicker-ngaycap').datepicker({ format: 'dd/mm/yyyy' }); 
+  $('.datepicker-ngaycap').datepicker(   
+    'setValue', today
+  );
+
+  $('.datepicker-gianhap').datepicker({ format: 'dd/mm/yyyy' }); 
+  $('.datepicker-gianhap').datepicker(   
+    'setValue', today
+  );
+
+  $("#law_nation").val('Việt Nam');
+
+  $("#customer_form2").validate({     
+          rules:{
+            law_name:{
+              required:true
+            },
+            law_birthday:{
+              required:true
+            },
+            organ_law_id:{
+              required:true
+            },
+            law_nation:{
+              required:true
+            },
+            law_certification:{
+              required:true
+            },
+            law_certification_date:{
+              required:true
+            },
+            law_joining_organ_date:{
+              required:true
+            }
+          },
+          errorClass: "help-inline",
+          errorElement: "span",
+          highlight:function(element, errorClass, validClass) {
+            $(element).parents('.control-group').addClass('error');
+          },
+          unhighlight: function(element, errorClass, validClass) {
+            $(element).parents('.control-group').removeClass('error');
+            $(element).parents('.control-group').addClass('success');
+          },
+          messages: {
+            law_name: "Nhập tên LS !",
+            law_nation: "Nhập quốc tịch!",
+            law_certification: "Nhập số chứng chỉ LS !"          
+          },
+          submitHandler: function(form,e) {
+             console.log('Form submitted');
+             console.log($('#customer_form2').serialize());
+              $.ajax({
+                  type: "POST",
+                  url: "<?php echo $this->BaseUrl?>/default/organization/addlawyer/",
+                  data: $('#customer_form2').serialize() ,
+                  cache: false,
+                  success: function(html)
+                  {   
+                    //alert(html);
+                    $(".modal-body").html(html);
+                    $("#model-warning").modal("show");
+                    $(".message-success").show();
+                                
+                  }
+            });
+            return false;                       
+        }
+	});
+
+    // $("form input[type=submit]").click(function() {
+    //     $("input[type=submit]", $(this).parents("form")).removeAttr("clicked");
+    //     $(this).attr("clicked", "true");
+    // });
+  //tab 3
+
+  var searchText = $("#txtsearch").val();
+  var type = $("#type_search").val();
+
+  var dataString = '?search='+ searchText + '&type='+type;
+  
+  var dataTable = $('#employee-grid').DataTable( {
+    "language": {
+            "lengthMenu": "Hiển thị _MENU_ dòng trên trang",
+            "zeroRecords": "Không tìm thấy",
+            "info": "Hiển thị trang _PAGE_ of _PAGES_",
+            "infoEmpty": "Không có dữ liệu thích hợp",
+            "infoFiltered": "(lọc từ _MAX_ tổng số kết quả)",
+            "paginate": {
+                "first":      "Đầu",
+                "last":       "Cuối",
+                "next":       "Tới",
+                "previous":   "Sau"
+            }
+        },
+		"processing": true,
+    "serverSide": true,
+    "searching": false,
+    "aLengthMenu": [[10, 50, 75, -1], [10, 50, 75, "All"]],
+        "iDisplayLength": 10,
+    "ajax":{
+      url :"<?php echo $this->BaseUrl?>/default/organization/listorgandatatablefilter"+dataString, // json datasource
+      type: "post",  // method  , by default get
+      // done:function(){
+      //   $("#downloadUrl").attr("href", "<?php echo $this->BaseUrl?>/default/categorytraining/listtest"+dataString);
+      // },
+      error: function(){  // error handling
+        $(".employee-grid-error").html("");
+        $("#employee-grid").append('<tbody class="employee-grid-error"><tr><th colspan="3">Không tìm thấy kết quả</th></tr></tbody>');
+        $("#employee-grid_processing").css("display","none");
+        
+      }
+    // } ,
+    // 'columnDefs': [
+    //      {
+    //         'targets': 0,
+    //         'checkboxes': {
+    //            'selectRow': true
+    //         }
+    //      }
+    //   ],
+    //   'select': {
+    //      'style': 'multi'
+    //   },
+    },columns:
+       [{
+              data: null,
+              render: function (data, type, row) {
+                  var id = row.organ_detail_id;
+                  //var deleted_online = row.deleted_online;
+                  //var status = row.cus_status;
+                  return '<button data-toggle="tooltip" title="Chỉnh sửa" onClick="loadDetailOrgan('+id+');"><i class="icon-edit"></i></button> ';
+                  // + 
+                  //            '<button data-toggle="tooltip" title="Khóa tài tài khoản" onClick="lockUser('+id+','+status+');"><i class="icon-lock"></i></button> '+    
+                  //            '<button data-toggle="tooltip" title="Khóa tài tài khoản trực tuyến" onClick="lockUserOnline('+id+','+deleted_online+');"><i class="icon-remove"></i></button>';
+                
+              }
+          },        
+          {data: 'organ_name'},
+          {data: 'organ_certification'},
+          {data: 'organ_certification_date'},
+          {data: 'organ_mobile'},
+          {data: 'law_organ_address'},
+          {data: 'law_organ_address_hktt'},
+          {data: 'organ_email'},
+          {data: 'district'},
+          {data: 'cus_fullname'},
+          {data: 'cus_lawyer_number'},
+          {data: 'law_certfication_no'},
+          {data: 'thongtin_thaydoi'},
+          {data: 'ngaycapnhat'}
+           
+      ]
+    
+  } );
+
+  $('#searchvpls').on('click',function(){
+
+  });
+
+  $('.checkin').on('click', function(e){
+
+      $("#model-warning").addClass('modal');
+      $("#model-warning").modal("show");
+
+      e.preventDefault();
+
+      var form = this;
+
+      var rows_selected = dataTable.column(0).checkboxes.selected();
+
+      // Iterate over all selected checkboxes
+
+      var listIds = [];
+      $.each(rows_selected, function(index, rowId){
+        listIds.push(rowId);      
+      });    
+      $("#organ_lid").val(listIds);
+
+      console.log(listIds);
+      if(listIds.length <= 0){
+            $(".modal-body").text('Bạn phải chọn TCHN trước khi chỉnh sửa.');
+            $("#model-warning").modal('show');
+      }else{
+        loadDetailOrgan(parseInt(listIds[0]));
+      }  
+  });  
+
+  $('#filtertable').on('submit', function(e){
+      e.preventDefault();
+      
+      var searchText1 = $("#txtsearch").val();
+      var type = $("#type_search").val();
+     
+      var dataString1 = '?search='+ searchText1+'&type='+type;
+      dataTable.ajax.url( '<?php echo $this->BaseUrl?>/default/organization/listorgandatatablefilter'+dataString1).load();
+    
+  });
+
+ 
+
+  function isNumber(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+  }
+
+  $(function () {
+    $(":file").change(function () {
+        if (this.files && this.files[0]) {
+            var reader = new FileReader();
+            reader.onload = imageIsLoaded;
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
+});
+
+function imageIsLoaded(e) {
+    $('#image-review').attr('src', e.target.result);
+};
+
+});
+function loadDetailOrgan($id){      
+      var dataString = '?organ_detail_id='+ $id;
+         $.ajax({
+              type: "GET",
+              url: "<?php echo $this->BaseUrl?>/default/organization/detail"+dataString ,
+              cache: false,
+              success: function(html)
+              { 
+                //alert(html);
+                $(".modal-body").html(html);
+                $("#model-warning").modal('show');
+              }
+         });  
+  }
+   
+
+</script>
+
+
+
+<div id="content">
+  <div id="content-header">
+    <div id="breadcrumb"> <a href="" title="Trang chủ" class="tip-bottom"><i class="icon-home"></i></a> <a href="#" class="current">Quản lý văn phòng luật sư</a> </div>
+    <!-- <h1>Quản lý luật sư</h1> -->
+  </div>
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <div class="alert alert-success alert-dismissible message-success">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Thông báo</strong> Bạn đã tạo thành công.
+      </div>	
+    </div>  	
+
+    <div class="widget-box">
+      <div class="widget-title">
+          <ul class="nav nav-tabs">
+              <li class="active"><a data-toggle="tab" href="#tab1">Thêm TCHN Luật Sư</a></li>
+              <li><a data-toggle="tab" href="#tab2">Quản lý luật sư của TCHN</a></li>
+              <li><a data-toggle="tab" href="#tab3">Thông tin TCHN</a></li> 
+              <li><a data-toggle="tab" href="#tab4">Chỉnh sửa thông tin TCHN</a></li>
+              <li><a data-toggle="tab" href="#tab5">Xuất danh sách TCHN</a></li>
+          </ul>
+      </div>
+      <div class="widget-content tab-content">
+          <div id="tab1" class="tab-pane active">
+            <div class="row-fluid">	  	
+                <div class="span12">		 
+                  <div class="widget-box">
+                      <div class="widget-title">
+                        <span class="icon">
+                          <i class="icon-th-list"></i>
+                        </span>
+                        <h5>Thông tin quản lý tổ chức hoạt động luật sư</h5>
+                      </div>
+                      
+                      <div class="widget-content nopadding"> 
+                        <form id="customer_form" method="post" novalidate="novalidate">
+                          <div class="row-fluid form-horizontal">                      
+                            <div class="span6">
+                                <input type="hidden" id="submittype" name="submittype" />
+
+                                <div class="control-group">
+                                  <label class="control-label">Loại TCHN * :</label>
+                                  <div class="controls">
+                                    <select name="organ_type" id="organ_type" class="span8">
+                                          <option value="VPLS">Văn Phòng Luật Sư</option>
+                                          <option value="CTY">Công ty Luật</option>
+                                          <option value="CN">Cá nhân</option>                                                
+                                    </select>	 
+                                  </div>  
+                                </div>
+
+                                <div class="control-group">
+                                  <label class="control-label">Tên TCHN * :</label>
+                                  <div class="controls">                                       
+                                    <textarea rows="4" type="text" name="organ_name" id="organ_name" class="span8" placeholder="Nhập tên tổ chức hành nghề LS" ></textarea>
+                                  </div>
+                                </div>
+
+                                <div class="control-group">
+                                  <label class="control-label">Số điện thoại TCHN * :</label>
+                                  <div class="controls">
+                                      <input type="number" name="organ_mobile" id="organ_mobile" class="span8" placeholder="Nhập số điện thoại" />
+                                  </div>
+                                </div>
+
+                                <div class="control-group">
+                                  <label class="control-label">Email TCHN * :</label>
+                                  <div class="controls">
+                                    <input type="text" name="organ_email" id="organ_email" class="span8" placeholder="Nhập email" />
+                                  </div>
+                                </div>
+
+                                <div class="control-group">
+                                  <label class="control-label">Fax TCHN * :</label>
+                                  <div class="controls">
+                                    <input type="text" name="organ_fax" id="organ_fax" class="span8" placeholder="Nhập số fax" />
+                                  </div>
+                                </div>
+
+                                <div class="control-group">
+                                  <label class="control-label">Số giấy phép* :</label>
+                                  <div class="controls">
+                                    <input type="text" name="organ_certification" id="organ_certification" class="span8" placeholder="Nhập số giấy phép" />
+                                  </div>
+                                </div>
+
+                                <div class="control-group">
+                                  <label class="control-label">Ghi chú* :</label>
+                                  <div class="controls">
+                                    <textarea name="organ_note" id="organ_note" class="span8" placeholder="Nhập ghi chú"></textarea>
+                                  </div>
+                                </div>
+                            </div>                      
+                            <div class="span6"> 
+                                  
+
+                              <div class="control-group">        
+                                <label class="control-label">Địa chỉ TCHN *:</label>
+                                <div class="controls">
+                                  <textarea type="text" rows="4" id="law_organ_address"  name="law_organ_address" class="span11" placeholder="Vui lòng nhập địa chỉ tổ chức hành nghề"></textarea>
+                                </div>
+                              </div> 
+
+                              <div class="control-group">        
+                                <label class="control-label">Địa chỉ HKTT *:</label>
+                                <div class="controls">
+                                  <textarea type="text" rows="4" id="law_organ_address_hktt"  name="law_organ_address_hktt" class="span11" placeholder="Vui lòng nhập địa chỉ hktt"></textarea>
+                                </div>
+                              </div>   
+
+                              <div class="control-group">        
+                                <label class="control-label">Quận/Huyện *:</label>
+                                <div class="controls">
+                                    <select name="district" style="width: 150px">                                     
+                                        <option value="Quận 1">Quận 1</option>
+                                        <option value="Quận 2">Quận 2</option> 
+                                        <option value="Quận 3">Quận 3</option>
+                                        <option value="Quận 4">Quận 4</option>
+                                        <option value="Quận 5">Quận 5</option>
+                                        <option value="Quận 6">Quận 6</option>
+                                        <option value="Quận 7">Quận 7</option>
+                                        <option value="Quận 8">Quận 8</option>
+                                        <option value="Quận 9">Quận 9</option>
+                                        <option value="Quận 10">Quận 10</option>
+                                        <option value="Quận 11">Quận 11</option>
+                                        <option value="Quận 12">Quận 12</option>
+                                        <option value="Quận Thử Đức">Quận Thủ Đức</option>
+                                        <option value="Quận Bình Thạnh">Quận Bình Thạn</option>
+                                        <option value="Quận Gò Vấp">Quận Gò Vấp</option>
+                                        <option value="Quận Phú Nhuận">Quận Phú Nhuận</option>
+                                        <option value="Quận Tân Phú">Quận Tân Phú</option>
+                                        <option value="Quận Bình Tân">Quận Bình Tân</option>
+                                        <option value="Quận Tân Bình">Quận Tân Bình</option>
+                                        <option value="Huyện Nhà Bè">Huyện Nhà Bè</option>
+                                        <option value="Huyện Bình Chánh">Huyện Bình Chánh</option>
+                                        <option value="Huyện Hóc Môn">Huyện Hóc Môn</option>
+                                        <option value="Huyện Củ Chi">Huyện Củ Chi</option>
+                                        <option value="Huyện Cần Giờ">Huyện Cần Giờ</option>
+                                        <option value="Khác">Khác</option>                                   
+                                    </select>	
+                                </div>
+                              </div> 
+                                      
+                              <div class="control-group">
+                                  <label class="control-label">Chọn đại diện pháp luật *:</label>
+                                  <div class="controls">                                
+                                    <select  id="law_id" name="law_id">
+                                    <?php  
+                                        foreach ($this->lawyers as $law) {
+                                            echo '<option value="'.$law['law_id'].'" >'.$law['cus_firstname'].' '.$law['cus_lastname'].' - '.$law['cus_identity_card'].'</option>';
+                                        }
+                                        ?>    
+                                    </select>
+                                  </div>
+                              </div>
+
+                              <div class="control-group">
+                                  <label class="control-label">Danh sách thành viên:</label>
+                                  <div class="controls">
+                                      <select name="customers[]" class="select2" multiple>
+                                          <?php
+                                          foreach ($this->customers as $customer) {
+                                              ?>
+                                              <option value="<?= $customer->cus_id ?>"><?= $customer->cus_fullname ?>
+                                                  - <?= $customer->cus_cellphone ?> - <?= $customer->cus_email ?></option>
+                                          <?php } ?>
+                                      </select>
+                                  </div>
+                              </div>                 
+
+                                    
+                            </div>                            
+                          </div>
+                          <div class="row-fluid">
+                              <div class="form-actions">
+                                  <div class="span4" >
+                                  </div>
+                                  <div class="span6">	       
+                                      <button type="submit" id="sumit" class="btn ">Thêm mới</button>                           
+                                      <button type="reset" class="btn cancel">Hủy bỏ</button>    
+                                  </div>
+                                  <div class="span2" >
+                                  </div>
+                              </div>  
+                          </div>                        
+                        </form>
+                      </div>
+                  </div>
+                </div>
+            </div>
+          </div>  
+          <div id="tab2" class="tab-pane">
+            <div class="row-fluid">	  	
+              <div class="span12">		 
+                <div class="widget-box">
+                    <div class="widget-title">
+                      <span class="icon">
+                        <i class="icon-th-list"></i>
+                      </span>
+                      <h5>Quản lý LS của tổ chức</h5>
+                    </div>
+                    
+                    <div class="widget-content nopadding">                    
+                      <form id="customer_form2" method="post" novalidate="novalidate">
+                        <div class="row-fluid form-horizontal">                    
+                              <div class="span6">
+                                  <!-- <input type="hidden" id="submittype" name="submittype" /> -->
+                                  
+                                  <div class="control-group">
+                                        <label class="control-label">Chọn tổ chức luật sư *:</label>
+                                          <div class="controls">                                
+                                            <select class="span11" id="organ_detail_id" name="organ_detail_id">
+                                            <?php  
+                                                foreach ($this->organizations as $org) {
+                                                    echo '<option value="'.$org['organ_detail_id'].'" class="span11">'.$org['organ_name'].'</option>';
+                                                }
+                                                ?>    
+                                            </select>
+                                        </div>
+                                  </div>                 
+                                  
+                                  <div class="control-group">
+                                    <label class="control-label">Tên nhận sự TCLS * :</label>
+                                    <div class="controls">
+                                      <select  id="law_name" name="law_name">
+                                              <?php  
+                                                  foreach ($this->lawyers as $law) {
+                                                      echo '<option value="'.$law['law_id'].'" >'.$law['cus_firstname'].' '.$law['cus_lastname'].' - '.$law['cus_identity_card'].'</option>';
+                                                  }
+                                                  ?>    
+                                      </select>
+                                      <!-- <input type="text" name="law_name" id="law_name" class="span8" placeholder="Nhập tên LS" /> -->
+                                    </div>
+                                  </div>
+
+                                    
+
+                                <!-- <div class="control-group">
+                                  <label class="control-label">Ngày sinh LS * :</label>
+                                  <div class="controls">
+                                      
+                                      <div  data-date="12-02-2012" class="input-append date datepicker-ngaysinh">
+                                        <input type="text" id="law_birthday" name="law_birthday" data-date-format="dd-mm-yyyy" class="span11" placeholder="Vui lòng chọn ngày cấp" >
+                                        <span class="add-on"><i class="icon-th"></i></span> 
+                                      </div>
+                                  </div>
+                                </div>  
+
+                                
+                                  <div class="control-group">
+                                    <label class="control-label">Quốc tịch * :</label>
+                                    <div class="controls">
+                                      <input type="text" name="law_nation" id="law_nation" class="span8" placeholder="Nhập quốc tịch" />
+                                    </div>
+                                  </div> -->
+
+                                                        
+
+                              </div>  
+                              <div class="span6">
+
+                                  <div class="control-group">
+                                    <label class="control-label">Ghi chú :</label>
+                                    <div class="controls">
+                                      <textarea cols="7" name="law_note" id="law_note" class="span11" placeholder="Ghi chú LS"></textarea>
+                                    </div>
+                                  </div>   
+                                  
+                                  <!-- <div class="control-group">
+                                  <label class="control-label">Ngày cấp số chứng chỉ LS * :</label>
+                                  <div class="controls">                                       
+                                      <div  data-date="12-02-2012" class="input-append date datepicker-ngaycap">
+                                        <input type="text" id="law_certification_date" name="law_certification_date" data-date-format="dd-mm-yyyy" class="span11" placeholder="Vui lòng chọn ngày cấp" >
+                                        <span class="add-on"><i class="icon-th"></i></span> 
+                                      </div>
+                                  </div> -->
+                                </div>  
+
+                                  <!-- <div class="control-group">
+                                  <label class="control-label">Ngày gia nhập tổ chức luật sư * :</label>
+                                  <div class="controls">                                       
+                                      <div  data-date="12-02-2012" class="input-append date datepicker-gianhap">
+                                        <input type="text" id="law_joining_organ_date" name="law_joining_organ_date" data-date-format="dd-mm-yyyy" class="span11" placeholder="Vui lòng chọn ngày cấp" >
+                                        <span class="add-on"><i class="icon-th"></i></span> 
+                                      </div>
+                                  </div>
+                                </div>                -->
+                                
+                              </div>                       
+                        </div>
+                        <div class="row-fluid">
+                          <div class="form-actions">
+                            <div class="span4" >
+                            </div>
+                            <div class="span6">	       
+                                <button type="submit" id="sumit" class="btn ">Thêm mới</button>                           
+                            </div>
+                            <div class="span2" >
+                            </div>
+                          </div>  
+                        <!-- </div> -->
+                        <!-- </div>   -->
+                      </form>
+                    </div>
+                </div>  
+              </div>                
+            </div>                                  
+          </div>
+          <div id="tab3" class="tab-pane">
+            <div class="row-fluid">                                    
+              <div class="span12">		 
+                <div class="widget-box">
+                  <div class="widget-title">
+                    <span class="icon">
+                      <i class="icon-th-list"></i>
+                    </span>
+                    <h5>Quản lý LS của tổ chức</h5>
+                  </div>
+
+                  <div class="widget-content nopadding"> 
+                    <form id="customer_form3" method="post" novalidate="novalidate">
+                      <div class="row-fluid form-horizontal"> 
+                        <div class="span6">
+                          <div class="control-group">
+                            <label class="control-label">Chọn tổ chức luật sư *:</label>
+                            <div class="controls">                                
+                                <select class="span8" id="organ_detail_id" name="organ_detail_id">
+                                <?php  
+                                    foreach ($this->organizations as $org) {
+                                        echo '<option value="'.$org['organ_detail_id'].'" class="span8">'.$org['organ_name'].'</option>';
+                                    }
+                                    ?>    
+                                </select>
+                            </div>
+                          </div>   
+
+                                    <div class="control-group">
+                                        <label class="control-label">Tổng số LS làm việc tại tổ chức * :</label>
+                                        <div class="controls">
+                                          <input type="number" name="total_law" id="total_law" class="span6" placeholder="Nhập tổng số LS" />
+                                        </div>
+                                      </div>
+
+                                      <div class="control-group">
+                                          <label class="control-label">Tổng số LS trong nước *:</label>
+                                          <div class="controls">
+                                            <input type="number" id="total_law_native" name="total_law_native" class="span7" placeholder="Nhập tổng số LS trong nước"/>
+                                          </div>
+                                      </div>  
+
+                                      <div class="control-group">
+                                          <label class="control-label">Tổng số LS nước ngoài *:</label>
+                                          <div class="controls">
+                                            <input type="number" id="total_law_foreign" name="total_law_foreign" class="span7" placeholder="Nhập tổng số LS nước ngoài"/>
+                                          </div>
+                                      </div>         
+                                      
+                                      <div class="control-group"> 
+                                          <label class="control-label">Tổng việc thực hiện xong * :</label>
+                                          <div class="controls">
+                                            <input type="number" id="total_job_done" name="total_job_done" class="span8" placeholder="Nhập tổng số việc thực hiện xong" />
+                                          </div>
+                                      </div>    
+                                </div>  
+
+                                <div class="span6">
+                                      
+
+                                      <div class="control-group"> 
+                                        <label class="control-label">Tổng số việc tố tụng *:</label>
+                                        <div class="controls">
+                                          <input type="number" id="total_procedure" name="total_procedure" class="span8" placeholder="Nhập tổng số việc tố tụng" />
+                                        </div>
+                                      </div>  
+                                      
+                                      <div class="control-group"> 
+                                        <label class="control-label">Tổng việc hình sự:</label>
+                                        <div class="controls">
+                                          <input type="number" id="total_criminal" name="total_criminal" class="span8" placeholder="Nhập tổng việc hình sự" />
+                                        </div>
+                                      </div>  
+                                
+                                      <div class="control-group">
+                                        <label class="control-label">Tổng việc tư vấn và dịch vụ pháp lý</label>
+                                        <div class="controls">
+                                          <input type="number" id="total_support_service" name="total_support_service" class="span8" placeholder="Nhập việc tư vấn và dịch vụ pháp lý"/>
+                                          <!-- <span class="help-block">Description field</span> </div> -->
+                                        </div> 
+                                      </div>  
+
+                                      <div class="control-group">
+                                        <label class="control-label">Tổng số việc hỗ trợ pháp lý * :</label>
+                                        <div class="controls">
+                                          <input type="number" name="total_support" id="total_support" class="span6" placeholder="Nhập tổng số việc hỗ trợ pháp lý" />
+                                        </div>
+                                      </div>
+                                      
+                                      <div class="control-group">
+                                          <label class="control-label">Tổng số doanh thu * :</label>
+                                          <div class="controls">
+                                            <input type="text" id="amount" name="amount"  class="span8" placeholder="Nhập tổng số doanh thu."  />
+                                          </div>
+                                      </div>    
+
+                          <div class="control-group">                
+                              <label class="control-label">Số tiền nộp thuế * :</label>
+                              <div class="controls">
+                                <input type="text" id="amount_charge" name="amount_charge" class="span8" placeholder="Nhập số tiền nộp thuế" />
+                              </div>
+                          </div>                             
+                        </div>
+                        <div class="row-fluid">
+                            <div class="form-actions">
+                              <div class="span4" >
+                              </div>
+                              <div class="span6">	       
+                                  <button type="submit" id="sumit" class="btn ">Thêm mới</button>                           
+                              </div>
+                              <div class="span2" >
+                              </div>
+                          </div>         
+                        </div>
+                      </div>  
+                    </form>
+                  </div>    
+                </div>
+              </div>      
+            </div>                                    
+          </div>
+          <div id="tab4" class="tab-pane">
+            <div class="row-fluid">      
+              <div  style="margin-bottom:4%;">  
+                <form method="post" id="filtertable" action=""> 
+                  <table cellpadding="5" cellspacing="0">
+                    <tbody>
+                      <tr>
+                          <td>
+                            Từ khóa :
+                          </td>
+                          <td>  
+                            <input type="text" id="txtsearch" name="txtsearch" placeholder="Vui lòng nhập nội dung" value="">  
+                          </td>
+                          <td>   
+                            Tìm theo : 
+                          </td>
+                          <td>   
+                            <select name="type_search" id="type_search" style="width: 250px">                                            
+                                <option value="tentchn">Tên TCHN</option>                                                       
+                                <option value="mals">Số thẻ LS quản lý TCHN</option>                                                       
+                            </select>	 
+                          </td>   
+                          <td>
+                            <input type="submit" name="sbsearch" value="   Tìm   ">           
+                          </td>
+                      </tr>
+                      <!-- <tr>
+                          <td>
+                          <button class="btn btn-primary checkin">Chỉnh sửa</button>
+                          </td>
+                      </tr>	                        						     -->
+                    </tbody>
+                  </table>                 
+                </form>  
+
+        <!-- Xuất file : <a id="downloadUrl" href=""><img src="<?php echo $this->BaseUrl?>/files/images/ico_excel.gif" border="0"></a> -->
+
+              </div>
+              <div class="row-fluid">
+                  <div class="span12">
+                    <table id="employee-grid" class="table table-bordered"  cellpadding="0" cellspacing="0" border="0" class="display" width="100%">
+                          <thead>
+                            <tr>
+                                <th>Hành động</th>    
+                                <th>Tên TCHN </th>
+                                <th>Số CNHN </th>
+                                <th>Ngày cấp </th>
+                                <th>SĐT TCHN</th>
+                                <th>Địa chỉ TCHN</th>
+                                <th>Địa chỉ </th>
+                                <th>Email TCHN</th>
+                                <th>Quận</th>                                
+                                <th>Tên LS (đại diện pháp luật)</th>
+                                <th>Số thẻ LS (đại diện pháp luật)</th>
+                                <th>Số CCHN (đại diện pháp luật)</th>
+                                <th>Thông tin thay đổi</th>  
+                                <th>Ngày cập nhật</th>                                 
+                            </tr>
+                          </thead>
+                    </table>
+                  </div>
+              </div>                                 
+ 
+            </div>                                    
+          </div>
+          <div id="tab5" class="tab-pane">
+            Xuất file : <a id="downloadUrlListOrganizations" href="<?php echo $this->BaseUrl ?>/default/organization/exportexcelorganizationdetails"><img src="<?php echo $this->BaseUrl?>/files/images/ico_excel.gif" border="0"></a>
+          </div>
+      </div>                            
+    </div>
+  </div>  
+</div>
+
+<div id="model-warning" class="modal fade"  data-backdrop="static">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Chỉnh sửa thông tin</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <!-- <form id="form-edit" class="form-horizontal">
+          <p id="message"></p> 
+          <input type="hidden" name="organ_lid" id="organ_lid" /> 
+          <input type="hidden" name="type" id="type" /> 
+          <div class="control-group">
+                <label class="control-label">Quyết định số </label>
+                <div class="controls">
+                    <input type="text" class="span3" name="document" id="document" placeholder="Vui lòng nhập quyết định xóa tên">
+                </div>
+          </div>
+          <div class="control-group">        
+                <label class="control-label">Năm xóa tên:</label>
+                <div class="controls">
+                <input type="number" id="yeardelete"  name="yeardelete" class="span3" placeholder="Vui lòng nhập năm xóa tên" />
+                </div>
+          </div>
+
+          <div class="control-group">        
+                <label class="control-label">Xóa tên</label>
+                <div class="controls">
+                    <select name="xoaten" id="xoaten" style="width: 150px">                                            
+                        <option value="xoaten">Xóa tên</option>
+                      
+                    </select>	
+                </div>
+          </div>
+
+          <div class="control-group">        
+              <label class="control-label">Ghi chú:</label>
+              <div class="controls">
+              <input type="text" id="note"  name="note" class="span3" placeholder="Vui lòng nhập ghi chú" />
+              </div>
+          </div>    
+            
+
+          
+          <div class="form-actions">
+            <button style="float: right;" type="submit" class="btn">Lưu</button>
+           </div> 
+      </form> -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+      </div>
+    </div>
+  </div>
+</div>

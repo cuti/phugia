@@ -1,0 +1,172 @@
+
+<script>
+$(document).ready(function(){
+
+    $("#form-edit").validate({     
+            rules:{
+                // law_code:{
+                // required:true
+                // },
+                // law_certfication_no:{
+                // required:true
+                // }
+            },
+            errorClass: "help-inline",
+            errorElement: "span",
+            highlight:function(element, errorClass, validClass) {
+                $(element).parents('.control-group').addClass('error');
+            },
+            unhighlight: function(element, errorClass, validClass) {
+                $(element).parents('.control-group').removeClass('error');
+                $(element).parents('.control-group').addClass('success');
+            },
+            messages: {
+                //cus_cellphone: "Vui lòng nhập số điện thoại !",
+                // cus_identity_card: "Vui lòng nhập số CMND !",
+                law_code: "Vui lòng nhập số thẻ luật sư !",
+                law_certfication_no: "Vui lòng nhập số chứng chỉ !",
+            },
+            submitHandler: function(form,e) {
+                console.log('Form submitted');
+                //console.log($('#form-edit').serialize());
+                $.ajax({
+                      type: "POST",
+                      url: "<?php echo $this->BaseUrl?>/default/lawyer/update/",
+                      data: $('#form-edit').serialize() ,
+                      cache: false,
+                      success: function(html)
+                      {   
+                        //alert("Cập nhật luật sư thành công");
+                        //$(".message-success").show();
+                        $("#message").html("Cập nhật thông tin luật sư chính thức thành công");
+                        // $("#model-warning").modal("show");                                    
+                      }
+                });
+                return false;                       
+            }
+        });
+});  
+
+</script>
+<form id="form-edit" class="form-horizontal">
+              <p id="message"></p> 
+              <input type="hidden" name="law_id" value="<?php echo $this->lawyerdata['law_id']; ?>" /> 
+              <input type="hidden" name="cus_id" value="<?php echo $this->lawyerdata['cus_id']; ?>" /> 
+              <div class="control-group">
+                    <label class="control-label">Số thẻ luật sư </label>
+                    <div class="controls">
+                        <input type="text" class="span2" name="law_code" id="law_code" value="<?php echo $this->cus_lawyernumber; ?>">
+                    </div>
+              </div>
+              <!-- <div class="control-group">
+                    <label class="control-label">Ngày cấp mã luật sư:</label>
+                    <div class="controls">                       
+                        <div  data-date="12-02-2012" class="input-append date datepicker">
+                            <input type="text" value="<?php echo $this->lawyerdata['law_code_createdate']; ?>" id="law_code_createdate" name="law_code_createdate" data-date-format="dd-mm-yyyy" class="span2" placeholder="Vui lòng chọn ngày cấp" >
+                            <span class="add-on"><i class="icon-th"></i></span> 
+                        </div>
+                    </div>
+              </div>  -->
+              <!-- <div class="control-group">
+                    <label class="control-label">Chọn hình thức hành nghề:</label>                      
+                    <div class="controls">
+                            <select class="span2" id="act_id" name="act_id">
+                            <?php  
+                                foreach ($this->activitys_data as $act) {
+                                    if($act['act_id'] == $this->lawyerdata['act_id'] ){
+                                        echo '<option selected value="'.$act['act_id'].'" class="span8">'.$act['act_name'].'</option>';
+                                    } else{
+                                        echo '<option value="'.$act['act_id'].'" class="span8">'.$act['act_name'].'</option>';
+                                    }                              
+                                }
+                                ?>    
+                            </select>
+                    </div>
+              </div>   -->
+
+              <div class="control-group">        
+                    <label class="control-label"> Số chứng chỉ hành nghề:</label>
+                    <div class="controls">
+                    <input type="text" value="<?php echo $this->lawyerdata['law_certfication_no']; ?>" id="law_certfication_no"  name="law_certfication_no" class="span2" placeholder="Vui lòng nhập mã số chứng chỉ" />
+                    </div>
+                </div> 
+
+                 <!-- <div class="control-group">        
+                    <label class="control-label">Loại luật sư:</label>
+                    <div class="controls">
+                    <input type="text" value="<?php echo $this->lawyerdata['law_type']; ?>" id="law_type"  name="law_type" class="span2" placeholder="Vui lòng nhập loại luật sư" />
+                    </div>
+                </div>  -->
+
+                 <div class="control-group">        
+                    <label class="control-label">Đợt gia nhập:</label>
+                    <div class="controls">
+                    <input type="text" value="<?php echo $this->lawyerdata['law_joining_number']; ?>" id="law_joining_number"  name="law_joining_number" class="span2" placeholder="Vui lòng nhập đợt gia nhập" />
+                    </div>
+                </div> 
+
+                <!-- <div class="control-group">        
+                    <label class="control-label">Đoàn luật sư cũ ( Không chỉnh sửa nếu là luật sư tại đoàn):</label>
+                    <div class="controls">
+                    <input type="text" value="<?php echo $this->lawyerdata['law_organ_old']; ?>" id="law_organ_old"  name="law_organ_old" class="span2" placeholder="Vui lòng nhập đoàn luật sư cũ" />
+                    </div>
+                </div>      -->
+
+                
+
+                <!-- <div class="control-group">        
+                    <label class="control-label">Ngày cấp chứng chỉ:</label>
+                    <div class="controls">                       
+                        <div  data-date="12-02-2012" class="input-append date datepicker">
+                        <input type="text" id="law_certification_createdate" name="law_certification_createdate" data-date-format="dd-mm-yyyy" class="span2" placeholder="Vui lòng chọn ngày cấp" >
+                        <span class="add-on"><i class="icon-th"></i></span> 
+                        </div>
+                    </div>   
+                </div>   -->
+
+                <!-- <label class="control-label" >Chọn tổ chức luật sư</label>                      
+                <div class="controls">
+                        <select class="span2" id="organ_lid" name="organ_lid">
+                        <?php  
+                            foreach ($this->organizations_data as $org) {
+                                if($org['organ_lid'] == $this->lawyerdata['organ_lid'] ){
+                                    echo '<option selected value="'.$org['organ_lid'].'" class="span8">'.$org['organ_name'].'</option>';
+                                }else{
+                                    echo '<option value="'.$org['organ_lid'].'" class="span8">'.$org['organ_name'].'</option>';     
+                                }
+                                
+                            }
+                            ?>    
+                        </select>
+                </div>     -->
+                
+                <label class="control-label">Chọn trạng thái luật sư</label>                      
+                <div class="controls">
+                        <select class="span2" id="lawstatus_id" name="lawstatus_id">
+                        <?php  
+                            foreach ($this->status as $stt) {
+                                if($stt['lawstatus_id'] == $this->lawyerdata['lawstatus_id'] ){
+                                    echo '<option selected value="'.$stt['lawstatus_id'].'" class="span8">'.$stt['lawstatus_name'].'</option>';
+                                }else{
+                                    echo '<option value="'.$stt['lawstatus_id'].'" class="span8">'.$stt['lawstatus_name'].'</option>';    
+                                }                            
+                               
+                            }
+                            ?>    
+                        </select>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">Ghi chú: </label>
+                    <div class="controls">
+                        <textarea name="law_organ_note" id="law_organ_note" rows="4" cols="70"><?php echo $this->lawyerdata['law_organ_note']; ?></textarea>
+                        <!-- <input type="text"  class="span2" name="law_organ_note" id="law_organ_note" value="<?php echo $this->lawyerdata['law_organ_note']; ?>"> -->
+                    </div>
+                </div>  
+
+             
+              <!-- <div class="form-actions"> -->
+                <button style="float: right;" type="submit" class="btn">Save</button>
+              <!-- </div> -->
+            </form>
+         

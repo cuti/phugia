@@ -1,0 +1,170 @@
+<script>
+$(document).ready(function(){
+  
+    $("#search").hide();
+  $(".searchfield").hide();
+
+  // $('.datepicker-start').datepicker();
+
+  // $('.datepicker-end').datepicker();
+
+  var searchText = $("#organ_detail_id").val();
+
+  var dataString = '?search='+ searchText ;
+  $("#downloadUrl").attr("href", "<?php echo $this->BaseUrl?>/default/report/officedataexcel"+dataString);
+  var dataTable = $('#employee-grid').DataTable( {
+    "language": {
+            "lengthMenu": "Hiển thị _MENU_ dòng trên trang",
+            "zeroRecords": "Không tìm thấy",
+            "info": "Hiển thị trang _PAGE_ of _PAGES_",
+            "infoEmpty": "Không có dữ liệu thích hợp",
+            "infoFiltered": "(lọc từ _MAX_ tổng số kết quả)",
+            "paginate": {
+                "first":      "Đầu",
+                "last":       "Cuối",
+                "next":       "Tới",
+                "previous":   "Sau"
+            }
+        },
+		"processing": true,
+    "serverSide": true,
+    "searching": false,
+    "aLengthMenu": [[10, 50, 75, -1], [10, 50, 75, "All"]],
+        "iDisplayLength": 10,
+    "ajax":{
+      url :"<?php echo $this->BaseUrl?>/default/report/officedatatable"+dataString, // json datasource
+      type: "post",  // method  , by default get
+      // done:function(){
+      //   $("#downloadUrl").attr("href", "<?php echo $this->BaseUrl?>/default/categorytraining/listtest"+dataString);
+      // },
+      error: function(){  // error handling
+        $(".employee-grid-error").html("");
+        $("#employee-grid").append('<tbody class="employee-grid-error"><tr><th colspan="3">Không tìm thấy kết quả</th></tr></tbody>');
+        $("#employee-grid_processing").css("display","none");
+        
+      }
+    }
+  } );
+
+  $('#filtertable').on('submit', function(e){
+      e.preventDefault();
+      
+      var searchText = $("#organ_detail_id").val();
+
+      var dataString = '?search='+ searchText;
+      $("#downloadUrl").attr("href", "<?php echo $this->BaseUrl?>/default/report/officedataexcel"+dataString);
+      dataTable.ajax.url( '<?php echo $this->BaseUrl?>/default/report/officedatatable'+dataString).load();
+    
+    });   
+     
+      
+});
+</script>
+
+
+<div id="content">
+  <div id="content-header">
+    <div id="breadcrumb"> <a href="#" title="Trang chủ" class="tip-bottom"><i class="icon-home"></i> Trang chủ</a> <a href="#" class="current">Thống kê - Danh sách VPLS</a> </div>
+    
+  </div>
+  
+  <div class="container-fluid">
+        <div class="widget-box">
+            <div class="widget-title">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="#tab1">Danh sách văn phòng LS</a></li>
+                    <!-- <li><a data-toggle="tab" href="#tab2">Danh sách chưa tham gia bồi dưỡng bồi dưỡng</a></li>
+                    <li><a data-toggle="tab" href="#tab3">Danh sách hồ sơ khen thưởng kỷ luật</a></li> -->
+                </ul>
+            </div>
+            <div class="widget-content tab-content">
+                <div id="tab1" class="tab-pane active">
+                    <h3>Danh sách văn phòng luật sư</h3>
+                    <div  style="margin-bottom:4%;">  
+                        <form method="post" id="filtertable" action=""> 
+                          <table cellpadding="5" cellspacing="0">
+                            <tbody><tr>
+                                    <td>
+                                        <label class="control-label">Chọn văn phòng LS *:</label>
+                                    </td>
+                                    <td>  
+                                        <!-- <input type="text" id="txtsearch" name="txtsearch" placeholder="Vui lòng nhập mã luật sư" value="">   -->
+                                        <div class="control-group">                              
+                                            <div class="controls">                                
+                                            <select class="span3" id="organ_detail_id" name="organ_detail_id">
+                                                <?php  
+                                                    foreach ($this->organizations as $org) {
+                                                        echo '<option value="'.$org['organ_detail_id'].'" class="span8">'.$org['organ_name'].'</option>';
+                                                    }
+                                                    ?>    
+                                                </select>
+                                            </div>
+                                        </div> 
+                                    </td>    
+                                      <!-- <td>   
+                                          Thời gian (theo quý) : 
+                                      </td>
+                                      <td>   
+                                          <select name="time" id="time" style="width: 150px">
+                                              <option value="1">Quý 1</option>
+                                              <option value="2">Quý 2</option>
+                                              <option value="3">Quý 3</option>
+                                              <option value="4">Quý 4</option>
+                                          </select>	 
+                                      </td>		
+                                      <td>   
+                                          Năm : 
+                                      </td>
+                                      <td>   
+                                          <select name="year" id="year" style="width: 150px">                                            
+                                              <option value="2016">2016</option>
+                                              <option value="2017">2017</option>
+                                              <option value="2018">2018</option>
+                                              <option value="2019">2019</option>
+                                          </select>	 
+                                      </td>											 -->
+                                      <td>
+                                        <input type="submit" name="sbsearch" value="   Tìm   ">   
+                                      </td>
+                                    </tr>								    
+                            </tbody>
+                          </table>                 
+                        </form>  
+
+                        Xuất file : <a id="downloadUrl" href=""><img src="<?php echo $this->BaseUrl?>/files/images/ico_excel.gif" border="0"></a>
+
+                        Xuất file báo cáo tổng VPLS: <a id="downloadUrlSum" href="<?php echo $this->BaseUrl?>/default/report/finalexportexcel"><img src="<?php echo $this->BaseUrl?>/files/images/ico_excel.gif" border="0"></a>
+
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span12">
+                          <table id="employee-grid" class="table table-bordered"  cellpadding="0" cellspacing="0" border="0" class="display" width="100%">
+                                <thead>
+                                  <tr>
+                                      <th>Tên tổ chức</th>
+                                      <th>Số LS trong nước tại TCHNLS </th>
+                                      <th>Số LS nước ngoài tại TCHNLS</th>
+                                      <th>Số việc tố tụng hình sự</th>
+                                      <th>Số việc tư vấn dịch vụ pháp lý</th>
+                                      <th>Trợ giúp pháp lý</th>
+                                      <th>Tổng số doanh thu</th>
+                                      <th>Nộp thuế</th>                                                         
+                                  </tr>
+                                </thead>
+                          </table>
+                        </div>
+                    </div>  
+                </div>
+                <div id="tab2" class="tab-pane">
+                    <!-- content tab 2-->                
+                </div>
+                <div id="tab3" class="tab-pane">
+                        <!-- content tab 3-->  
+                </div>
+            </div>                            
+        </div>
+
+
+  
+  </div>
+</div>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+    <head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+		<title>Datatable server side Demo in php mysql  | CoderExample</title>
+		<meta name="description" content="CoderExample" />
+		<meta name="keywords" content="CoderExample" />
+		<meta name="author" content="Author for CoderExample" />
+		<link rel="shortcut icon" href="../file/favicon.gif"> 
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+	    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    </head>
+    <body>
+    <form method="post" action="" id="filtertable"> 
+									<table cellpadding="5" cellspacing="0">
+									<tbody><tr>
+											<td>
+											   Từ khóa :
+											 </td>
+											 <td>  
+											    <input type="text" name="txtsearch" value="">  
+											      
+											</td> 
+											<td>   
+											    Trạng thái : 
+											</td>
+											<td>   
+											   		<select name="statussearch" style="width: 150px">
+											   				<option value=""> -- Tất cả --</option>
+															<option value="Chờ">Chờ</option>
+															<option value="Hoàn thành">Hoàn thành</option>
+															<option value="Hủy">Hủy</option>
+													</select>	 
+											</td>
+											<td>
+											</td>
+									</tr>
+									<tr>
+											<td>		
+													Tỉnh/Thành Phố :
+											</td>
+											<td>											
+																									<select name="sta_id" style="width:150px;" id="sta_id">
+																									<option value="0"> -- Tất cả --</option>
+																																																					  <option value="67">TP. Hồ Chí Minh</option> 
+																											   																											  <option value="68">Hà Nội</option> 
+																											   																											  <option value="69">Bà Rịa Vũng Tàu</option> 
+																											   																											  <option value="70">Bắc Giang</option> 
+																											   																											  <option value="71">Bắc Kạn</option> 
+																											   																											  <option value="72">Bạc Liêu</option> 
+																											   																											  <option value="73">Bắc Ninh</option> 
+																											   																											  <option value="74">Bến Tre</option> 
+																											   																											  <option value="75">Bình Định</option> 
+																											   																											  <option value="76">Bình Dương  </option> 
+																											   																											  <option value="77">Bình Phước</option> 
+																											   																											  <option value="78">Bình Thuận</option> 
+																											   																											  <option value="79">Cà Mau</option> 
+																											   																											  <option value="80">Cần Thơ</option> 
+																											   																											  <option value="81">Cao Bằng</option> 
+																											   																											  <option value="82">Đà Nẵng</option> 
+																											   																											  <option value="83">Đắk Lắk</option> 
+																											   																											  <option value="84">Đắk Nông</option> 
+																											   																											  <option value="85">Điện Biên</option> 
+																											   																											  <option value="86">Đồng Nai</option> 
+																											   																											  <option value="87">Đồng Tháp</option> 
+																											   																											  <option value="88">Gia Lai</option> 
+																											   																											  <option value="89">Hà Giang</option> 
+																											   																											  <option value="90">Hà Nam</option> 
+																											   																											  <option value="91">Hà Tây</option> 
+																											   																											  <option value="92">Hà Tĩnh</option> 
+																											   																											  <option value="93">Hải Dương</option> 
+																											   																											  <option value="94">Hải Phòng</option> 
+																											   																											  <option value="95">Hậu Giang</option> 
+																											   																											  <option value="96">Hòa Bình</option> 
+																											   																											  <option value="97">Hưng Yên</option> 
+																											   																											  <option value="98">Khánh Hòa</option> 
+																											   																											  <option value="99">Kiên Giang</option> 
+																											   																											  <option value="100">Kon Tum</option> 
+																											   																											  <option value="101">Lai Châu</option> 
+																											   																											  <option value="102">Lâm Đồng</option> 
+																											   																											  <option value="103">Lạng Sơn</option> 
+																											   																											  <option value="104">Lào Cai</option> 
+																											   																											  <option value="105">Long An</option> 
+																											   																											  <option value="106">Nam Định</option> 
+																											   																											  <option value="107">Nghệ An</option> 
+																											   																											  <option value="108">Ninh Bình</option> 
+																											   																											  <option value="109">Ninh Thuận</option> 
+																											   																											  <option value="110">Phú Thọ</option> 
+																											   																											  <option value="111">Phú Yên</option> 
+																											   																											  <option value="112">Quảng Bình</option> 
+																											   																											  <option value="113">Quảng Nam</option> 
+																											   																											  <option value="114">Quảng Ngãi</option> 
+																											   																											  <option value="115">Quảng Ninh</option> 
+																											   																											  <option value="116">Quảng Trị</option> 
+																											   																											  <option value="117">Sóc Trăng</option> 
+																											   																											  <option value="118">Sơn La</option> 
+																											   																											  <option value="119">Tây Ninh</option> 
+																											   																											  <option value="120">Thái Bình</option> 
+																											   																											  <option value="121">Thái Nguyên</option> 
+																											   																											  <option value="122">Thanh Hóa</option> 
+																											   																											  <option value="123">Thừa Thiên Huế</option> 
+																											   																											  <option value="124">Tiền Giang</option> 
+																											   																											  <option value="125">Trà Vinh</option> 
+																											   																											  <option value="126">Tuyên Quang</option> 
+																											   																											  <option value="127">Vĩnh Long</option> 
+																											   																											  <option value="128">Vĩnh Phúc</option> 
+																											   																											  <option value="129">Yên Bái</option> 
+																											   																								
+																									</select>
+												</td>
+												<td>													
+																		 Thời gian : 
+												</td>
+												<td>					 
+																		   		<select name="timesearch" style="width: 150px">
+																		   				<option value="0"> -- Tất cả --</option>
+																						<option value="1">Trong ngày</option>
+																						<option value="3">3 ngày</option>
+																						<option value="7">7 ngay</option>
+																						<option value="30">30 ngày</option>
+																				</select>	 		
+												</td>													
+												<td>
+											    <input type="submit" id="sbsearch" name="sbsearch" value="   Tìm   ">    
+											    <!-- <button type="submit" id="sbsearch" name="sbsearch" value="   Tìm   "></button> -->
+                                                </td>
+									    </tr> 
+									    
+									    </tbody></table>                 
+				</form>
+	
+				<table id="employee-grid"  cellpadding="0" cellspacing="0" border="0" class="display" width="100%">
+					<thead>
+						<tr>
+							<th>Employee name</th>
+							<th>Salary</th>
+							<th>Age</th>
+						</tr>
+					</thead>
+			</table>
+			
+			</div>
+		<script type="text/javascript" src="https://code.jquery.com/jquery-1.9.1.js"></script>
+		<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+		<script type="text/javascript" language="javascript" >
+			$(document).ready(function() {
+				var dataTable = $('#employee-grid').DataTable( {
+					//"processing": true,
+					"serverSide": true,
+					"ajax":{
+						url :"<?php echo $this->BaseUrl?>/default/categorytraining/listtest", // json datasource
+						type: "post",  // method  , by default get
+						error: function(){  // error handling
+							$(".employee-grid-error").html("");
+							$("#employee-grid").append('<tbody class="employee-grid-error"><tr><th colspan="3">No data found in the server</th></tr></tbody>');
+							$("#employee-grid_processing").css("display","none");
+							
+						}
+					}
+				} );
+
+                $('#filtertable').on('submit', function(e){
+                    e.preventDefault();
+                    // var len = $('#username').val().length;
+                    // if (len < 6 && len > 1) {
+                    //     this.submit();
+                    // }
+                    dataTable.ajax.url( '<?php echo $this->BaseUrl?>/default/categorytraining/listtest1/' ).load();
+                 });   
+
+
+
+
+			} );
+		</script>
+    </body>
+</html>

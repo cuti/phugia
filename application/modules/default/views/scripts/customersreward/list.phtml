@@ -1,0 +1,33 @@
+<?php  
+    if($this->customerrewards != null){
+        foreach ($this->customerrewards as $cus) {
+            $text = '';
+            //$type = '';
+
+            $reward_date = ($cus['reward_date'] != null && $cus['reward_date'] != ''
+                              && $cus['reward_date'] != '1900-01-01 00:00:00') ? date('d/m/Y', strtotime($cus['reward_date'])) : '';   
+                        
+            $discipline_date = ($cus['discipline_date'] != null && $cus['discipline_date'] != ''
+            && $cus['discipline_date'] != '1900-01-01 00:00:00') ? date('d/m/Y', strtotime($cus['discipline_date'])) : '';                  
+
+            if($cus['type'] != "kiluat"){
+                $text = '<td>'.$reward_date.'</td>'.
+                '<td>'.$cus['reward_reason'].'</td>'.
+                '<td>'.'Khen thưởng'.'</td>'
+                ;
+            }else{
+                $text = '<td>'.$discipline_date.'</td>'.
+                '<td>'.$cus['discipline_reason'].'</td>'.
+                '<td>'.'Kỉ luật'.'</td>';
+            }
+            echo ' <tr class="gradeC">'.
+            $text.
+            //'<td>'.$cus['type'].'</td>'. 
+            // '<td class="center">'.
+               // '<input type="button" class=button value="Chỉnh sửa" onClick="updateReward('.$cus['id'].');" />'.
+            // '</td>'.              
+        '</tr>';                            
+        }  
+    }
+
+?>  

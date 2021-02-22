@@ -1,0 +1,164 @@
+<script>
+$(document).ready(function(){
+
+    	$('input[type=checkbox],input[type=radio],input[type=file]').uniform();
+
+
+      $(".message-success").hide();
+      
+        $("#search").hide();
+  $(".searchfield").hide();
+      $("#model-warning").modal('hide');  
+
+      $(".close-modal").on('click',function(){
+       location.reload();
+      });
+      
+});
+
+function updatePaymentOfflineStatus($id){
+  //alert("test code");
+      var dataString = '?payment_training_off_id='+ $id;
+       $.ajax({
+            type: "GET",
+            url: "<?php echo $this->BaseUrl?>/default/trainingmanagement/detail"+dataString ,
+            //data: dataString+'?format=html',
+            //dataType: 'json',
+            cache: false,
+            success: function(html)
+            { 
+              //alert(html);
+              $("#message").html(html);
+              $("#model-warning").modal('show');
+              //$(".close-modal").hide();
+            }
+       });    
+  }
+
+  function deletePaymentOffline($id){
+  //alert("test code");
+      var dataString = '?payment_training_off_id='+ $id;
+       $.ajax({
+            type: "GET",
+            url: "<?php echo $this->BaseUrl?>/default/trainingmanagement/delete"+dataString ,
+            //data: dataString+'?format=html',
+            //dataType: 'json',
+            cache: false,
+            success: function(html)
+            { 
+              //alert(html);
+              $("#message").html(html);
+              $("#model-warning").modal('show');
+              //$(".close-modal").hide();
+            }
+       });    
+  }
+
+</script>
+
+<div id="model-warning" class="modal fade"  data-backdrop="static">
+  <div class="modal-dialog " role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h5 class="modal-title" id="exampleModalLabel">Thông báo</h5>
+        
+      </div>
+        
+        <div class="modal-body">
+            <p id="message">Bạn đã tạo thành công chủ đề mới.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary close-modal" data-dismiss="modal">Đóng</button>
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+
+<div id="content">
+  <div id="content-header">
+    <div id="breadcrumb"> <a href="#" title="Trang chủ" class="tip-bottom"><i class="icon-home"></i> Trang chủ</a> <a href="#" class="current">Chỉnh sửa thông tin bồi dưỡng</a> </div>
+    <h1>Chỉnh sửa thông tin bồi dưỡng</h1>
+  </div>
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <div class="span12">
+        <div class="widget-box">
+          <div class="widget-title">
+             <span class="icon"><i class="icon-th"></i></span> 
+            <h5>Chỉnh sửa thông tin bồi dưỡng</h5>
+          </div>
+          <div class="widget-content nopadding">
+            <table class="table table-bordered data-table">
+              <thead>
+                <tr>
+                    <th>Tên người đóng phí </th>
+                    <!-- <th>Mã luật sư </th>
+                    <th>Mã chứng chỉ hành nghề </th> -->
+                    <th>Mã biên nhận</th>
+                    <th>Trạng thái</th>
+                    <th>Ngày đóng phí</th>
+                    <!-- <th>Loại</th> -->
+                    <th>Hình thức đóng</th>
+                    <th>Tổng tiền</th>
+                    <th>Tên khóa học</th> 
+                    <th>Đợt bồi dưỡng </th>
+                    <th>Thao tác</p>               
+                </tr>
+              </thead>
+              <tbody>  
+         
+                <?php  
+                    if($this->paymentofflines != null){
+                        foreach ($this->paymentofflines as $pay) {           
+                            // '<td>'.$pay['payment_lawyer_off_id'].'</td>'.
+                            $payment_type = '';
+                            if($pay['payment_type'] == 'offline'){
+                              $payment_type = '<td>Tại đoàn</td>';
+                            }else{
+                              $payment_type = '<td>Qua mạng</td>';
+                            }
+
+                             $text = ''; 
+                             if($pay['payment_training_off_status'] == 1){
+                                $text = '<td>Đã thanh toán</td>';
+                             }else{
+                                $text = '<td>Chưa thanh toán</td>';  
+                             }    
+
+                             $payment_training_off_created_date = ($pay['payment_training_off_created_date'] != null && $pay['payment_training_off_created_date'] != ''
+                             && $pay['payment_training_off_created_date'] != '1900-01-01 00:00:00') ? date('d/m/Y', strtotime($pay['payment_training_off_created_date'])) : '';    
+                 
+
+                             echo ' <tr class="gradeC">'.
+                             '<td>'.$pay['cus_firstname'].' '.$pay['cus_lastname'].'</td>'.
+                             '<td>'.$pay['payment_training_off_code'].'</td>'.
+                            //  '<td>'.$pay['law_code'].'</td>'.
+                            //  '<td>'.$pay['law_certfication_no'].'</td>'.
+                             $text.
+                             '<td>'.$payment_training_off_created_date
+                             .'</td>'.
+                            //  $payment_type.                            
+                             '<td>'.$pay['name'].'</td>'.
+                             '<td>'.number_format($pay['amount']).'</td>'.  
+                             '<td>'.$pay['cat_train_name'].'</td>'.
+                             '<td>'.$pay['cat_train_number'].'</td>'.                             
+                             '<td class="center">'.
+                                  '<button data-toggle="tooltip" title="Chỉnh sửa" onClick="updatePaymentOfflineStatus('.$pay['payment_training_off_id'].');"><i class="icon-pencil"></i></button>'.' '.
+                                  '<button data-toggle="tooltip" title="Xóa" onClick="deletePaymentOffline('.$pay['payment_training_off_id'].');"><i class="icon-remove"></i></button>'.
+                        '</tr>';                            
+                        }  
+                    }
+                ?>
+              </tbody>
+            </table>
+          </div>
+        </div>        
+      </div>
+    </div>
+  </div>
+</div>

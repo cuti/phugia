@@ -1,0 +1,452 @@
+<script>
+$(document).ready(function(){
+  $('select').select2();
+  $("#search").hide();
+  $(".searchfield").hide();
+
+  var status = $("#status").val();
+  var year = $("#year").val();
+  var dataString = '?status='+ status+'&year='+ year;
+  $("#model-warning").modal("hide");
+
+  $(".close-modal").on('click',function(){
+      location.reload();
+  });
+
+  $('.checkin').on('click', function(e){
+
+      e.preventDefault();
+     
+      var form = this;
+
+      var rows_selected = dataTable.column(0).checkboxes.selected();
+
+      // Iterate over all selected checkboxes
+
+      var listIds = [];
+      $.each(rows_selected, function(index, rowId){
+        //console.log(rowId);
+        listIds.push(rowId);
+        //updateCheckInOfPaymentTraining();
+         // Create a hidden element
+        //  $(form).append(
+        //      $('<input>')
+        //         .attr('type', 'hidden')
+        //         .attr('name', 'id[]')
+        //         .val(rowId)
+        //  );
+      });
+      
+
+      if(listIds != null && listIds.length > 0 ){
+        $("#law_ids").val(listIds);
+        $("#type").val('kyluat');
+        $("#model-warning").modal("show");
+      }else{
+
+      }
+
+  });
+
+
+  var url = "<?php echo $this->BaseUrl?>/default/report/reportcustomersrewardtable"+dataString;
+  
+  // $("#status").on('change',function(){
+  //   console.log($("#status").val());
+  //   dataString = '?status='+ status+'&year='+ year;
+  //   if($("#status").val() == 'kyluat'){
+  //     url = "<?php echo $this->BaseUrl?>/default/report/reportcustomersrewardtable"+dataString;
+  //   }else{
+  //     url = "<?php echo $this->BaseUrl?>/default/report/reportlawyerdebt"+dataString;
+  //   }
+    
+  // });
+
+  var dataTable = $('#employee-grid').DataTable( {
+    "language": {
+            "lengthMenu": "Hiển thị _MENU_ dòng trên trang",
+            "zeroRecords": "Không tìm thấy",
+            "info": "Hiển thị trang _PAGE_ of _PAGES_",
+            "infoEmpty": "Không có dữ liệu thích hợp",
+            "infoFiltered": "(lọc từ _MAX_ tổng số kết quả)",
+            "paginate": {
+                "first":      "Đầu",
+                "last":       "Cuối",
+                "next":       "Tới",
+                "previous":   "Sau"
+            }
+        },
+		"processing": true,
+    "serverSide": true,
+    "searching": false,
+    "aLengthMenu": [[10, 50, 75, -1], [10, 50, 75, "All"]],
+        "iDisplayLength": 10,
+    "ajax":{
+      url :url, // json datasource
+      type: "post",  // method  , by default get
+      // done:function(){
+      //   $("#downloadUrl").attr("href", "<?php echo $this->BaseUrl?>/default/categorytraining/listtest"+dataString);
+      // },
+        error: function(){  // error handling
+          $(".employee-grid-error").html("");
+          $("#employee-grid").append('<tbody class="employee-grid-error"><tr><th colspan="3">Không tìm thấy kết quả</th></tr></tbody>');
+          $("#employee-grid_processing").css("display","none");
+        }
+      }  ,
+    'columnDefs': [
+         {
+            'targets': 0,
+            'checkboxes': {
+               'selectRow': true
+            }
+         }
+      ],
+      'select': {
+         'style': 'multi'
+      }
+    
+  } );
+
+  $('#filtertable').on('submit', function(e){
+      e.preventDefault();
+      
+      status = $("#status").val();
+
+      year = $("#year").val();
+      
+
+      dataString = '?status='+ status+'&year='+ year;
+      // if($("#status").val() == 'kyluat'){
+         url = "<?php echo $this->BaseUrl?>/default/report/reportcustomersrewardtable"+dataString;
+      // }else{
+      //   url = "<?php echo $this->BaseUrl?>/default/report/reportlawyerdebt"+dataString;
+      // }
+      //url = '<?php echo $this->BaseUrl?>/default/report/reportcustomersrewardtable'+dataString;
+      dataTable.ajax.url(url).load();
+    
+    });   
+
+
+    // tab 2 
+  var status2 = $("#status2").val();
+  var dataString2 = '?status='+ status2;
+  //$("#model-warning").modal("hide");
+  
+  $("#downloadUrl").attr("href", "<?php echo $this->BaseUrl?>/default/customerstatus/loan18excel");
+  $('.checkin2').on('click', function(e){
+
+      e.preventDefault();
+     
+      var form = this;
+
+      var rows_selected = dataTable2.column(0).checkboxes.selected();
+
+      // Iterate over all selected checkboxes
+
+      var listIds = [];
+      $.each(rows_selected, function(index, rowId){
+        //console.log(rowId);
+        listIds.push(rowId);
+        //updateCheckInOfPaymentTraining();
+         // Create a hidden element
+        //  $(form).append(
+        //      $('<input>')
+        //         .attr('type', 'hidden')
+        //         .attr('name', 'id[]')
+        //         .val(rowId)
+        //  );
+      });
+
+      if(listIds != null && listIds.length > 0 ){
+        console.log("lenght"+listIds.length);
+        $("#law_ids").val(listIds);
+        $("#type").val('notien');
+        $("#model-warning").modal("show");
+      }else{
+        console.log("lenght"+listIds.length);
+        //$(".model-body").text("Chọn LS trước khi xóa tên");
+        //$("#model-warning").modal("show");
+      }
+
+      
+  });
+    var dataTable2 = $('#employee-grid2').DataTable( {
+    "language": {
+            "lengthMenu": "Hiển thị _MENU_ dòng trên trang",
+            "zeroRecords": "Không tìm thấy",
+            "info": "Hiển thị trang _PAGE_ of _PAGES_",
+            "infoEmpty": "Không có dữ liệu thích hợp",
+            "infoFiltered": "(lọc từ _MAX_ tổng số kết quả)",
+            "paginate": {
+                "first":      "Đầu",
+                "last":       "Cuối",
+                "next":       "Tới",
+                "previous":   "Sau"
+            }
+        },
+		"processing": true,
+    "serverSide": true,
+    "searching": false,
+    "aLengthMenu": [[10, 50, 75, -1], [10, 50, 75, "All"]],
+        "iDisplayLength": 10,
+    "ajax":{
+      url :"<?php echo $this->BaseUrl?>/default/report/reportlawyerdebt"+dataString2, // json datasource
+      type: "post",  // method  , by default get
+      // done:function(){
+      //   $("#downloadUrl").attr("href", "<?php echo $this->BaseUrl?>/default/categorytraining/listtest"+dataString);
+      // },
+        error: function(){  // error handling
+          $(".employee-grid-error").html("");
+          $("#employee-grid").append('<tbody class="employee-grid-error"><tr><th colspan="3">Không tìm thấy kết quả</th></tr></tbody>');
+          $("#employee-grid_processing").css("display","none");
+        }
+      }  ,
+    'columnDefs': [
+         {
+            'targets': 0,
+            'checkboxes': {
+               'selectRow': true
+            }
+         }
+      ],
+      'select': {
+         'style': 'multi'
+      }
+    
+  } );
+
+  $('#filtertable2').on('submit', function(e){
+      e.preventDefault();
+      
+      status2 = $("#status2").val();
+      
+      dataString2 = '?status='+ status2;
+
+      dataTable2.ajax.url("<?php echo $this->BaseUrl?>/default/report/reportlawyerdebt"+dataString2).load();
+    
+    });   
+
+     $("#form-edit").validate({     
+            rules:{
+                yeardelete:{
+                  required:true
+                },
+                document:{
+                  required:true
+                }
+            },
+            errorClass: "help-inline",
+            errorElement: "span",
+            highlight:function(element, errorClass, validClass) {
+                $(element).parents('.control-group').addClass('error');
+            },
+            unhighlight: function(element, errorClass, validClass) {
+                $(element).parents('.control-group').removeClass('error');
+                $(element).parents('.control-group').addClass('success');
+            },
+            messages: {
+                yeardelete: "Vui lòng nhập năm số tên !",
+                document: "Vui lòng nhập quyết định!",
+            },
+            submitHandler: function(form,e) {
+                console.log('Form submitted');
+                console.log($('#form-edit').serialize());
+                $.ajax({
+                      type: "POST",
+                      url: "<?php echo $this->BaseUrl?>/default/lawyer/remove/",
+                      data: $('#form-edit').serialize() ,
+                      cache: false,
+                      success: function(html)
+                      {   
+                        //alert("Cập nhật luật sư thành công");
+                        //$(".message-success").show();
+                        $(".modal-body").html("Bạn đã xóa tên LS thành công");
+                        // $("#model-warning").modal("show");                                    
+                      }
+                });
+                return false;                       
+            }
+        });
+      
+});
+</script>
+
+<div id="model-warning" class="modal fade"  data-backdrop="static">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Lưu thông tin xóa tên</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <form id="form-edit" class="form-horizontal">
+          <p id="message"></p> 
+          <input type="hidden" name="law_ids[]" id="law_ids" /> 
+          <input type="hidden" name="type" id="type" /> 
+          <div class="control-group">
+                <label class="control-label">Quyết định số: </label>
+                <div class="controls">
+                    <input type="text" class="span3" name="document" id="document" placeholder="Vui lòng nhập quyết định xóa tên">
+                </div>
+          </div>
+          <div class="control-group">        
+                <label class="control-label">Năm xóa tên:</label>
+                <div class="controls">
+                <input type="number" id="yeardelete"  name="yeardelete" class="span3" placeholder="Vui lòng nhập năm xóa tên" />
+                </div>
+          </div>
+
+          <div class="control-group">        
+                <label class="control-label">Xóa tên:</label>
+                <div class="controls">
+                    <select name="xoaten" id="xoaten" style="width: 150px">                                            
+                        <option value="xoaten">Xóa tên</option>
+                      
+                    </select>	
+                </div>
+          </div>
+
+          <div class="control-group">        
+              <label class="control-label">Ghi chú:</label>
+              <div class="controls">
+              <input type="text" id="note"  name="note" class="span3" placeholder="Vui lòng nhập ghi chú" />
+              </div>
+          </div>    
+            
+
+          
+          <!-- <div class="form-actions"> -->
+            <button style="float: right;" type="submit" class="btn">Lưu</button>
+          <!-- </div> -->
+      </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary close-modal" data-dismiss="modal">Đóng</button>
+        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="content">
+  <div id="content-header">
+    <div id="breadcrumb"> <a href="#" title="Trang chủ" class="tip-bottom"><i class="icon-home"></i> Trang chủ</a> <a href="#" class="current">Quản lý trạng thái LS</a> </div>
+    <h1>Quản lý trạng thái LS</h1>
+  </div>
+  
+  <div class="container-fluid">
+        <div class="widget-box">
+            <div class="widget-title">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="#tab1">Danh sách LS bị kỷ luật</a></li>
+                    <li><a data-toggle="tab" href="#tab2">Danh sách LS nợ Đoàn phí >= 18 tháng</a></li>
+                </ul>
+            </div>
+            <div class="widget-content tab-content">
+              <div id="tab1" class="tab-pane active">
+                  <div  style="margin-bottom:4%;">  
+                      <form method="post" id="filtertable" action=""> 
+                        <table cellpadding="5" cellspacing="0">
+                          <tbody><tr>
+                              <td>   
+                                Hình thức : 
+                              </td>
+                              <td>   
+                                  <select name="status" id="status" style="width: 150px">                                            
+                                      <option value="kyluat">Kỷ luật</option>                                                       
+                                  </select>	 
+                              </td>  
+                              <td>   
+                                Năm : 
+                              </td>
+                              <td>   
+                                  <select name="year" id="year" style="width: 150px">                                            
+                                      <option value="2019">2019</option>
+                                      <option value="2018">2018</option>
+                                      <option value="2017">2017</option>
+                                      <option value="2016">2016</option>
+                                  </select>	 
+                              </td>	                               
+                                <td>
+                                  <input type="submit" name="sbsearch" value="   Tìm   ">  
+                                </td>
+                                </tr>
+                                  <tr>
+                                      <td>
+                                      <button class="btn btn-primary checkin">Xóa tên</button>
+                                      </td>
+                                  </tr>								    
+                          </tbody>
+                        </table>                 
+                      </form> 
+                  </div>
+                  <div class="row-fluid">
+                      <div class="span12">
+                        <table id="employee-grid" class="table table-bordered"  cellpadding="0" cellspacing="0" border="0" class="display" width="100%">
+                              <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Người khiếu nại </th>
+                                    <th>Ngày khiếu nại</th>
+                                    <th>LS tổ chức bị khiếu nại</th>
+                                    <th>Nội dung đề xuất</th>                                      
+                                    <th>Người thụ lý</th>   
+                                </tr>
+                              </thead>
+                        </table>
+                      </div>
+                  </div> 
+              </div>
+              <div id="tab2" class="tab-pane">
+                  <div  style="margin-bottom:4%;">  
+                      <form method="post" id="filtertable2" action=""> 
+                        <table cellpadding="5" cellspacing="0">
+                          <tbody><tr>
+                              <td>   
+                                Hình thức : 
+                              </td>
+                              <td>   
+                                  <select name="status2" id="status2" style="width: 150px">                                
+                                      <option value="notien">Nợ đoàn phí</option>                        
+                                  </select>	 
+                              </td>  
+                              <td>
+                                <input type="submit" name="sbsearch" value="   Tìm   ">  
+                              </td>
+                              </tr>
+                                  
+                                  <tr>
+                                      <td>
+                                      <button class="btn btn-primary checkin2">Xóa tên</button>
+                                      </td>
+                                  </tr>								    
+                          </tbody>
+                        </table>                 
+                      </form> 
+                      Xuất file : <a id="downloadUrl" href=""><img src="<?php echo $this->BaseUrl?>/files/images/ico_excel.gif" border="0"></a>
+                  </div>
+                  <div class="row-fluid">
+                      <div class="span12">
+                        <table id="employee-grid2" class="table table-bordered"  cellpadding="0" cellspacing="0" border="0" class="display" width="100%">
+                              <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Tên  </th>
+                                    <th>Số thẻ LS</th>
+                                    <th>CCHN</th>
+                                    <th>CCHN Ngày cấp</th> 
+                                    <th>Đóng tới </th>                             
+                                </tr>
+                              </thead>
+                        </table>
+                      </div>
+                  </div> 
+              </div>
+            </div>  
+        </div>
+  </div>
+  
+</div>

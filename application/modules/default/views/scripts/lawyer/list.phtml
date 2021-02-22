@@ -1,0 +1,21 @@
+<?php  
+    if($this->lawyers != null){
+        foreach ($this->lawyers as $law) {
+            echo ' <tr class="gradeC">'.
+            '<td>'.$law['law_certfication_no'].'</td>'.
+            '<td>'.$law['organ_name'].'</td>'.
+            // '<td>'.$law['act_name'].'</td>'.
+            '<td>'.$law['lawstatus_name'].'</td>'.
+            // '<td>'.$law['law_type'].'</td>'.
+            '<td>'.$law['law_organ_old'].'</td>'.
+            '<td>'.$law['law_joining_number'].'</td>'.
+            '<td class="center">'.
+                '<input type="button" class=button value="Chỉnh sửa" onClick="updateLaw('.$law['cus_id'].','.$law['law_id'].');" />'.
+                
+        '</tr>';                            
+        }  
+    }
+
+?>   
+                            
+                               

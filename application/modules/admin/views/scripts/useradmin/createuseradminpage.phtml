@@ -1,0 +1,176 @@
+<script>
+    $(document).ready(function(){
+      $("#search").hide();
+      $(".searchfield").hide();
+      $("#model-warning").modal("hide");
+      $(".message-success").hide();      
+
+    $("#search-global").keyup(function() {        
+        $("#cus_id").val('');
+        var searchbox = $(this).val();
+        var dataString = 'searchword='+ searchbox + '&searchfield='+$("#search-field").val();
+        
+        if(searchbox ==''){
+            $("#display-content-search-global").html('');
+        } else
+        {
+            $.ajax({
+                type: "POST",
+                url: "<?php echo $this->BaseUrl?>/default/customers/search/",
+                data: dataString,
+                cache: false,
+                success: function(html)
+                {   
+                  //$("#display-content-search-global").html('');
+                  $("#display-content-search-global").html(html);                  
+                }
+            });
+        }
+        return false;    
+    });  
+
+     $("#form-edit").validate({     
+            rules:{
+                username:{
+                  required:true
+                },
+                password:{
+                  required:true
+                },
+                password2: {
+                  equalTo: "#password"
+                }
+            },
+            errorClass: "help-inline",
+            errorElement: "span",
+            highlight:function(element, errorClass, validClass) {
+                $(element).parents('.control-group').addClass('error');
+            },
+            unhighlight: function(element, errorClass, validClass) {
+                $(element).parents('.control-group').removeClass('error');
+                $(element).parents('.control-group').addClass('success');
+            },
+            messages: {
+                username: "Vui lòng nhập tên đăng nhập",
+                password: "Vui lòng nhập mật khẩu mới",
+				        password2: { equalTo: "Mật khẩu không khớp" },
+            },
+            submitHandler: function(form,e) {
+                console.log('Form submitted');
+                $.ajax({
+                      type: "POST",
+                      url: "<?php echo $this->BaseUrl?>/admin/useradmin/create/",
+                      data: $('#form-edit').serialize() ,
+                      cache: false,
+                      success: function(html)
+                      {   
+                        //alert(html);
+                        $("#notify").html(html);
+                        $("#model-warning").modal('show');
+                        //$("#message").html("Đổi mật khẩu thành công"); 
+                        //$(".close-modal").hide();  
+                                                                               
+                      }
+                });
+                return false;                       
+            }
+        });
+ });
+
+  function isNumber(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+  }
+
+</script>
+
+
+ <div id="content">
+    <div id="content-header">
+      <div id="breadcrumb"> <a href="" title="Trang chủ" class="tip-bottom"><i class="icon-home"></i></a> <a href="#" class="current">Tạo mới tài khoản người dùng</a> </div>
+      <!-- <h1>Quản lý luật sư</h1> -->
+    </div>
+   <div class="container-fluid"> 
+   <div class="row-fluid">
+      <div class="alert alert-success alert-dismissible message-success">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          <strong>Thông báo</strong> Bạn đã tạo tài khoản người dùng mới thành công.
+        </div>
+    </div>   
+    <!-- <h4>Thêm mới luật sư tập sự</h4> -->
+    <div class="row-fluid">     
+        <!-- open div general information-->
+        <div class="span12">          
+          <div class="widget-box">
+            <div class="widget-title"> <span class="icon"> <i class="icon-align-justify"></i> </span>
+              <h5>Tạo mới tài khoản người dùng</h5>
+            </div>
+            <div class="widget-content nopadding" id="detail-information">
+            <!--start form-->              
+                <div class="row-fluid form-horizontal">
+                <form id="form-edit" class="form-horizontal">
+                    <p id="message"><?php echo $this->parError; ?></p>
+                    <!-- <input type="hidden" name="user_id" id="user_id"  value="<?php echo $this->data['user_id'];?>"/>  -->
+                    <!-- <input type="hidden" name="passwordold" id="passwordold" value="<?php echo $this->data['user_password'];?>" />  -->
+                    <div class="control-group">
+                          <label class="control-label">Nhập tên đăng nhập</label>
+                          <div class="controls">
+                              <input type="text" id="username" name="username">
+                          </div>
+                    </div>
+
+                    <div class="control-group">        
+                          <label class="control-label">Nhập mật khẩu mới:</label>
+                          <div class="controls">
+                            <input id="password" type="password" name="password" />
+                          </div>
+                      </div> 
+
+                    <div class="control-group">        
+                        <label class="control-label">Xác nhận mật khẩu mới:</label>
+                        <div class="controls">
+                        <input id="password2" type="password" name="password2" />
+                        </div>
+                    </div> 
+                              
+                    <div class="form-actions">
+                      <button style="float: right;" type="submit" class="btn">Lưu</button>
+                    </div>
+                  </form>
+                </div>            
+              <!-- end form -->
+            </div>          
+          </div>
+        </div>   
+      </div>            
+      </div>     
+    </div>    
+    </div>
+      <!--end div-->   
+      <!--open div--> 
+   
+    </div>  
+  </div>
+  
+ 
+<!-- </div> -->
+
+<!-- Modal -->
+<div id="model-warning" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Thông báo</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="notify"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+        <!-- <button type="button" class="btn btn-primary">Save changes</button>  -->
+      </div>
+    </div>
+  </div>
+</div>

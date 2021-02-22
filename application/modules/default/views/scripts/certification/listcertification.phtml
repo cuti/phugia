@@ -1,0 +1,30 @@
+<?php  
+    if($this->paymentofflines != null){
+        foreach ($this->paymentofflines as $pay) {           
+            // '<td>'.$pay['payment_lawyer_off_id'].'</td>'.
+                $text = '';
+                $dateCreated = ($pay['law_code_createdate'] != null && $pay['law_code_createdate'] != ''
+                && $pay['law_code_createdate'] != '1900-01-01 00:00:00') ? date('d/m/Y', strtotime($pay['law_code_createdate'])) : ''; 
+                if($pay['payment_training_off_status'] == 1){
+                $text = '<td>Đã thanh toán</td>';
+                }else{
+                $text = '<td>Chưa thanh toán</td>';  
+                }    
+
+                $values  = $pay['payment_training_off_code'];
+                $value = explode("_", $values);
+
+                echo ' <tr class="gradeC">'.
+                '<td>'.$pay['cus_firstname'].' '.$pay['cus_lastname'].'</td>'.
+                '<td>'.$pay['cus_lawyer_number'].'</td>'.
+                '<td>'.$dateCreated.'</td>'.
+                '<td>'.$pay['payment_training_off_code'].'</td>'.                   
+                '<td>'.$pay['cat_train_name'].'</td>'.
+                '<td>'.$pay['cat_train_number'].'</td>'.
+                '<td>'.$value[0].'</td>'.
+                '<td class="center">'.                                  
+                    '<button onClick="printPaymentOfflineStatus('.$pay['payment_training_off_id'].');"><i class="icon-print"></i></button>'.
+        '</tr>';                            
+        }  
+    }
+?>

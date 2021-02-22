@@ -1,0 +1,1244 @@
+<script>
+$(document).ready(function(){
+  
+    $("#search").hide();
+  $(".searchfield").hide();
+
+  $('select').select2();
+
+  // $('.datepicker-start').datepicker();
+
+  // $('.datepicker-end').datepicker();
+
+  var date = new Date();
+  var today = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  var today1 = new Date(date.getFullYear(), date.getMonth()-1, date.getDate());
+
+  $('.datepicker-start1').datepicker({ format: 'dd/mm/yyyy' }); // format to show
+  $('.datepicker-start1').datepicker('setValue', today1);
+
+  $('.datepicker-end1').datepicker({ format: 'dd/mm/yyyy' }); // format to show
+  $('.datepicker-end1').datepicker('setValue', today);
+
+  var enddate = $("#enddate1").val();
+
+  var startdate = $("#startdate1").val();
+
+  var searchText = $("#time1").val();
+
+//   var year = $("#year1").val();
+
+  var type = $("#type1").val();
+
+  var dataString = '?search='+ searchText +'&type='+ type
+  + '&enddate='+ enddate+'&startdate='+ startdate;
+  $("#downloadUrl").attr("href", "<?php echo $this->BaseUrl?>/default/statistic/reportlawyerfeeexportexcel"+dataString);
+  var dataTable = $('#employee-grid').DataTable( {
+    "language": {
+            "lengthMenu": "Hiển thị _MENU_ dòng trên trang",
+            "zeroRecords": "Không tìm thấy",
+            "info": "Hiển thị trang _PAGE_ of _PAGES_",
+            "infoEmpty": "Không có dữ liệu thích hợp",
+            "infoFiltered": "(lọc từ _MAX_ tổng số kết quả)",
+            "paginate": {
+                "first":      "Đầu",
+                "last":       "Cuối",
+                "next":       "Tới",
+                "previous":   "Sau"
+            }
+        },
+		"processing": true,
+    "serverSide": true,
+    "searching": false,
+    "aLengthMenu": [[10, 50, 75, -1], [10, 50, 75, "All"]],
+        "iDisplayLength": 10,
+    "ajax":{
+      url :"<?php echo $this->BaseUrl?>/default/statistic/reportlawyerfeedatatable"+dataString, // json datasource
+      type: "post",  // method  , by default get
+      // done:function(){
+      //   $("#downloadUrl").attr("href", "<?php echo $this->BaseUrl?>/default/categorytraining/listtest"+dataString);
+      // },
+      error: function(){  // error handling
+        $(".employee-grid-error").html("");
+        //$("#employee-grid").append('<tbody class="employee-grid-error"><tr><th colspan="3">Không tìm thấy kết quả</th></tr></tbody>');
+        $("#employee-grid_processing").css("display","none");
+        
+      }
+    }
+  } );
+
+  $('#filtertable').on('submit', function(e){
+      e.preventDefault();
+      
+      var searchText = $("#time").val();
+
+    //   var year = $("#year").val();
+
+      var type = $("#type1").val();
+
+      var enddate1 = $("#enddate1").val();
+
+      var startdate1 = $("#startdate1").val();
+
+      //console.log(process(startdate1));
+      var pastDate = new Date('2015-12-31');
+      var newDate = process(startdate1);
+      if(newDate >= pastDate){
+        //alert("okie");
+        //$(".modal-body").html("Bạn không thể chọn thời gian trước ngày 01/01/2016.");
+        //$("#model-warning").modal('show');
+        var dataString = '?search='+ searchText +'&type='+ type
+         + '&enddate='+ enddate1+'&startdate='+ startdate1;
+        $("#downloadUrl").attr("href", "<?php echo $this->BaseUrl?>/default/report/reportlawyerfeeexportexcel"+dataString);
+        dataTable.ajax.url( '<?php echo $this->BaseUrl?>/default/statistic/reportlawyerfeedatatable'+dataString).load();
+      }else{
+        //alert("not okie");
+        $('.datepicker-start1').datepicker('setValue', today1);
+        $(".modal-body").html("Bạn không thể chọn thời gian trước ngày 01/01/2016.");
+        $("#model-warning").modal('show');
+      }    
+    });   
+
+
+    //tab 2
+
+
+      var searchText2 = $("#time2").val();
+      
+      $('.datepicker-start2').datepicker({ format: 'dd/mm/yyyy' }); // format to show
+      $('.datepicker-start2').datepicker('setValue', today1);
+
+      $('.datepicker-end2').datepicker({ format: 'dd/mm/yyyy' }); // format to show
+      $('.datepicker-end2').datepicker('setValue', today);
+
+      var enddate2 = $("#enddate2").val();
+
+      var startdate2 = $("#startdate2").val();  
+
+      var year2 = $("#year2").val();
+
+      var type2 = $("#type2").val();
+
+      var dataString2 = '?search='+ searchText2 +'&year='+ year2
+      +'&type='+ type2 + '&enddate='+ enddate2+'&startdate='+ startdate2;
+      //$("#downloadUrl2").attr("href", "<?php echo $this->BaseUrl?>/default/statistic/reportlawyerfeeexportexcel"+dataString2);
+      var dataTable2 = $('#employee-grid2').DataTable( {
+        "language": {
+                "lengthMenu": "Hiển thị _MENU_ dòng trên trang",
+                "zeroRecords": "Không tìm thấy",
+                "info": "Hiển thị trang _PAGE_ of _PAGES_",
+                "infoEmpty": "Không có dữ liệu thích hợp",
+                "infoFiltered": "(lọc từ _MAX_ tổng số kết quả)",
+                "paginate": {
+                    "first":      "Đầu",
+                    "last":       "Cuối",
+                    "next":       "Tới",
+                    "previous":   "Sau"
+                }
+            },
+        "processing": true,
+        "serverSide": true,
+        "searching": false,
+        "aLengthMenu": [[10, 50, 75, -1], [10, 50, 75, "All"]],
+            "iDisplayLength": 10,
+        "ajax":{
+          url :"<?php echo $this->BaseUrl?>/default/statistic/reportlawyertrainingintimedatatable"+dataString2, // json datasource
+          type: "post",  // method  , by default get
+          // done:function(){
+          //   $("#downloadUrl").attr("href", "<?php echo $this->BaseUrl?>/default/categorytraining/listtest"+dataString);
+          // },
+          error: function(){  // error handling
+            $(".employee-grid-error2").html("");
+            //$("#employee-grid2").append('<tbody class="employee-grid-error2"><tr><th colspan="3">Không tìm thấy kết quả</th></tr></tbody>');
+            $("#employee-grid_processing2").css("display","none");
+            
+          }
+        }
+      } );
+
+    $('#filtertable2').on('submit', function(e){
+        e.preventDefault();
+        
+        var searchText2 = $("#time2").val();
+
+        var year2 = $("#year2").val();
+
+        var enddate2 = $("#enddate2").val();
+
+        var startdate2 = $("#startdate2").val();  
+
+        //var year2 = $("#year2").val();
+
+        var type2 = $("#type2").val();
+
+        var pastDate = new Date('2015-12-31');
+        var newDate = process(startdate2);
+        if(newDate >= pastDate){
+          //alert("okie");
+          //$(".modal-body").html("Bạn không thể chọn thời gian trước ngày 01/01/2016.");
+          //$("#model-warning").modal('show');
+          var dataString2 = '?search='+ searchText2 +'&year='+ year2
+          +'&type='+ type2 + '&enddate='+ enddate2+'&startdate='+ startdate2;
+
+          //var dataString2 = '?search='+ searchText2 +'&year='+ year2;
+          //$("#downloadUrl2").attr("href", "<?php echo $this->BaseUrl?>/default/statistic/reportlawyerfeeexportexcel"+dataString2);
+          dataTable2.ajax.url( '<?php echo $this->BaseUrl?>/default/statistic/reportlawyertrainingintimedatatable'+dataString2).load();
+        }else{
+          //alert("not okie");
+          $('.datepicker-start2').datepicker('setValue', today1);
+          $(".modal-body").html("Bạn không thể chọn thời gian trước ngày 01/01/2016.");
+          $("#model-warning").modal('show');
+        }  
+      
+      });   
+
+
+  //tab3
+
+    //   var searchText3 = $("#time3").val();
+
+      $('.datepicker-start3').datepicker({ format: 'dd/mm/yyyy' }); // format to show
+      $('.datepicker-start3').datepicker('setValue', today1);
+
+      $('.datepicker-end3').datepicker({ format: 'dd/mm/yyyy' }); // format to show
+      $('.datepicker-end3').datepicker('setValue', today);
+
+      var year3 = $("#year3").val();
+
+      var searchText3 = $("#time2").val();
+
+      var enddate3 = $("#enddate3").val();
+
+      var startdate3 = $("#startdate3").val();  
+
+    //var year2 = $("#year2").val();
+
+      var type3 = $("#type3").val();
+
+      var dataString3 = '?search='+ searchText3 +'&year='+ year3
+        +'&type='+ type3 + '&enddate='+ enddate3+'&startdate='+ startdate3;
+      //$("#downloadUrl3").attr("href", "<?php echo $this->BaseUrl?>/default/report/reportlawyerfeeexportexcel"+dataString);
+      var dataTable3 = $('#employee-grid3').DataTable( {
+        "language": {
+                "lengthMenu": "Hiển thị _MENU_ dòng trên trang",
+                "zeroRecords": "Không tìm thấy",
+                "info": "Hiển thị trang _PAGE_ of _PAGES_",
+                "infoEmpty": "Không có dữ liệu thích hợp",
+                "infoFiltered": "(lọc từ _MAX_ tổng số kết quả)",
+                "paginate": {
+                    "first":      "Đầu",
+                    "last":       "Cuối",
+                    "next":       "Tới",
+                    "previous":   "Sau"
+                }
+            },
+        "processing": true,
+        "serverSide": true,
+        "searching": false,
+        "aLengthMenu": [[10, 50, 75, -1], [10, 50, 75, "All"]],
+            "iDisplayLength": 10,
+        "ajax":{
+          url :"<?php echo $this->BaseUrl?>/default/statistic/listpaymentintershipdatatable"+dataString3, // json datasource
+          type: "post",  // method  , by default get
+          // done:function(){
+          //   $("#downloadUrl").attr("href", "<?php echo $this->BaseUrl?>/default/categorytraining/listtest"+dataString);
+          // },
+          error: function(){  // error handling
+            $(".employee-grid-error3").html("");
+            //$("#employee-grid3").append('<tbody class="employee-grid-error3"><tr><th colspan="3">Không tìm thấy kết quả</th></tr></tbody>');
+            $("#employee-grid_processing3").css("display","none");
+            
+          }
+        }
+      } );
+
+      $('#filtertable3').on('submit', function(e){
+          e.preventDefault();
+          
+        //   var searchText3 = $("#time3").val();
+
+        var year3 = $("#year3").val();
+
+        var searchText3 = $("#time2").val();
+
+        var enddate3 = $("#enddate3").val();
+
+        var startdate3 = $("#startdate3").val();  
+
+        //var year2 = $("#year2").val();
+
+        var type3 = $("#type3").val();
+
+        var pastDate = new Date('2015-12-31');
+        var newDate = process(startdate3);
+        if(newDate >= pastDate){
+          //alert("okie");
+          //$(".modal-body").html("Bạn không thể chọn thời gian trước ngày 01/01/2016.");
+          //$("#model-warning").modal('show');
+          var dataString3 = '?search='+ searchText3 +'&year='+ year3
+            +'&type='+ type3 + '&enddate='+ enddate3+'&startdate='+ startdate3;
+
+        //  var dataString3 = '?year='+ year3;
+          //$("#downloadUrl3").attr("href", "<?php echo $this->BaseUrl?>/default/report/reportlawyerfeeexportexcel"+dataString3);
+          dataTable3.ajax.url( '<?php echo $this->BaseUrl?>/default/statistic/listpaymentintershipdatatable'+dataString3).load();
+        }else{
+          //alert("not okie");
+          $('.datepicker-start3').datepicker('setValue', today1);
+          $(".modal-body").html("Bạn không thể chọn thời gian trước ngày 01/01/2016.");
+          $("#model-warning").modal('show');
+        }    
+        
+        });   
+
+    //tab 4
+
+        //   var searchText3 = $("#time3").val();
+
+      $('.datepicker-start4').datepicker({ format: 'dd/mm/yyyy' }); // format to show
+      $('.datepicker-start4').datepicker('setValue', today1);
+
+      $('.datepicker-end4').datepicker({ format: 'dd/mm/yyyy' }); // format to show
+      $('.datepicker-end4').datepicker('setValue', today);
+
+      var year4 = $("#year4").val();
+
+      var searchText4 = $("#time4").val();
+
+      var enddate4 = $("#enddate4").val();
+
+      var startdate4 = $("#startdate4").val();  
+
+    //var year2 = $("#year2").val();
+
+      var type4 = $("#type4").val();
+
+      var dataString4 = '?search='+ searchText4 +'&year='+ year4
+        +'&type='+ type4 + '&enddate='+ enddate4+'&startdate='+ startdate4;
+      //$("#downloadUrl3").attr("href", "<?php echo $this->BaseUrl?>/default/report/reportlawyerfeeexportexcel"+dataString);
+      var dataTable4 = $('#employee-grid4').DataTable( {
+        "language": {
+                "lengthMenu": "Hiển thị _MENU_ dòng trên trang",
+                "zeroRecords": "Không tìm thấy",
+                "info": "Hiển thị trang _PAGE_ of _PAGES_",
+                "infoEmpty": "Không có dữ liệu thích hợp",
+                "infoFiltered": "(lọc từ _MAX_ tổng số kết quả)",
+                "paginate": {
+                    "first":      "Đầu",
+                    "last":       "Cuối",
+                    "next":       "Tới",
+                    "previous":   "Sau"
+                }
+            },
+        "processing": true,
+        "serverSide": true,
+        "searching": false,
+        "aLengthMenu": [[10, 50, 75, -1], [10, 50, 75, "All"]],
+            "iDisplayLength": 10,
+        "ajax":{
+          url :"<?php echo $this->BaseUrl?>/default/statistic/listpaymentjoiningdatatable"+dataString3, // json datasource
+          type: "post",  // method  , by default get
+          // done:function(){
+          //   $("#downloadUrl").attr("href", "<?php echo $this->BaseUrl?>/default/categorytraining/listtest"+dataString);
+          // },
+          error: function(){  // error handling
+            $(".employee-grid-error4").html("");
+            //$("#employee-grid4").append('<tbody class="employee-grid-error4"><tr><th colspan="3">Không tìm thấy kết quả</th></tr></tbody>');
+            $("#employee-grid_processing4").css("display","none");
+            
+          }
+        }
+      } );
+
+      $('#filtertable4').on('submit', function(e){
+          e.preventDefault();
+          
+        //   var searchText3 = $("#time3").val();
+
+        var year4 = $("#year4").val();
+
+        var searchText4 = $("#time4").val();
+
+        var enddate4 = $("#enddate4").val();
+
+        var startdate4 = $("#startdate4").val();  
+
+        //var year2 = $("#year2").val();
+
+        var type4 = $("#type4").val();
+
+        var pastDate = new Date('2015-12-31');
+        var newDate = process(startdate4);
+        if(newDate >= pastDate){
+          //alert("okie");
+          //$(".modal-body").html("Bạn không thể chọn thời gian trước ngày 01/01/2016.");
+          //$("#model-warning").modal('show');
+          var dataString4 = '?search='+ searchText4 +'&year='+ year4
+            +'&type='+ type4 + '&enddate='+ enddate4+'&startdate='+ startdate4;
+
+        //  var dataString3 = '?year='+ year3;
+          //$("#downloadUrl3").attr("href", "<?php echo $this->BaseUrl?>/default/report/reportlawyerfeeexportexcel"+dataString3);
+          dataTable4.ajax.url( '<?php echo $this->BaseUrl?>/default/statistic/listpaymentjoiningdatatable'+dataString4).load();
+        }else{
+          //alert("not okie");
+          $('.datepicker-start4').datepicker('setValue', today1);
+          $(".modal-body").html("Bạn không thể chọn thời gian trước ngày 01/01/2016.");
+          $("#model-warning").modal('show');
+        }
+
+       
+        
+        });  
+
+        // table 5
+        $('.datepicker-start5').datepicker({ format: 'dd/mm/yyyy' }); // format to show
+      $('.datepicker-start5').datepicker('setValue', today1);
+
+      $('.datepicker-end5').datepicker({ format: 'dd/mm/yyyy' }); // format to show
+      $('.datepicker-end5').datepicker('setValue', today);
+
+      //var year4 = $("#year4").val();
+
+      //var searchText4 = $("#time4").val();
+
+      var enddate5 = $("#enddate5").val();
+
+      var startdate5 = $("#startdate5").val();  
+
+      // var dataString5 = '?search='+ searchText4 +'&year='+ year4
+      //   +'&type='+ type4 + '&enddate='+ enddate4+'&startdate='+ startdate4;
+        var dataString5 = '?search=' +'&year='
+        +'&type='+ '&enddate='+ enddate5+'&startdate='+ startdate5;
+      $("#downloadUrl5").attr("href", "<?php echo $this->BaseUrl?>/default/statistic/reportlistloanpaymentintershipexportexcel"+dataString5);
+      var dataTable5 = $('#employee-grid5').DataTable( {
+        "language": {
+                "lengthMenu": "Hiển thị _MENU_ dòng trên trang",
+                "zeroRecords": "Không tìm thấy",
+                "info": "Hiển thị trang _PAGE_ of _PAGES_",
+                "infoEmpty": "Không có dữ liệu thích hợp",
+                "infoFiltered": "(lọc từ _MAX_ tổng số kết quả)",
+                "paginate": {
+                    "first":      "Đầu",
+                    "last":       "Cuối",
+                    "next":       "Tới",
+                    "previous":   "Sau"
+                }
+            },
+        "processing": true,
+        "serverSide": true,
+        "searching": false,
+        "aLengthMenu": [[10, 50, 75, -1], [10, 50, 75, "All"]],
+            "iDisplayLength": 10,
+        "ajax":{
+          // url :"<?php echo $this->BaseUrl?>/default/statistic/listpaymentjoiningdatatable"+dataString5, // json datasource
+          url :"<?php echo $this->BaseUrl?>/default/statistic/listloanpaymentintershipdatatable"+dataString5, // json datasource
+          type: "post",  // method  , by default get
+          // done:function(){
+          //   $("#downloadUrl").attr("href", "<?php echo $this->BaseUrl?>/default/categorytraining/listtest"+dataString);
+          // },
+          error: function(){  // error handling
+            $(".employee-grid-error5").html("");
+            //$("#employee-grid4").append('<tbody class="employee-grid-error4"><tr><th colspan="3">Không tìm thấy kết quả</th></tr></tbody>');
+            $("#employee-grid_processing5").css("display","none");
+            
+          }
+        }
+      } );
+
+      $('#filtertable5').on('submit', function(e){
+          e.preventDefault();
+          
+        //   var searchText3 = $("#time3").val();
+
+        //var year4 = $("#year4").val();
+
+        //var searchText4 = $("#time4").val();
+
+        var enddate5 = $("#enddate5").val();
+
+        var startdate5 = $("#startdate5").val();  
+
+        //var year2 = $("#year2").val();
+
+        //var type4 = $("#type4").val();
+
+        var pastDate = new Date('2015-12-31');
+        var newDate = process(startdate5);
+        if(newDate >= pastDate){
+          //alert("okie");
+          //$(".modal-body").html("Bạn không thể chọn thời gian trước ngày 01/01/2016.");
+          //$("#model-warning").modal('show');
+          var dataString5 = '?search=' +'&year='
+            +'&type='+  '&enddate='+ enddate5+'&startdate='+ startdate5;
+
+        //  var dataString3 = '?year='+ year3;
+          //$("#downloadUrl3").attr("href", "<?php echo $this->BaseUrl?>/default/report/reportlawyerfeeexportexcel"+dataString3);
+          dataTable5.ajax.url( '<?php echo $this->BaseUrl?>/default/statistic/listloanpaymentintershipdatatable'+dataString5).load();
+        }else{
+          //alert("not okie");
+          $('.datepicker-start5').datepicker('setValue', today1);
+          $(".modal-body").html("Bạn không thể chọn thời gian trước ngày 01/01/2016.");
+          $("#model-warning").modal('show');
+        }
+
+     
+        
+        });     
+
+
+        // table 6
+        $('.datepicker-start6').datepicker({ format: 'dd/mm/yyyy' }); // format to show
+      $('.datepicker-start6').datepicker('setValue', today1);
+
+      $('.datepicker-end6').datepicker({ format: 'dd/mm/yyyy' }); // format to show
+      $('.datepicker-end6').datepicker('setValue', today);
+      var enddate6 = $("#enddate6").val();
+
+      var startdate6 = $("#startdate6").val();
+      var dataString6 = '?search=' +'&year='
+        +'&type=' + '&enddate='+ enddate6+'&startdate='+ startdate6;
+      $("#downloadUrl6").attr("href", "<?php echo $this->BaseUrl?>/default/statistic/reportlistloanpaymentjoiningexportexcel"+dataString6);
+      var dataTable6 = $('#employee-grid6').DataTable( {
+        "language": {
+                "lengthMenu": "Hiển thị _MENU_ dòng trên trang",
+                "zeroRecords": "Không tìm thấy",
+                "info": "Hiển thị trang _PAGE_ of _PAGES_",
+                "infoEmpty": "Không có dữ liệu thích hợp",
+                "infoFiltered": "(lọc từ _MAX_ tổng số kết quả)",
+                "paginate": {
+                    "first":      "Đầu",
+                    "last":       "Cuối",
+                    "next":       "Tới",
+                    "previous":   "Sau"
+                }
+            },
+        "processing": true,
+        "serverSide": true,
+        "searching": false,
+        "aLengthMenu": [[10, 50, 75, -1], [10, 50, 75, "All"]],
+            "iDisplayLength": 10,
+        "ajax":{
+          url :"<?php echo $this->BaseUrl?>/default/statistic/listloanpaymentjoiningdatatable"+dataString6, // json datasource
+          type: "post",  // method  , by default get
+          // done:function(){
+          //   $("#downloadUrl").attr("href", "<?php echo $this->BaseUrl?>/default/categorytraining/listtest"+dataString);
+          // },
+          error: function(){  // error handling
+            $(".employee-grid-error6").html("");
+            //$("#employee-grid4").append('<tbody class="employee-grid-error4"><tr><th colspan="3">Không tìm thấy kết quả</th></tr></tbody>');
+            $("#employee-grid_processing6").css("display","none");
+            
+          }
+        }
+      } );
+
+      $('#filtertable6').on('submit', function(e){
+          e.preventDefault();
+          
+        //   var searchText3 = $("#time3").val();
+
+        //var year4 = $("#year4").val();
+
+        //var searchText4 = $("#time4").val();
+
+        var enddate6 = $("#enddate6").val();
+
+        var startdate6 = $("#startdate6").val();  
+
+        //var year2 = $("#year2").val();
+
+        //var type4 = $("#type4").val();
+
+        var pastDate = new Date('2015-12-31');
+        var newDate = process(startdate6);
+        if(newDate >= pastDate){
+          //alert("okie");
+          //$(".modal-body").html("Bạn không thể chọn thời gian trước ngày 01/01/2016.");
+          //$("#model-warning").modal('show');
+          var dataString6 = '?search=' +'&year='
+            +'&type=' + '&enddate='+ enddate6+'&startdate='+ startdate6;
+
+        //  var dataString3 = '?year='+ year3;
+          $("#downloadUrl6").attr("href", "<?php echo $this->BaseUrl?>/default/statistic/reportlistloanpaymentjoiningexportexcel"+dataString6);
+          dataTable6.ajax.url( '<?php echo $this->BaseUrl?>/default/statistic/listloanpaymentjoiningdatatable'+dataString6).load();
+        }else{
+          //alert("not okie");
+          $('.datepicker-start6').datepicker('setValue', today1);
+          $(".modal-body").html("Bạn không thể chọn thời gian trước ngày 01/01/2016.");
+          $("#model-warning").modal('show');
+        }
+
+      
+        
+        });    
+
+                // table 7
+      $('.datepicker-start7').datepicker({ format: 'dd/mm/yyyy' }); // format to show
+      $('.datepicker-start7').datepicker('setValue', today1);
+
+      $('.datepicker-end7').datepicker({ format: 'dd/mm/yyyy' }); // format to show
+      $('.datepicker-end7').datepicker('setValue', today);
+      var enddate7 = $("#enddate7").val();
+
+      var startdate7 = $("#startdate7").val();
+      var dataString7 = '?search=' +'&year='
+        +'&type=' + '&enddate='+ enddate7+'&startdate='+ startdate7;
+      // $("#downloadUrl6").attr("href", "<?php echo $this->BaseUrl?>/default/statistic/reportlistloanpaymentjoiningexportexcel"+dataString7);
+      var dataTable7 = $('#employee-grid7').DataTable( {
+        "language": {
+                "lengthMenu": "Hiển thị _MENU_ dòng trên trang",
+                "zeroRecords": "Không tìm thấy",
+                "info": "Hiển thị trang _PAGE_ of _PAGES_",
+                "infoEmpty": "Không có dữ liệu thích hợp",
+                "infoFiltered": "(lọc từ _MAX_ tổng số kết quả)",
+                "paginate": {
+                    "first":      "Đầu",
+                    "last":       "Cuối",
+                    "next":       "Tới",
+                    "previous":   "Sau"
+                }
+            },
+        "processing": true,
+        "serverSide": true,
+        "searching": false,
+        "aLengthMenu": [[10, 50, 75, -1], [10, 50, 75, "All"]],
+            "iDisplayLength": 10,
+        "ajax":{
+          url :"<?php echo $this->BaseUrl?>/default/statistic/listpaymentdifferentdatatable"+dataString7, // json datasource
+          type: "post",  // method  , by default get
+          // done:function(){
+          //   $("#downloadUrl").attr("href", "<?php echo $this->BaseUrl?>/default/categorytraining/listtest"+dataString);
+          // },
+          error: function(){  // error handling
+            $(".employee-grid-error7").html("");
+            //$("#employee-grid4").append('<tbody class="employee-grid-error4"><tr><th colspan="3">Không tìm thấy kết quả</th></tr></tbody>');
+            $("#employee-grid_processing7").css("display","none");
+            
+          }
+        }
+      } );
+
+      $('#filtertable7').on('submit', function(e){
+          e.preventDefault();
+          
+        //   var searchText3 = $("#time3").val();
+
+        //var year4 = $("#year4").val();
+
+        //var searchText4 = $("#time4").val();
+
+        var enddate7 = $("#enddate7").val();
+
+        var startdate7 = $("#startdate7").val();  
+
+        //var year2 = $("#year2").val();
+
+        //var type4 = $("#type4").val();
+
+        var pastDate = new Date('2015-12-31');
+        var newDate = process(startdate7);
+        if(newDate >= pastDate){
+          //alert("okie");
+          //$(".modal-body").html("Bạn không thể chọn thời gian trước ngày 01/01/2016.");
+          //$("#model-warning").modal('show');
+          var dataString7 = '?search=' +'&year='
+            +'&type=' + '&enddate='+ enddate7+'&startdate='+ startdate7;
+
+        //  var dataString3 = '?year='+ year3;
+          // $("#downloadUrl6").attr("href", "<?php echo $this->BaseUrl?>/default/statistic/reportlistloanpaymentjoiningexportexcel"+dataString6);
+          dataTable7.ajax.url( '<?php echo $this->BaseUrl?>/default/statistic/listpaymentdifferentdatatable'+dataString7).load();
+        }else{
+          //alert("not okie");
+          $('.datepicker-start7').datepicker('setValue', today1);
+          $(".modal-body").html("Bạn không thể chọn thời gian trước ngày 01/01/2016.");
+          $("#model-warning").modal('show');
+        }
+
+      
+        
+        });       
+      
+});
+
+function process(date){
+   var parts = date.split("/");
+   return new Date(parts[2], parts[1] - 1, parts[0]);
+}
+</script>
+
+
+<div id="content">
+  <div id="content-header">
+    <div id="breadcrumb"> <a href="#" title="Trang chủ" class="tip-bottom"><i class="icon-home"></i> Trang chủ</a> <a href="#" class="current">Thống kê - Liệt kê thu phí</a> </div>
+    
+  </div>
+  
+  <div class="container-fluid">
+        <div class="widget-box">
+            <div class="widget-title">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="#tab1">DS đóng phí thành viên</a></li>
+                    <li><a data-toggle="tab" href="#tab2">DS đóng phí bồi dưỡng</a></li>
+                    <li><a data-toggle="tab" href="#tab3">DS đóng phí tập sự</a></li>                    
+                    <li><a data-toggle="tab" href="#tab4">DS đóng phí gia nhập</a></li>   
+                    <!-- <li><a data-toggle="tab" href="#tab5">DS nợ đóng phí tập sự</a></li>                     -->
+                    <li><a data-toggle="tab" href="#tab6">DS nợ đóng phí gia nhập</a></li>         
+                    <li><a data-toggle="tab" href="#tab7">DS đóng phí khác</a></li>               
+                </ul>
+            </div>
+            <div class="widget-content tab-content">
+                <div id="tab1" class="tab-pane active">
+                    <h3>Danh sách luật sư đóng phí thành viên</h3>
+                    <div  style="margin-bottom:4%;">  
+                        <form method="post" id="filtertable" action=""> 
+                          <table cellpadding="5" cellspacing="0">
+                            <tbody><tr>
+                                      <td>   
+                                          Hình thức đóng phí : 
+                                      </td>
+                                      <td>   
+                                          <select name="type1" id="type1" style="width: 150px">
+                                              <option value="online">Đóng online</option>
+                                              <option value="offline">Đóng tại đoàn</option>
+                                              <option value="all">Tất cả</option>                                             
+                                          </select>	 
+                                      </td>	
+                                      <!-- <tr> -->
+                  
+                                        <td>													
+                                        Thời gian từ ngày: 
+                                        </td>
+                                        <td>                      
+                                            <div id="dpcmnd"  data-date="10/20/2018" class="input-append date datepicker-start1">
+                                            
+                                                <input id="startdate1" name="startdate1" type="text" data-date-format="mm-dd-yyyy" class="span2" >
+                                                <span class="add-on"><i class="icon-th"></i></span>
+                                            </div>                      
+                                        </td>	
+                                        <td>													
+                                        Thời gian đến ngày: 
+                                        </td>
+                                        <td>					 
+                     
+                                            <div id="dpcmnd"  data-date="10/20/2018" class="input-append date datepicker-end1">
+                                            
+                                                <input id="enddate1" name="enddate1" type="text" data-date-format="mm-dd-yyyy" class="span2" >
+                                                <span class="add-on"><i class="icon-th"></i></span>
+                                            </div>  
+                                        </td>													
+
+                                      <!-- <td>   
+                                          Thời gian (theo quý) : 
+                                      </td>
+                                      <td>   
+                                          <select name="time" id="time" style="width: 150px">
+                                              <option value="1">Quý 1</option>
+                                              <option value="2">Quý 2</option>
+                                              <option value="3">Quý 3</option>
+                                              <option value="4">Quý 4</option>
+                                          </select>	 
+                                      </td>		
+                                      <td>   
+                                          Năm : 
+                                      </td>
+                                      <td>   
+                                          <select name="year" id="year" style="width: 150px">                                            
+                                              <option value="2019">2019</option>
+                                              <option value="2018">2018</option>
+                                              <option value="2017">2017</option>
+                                              <option value="2016">2016</option>
+                                          </select>	 
+                                      </td>											 -->
+                                      <td>
+                                        <input type="submit" name="sbsearch" value="   Tìm   ">   
+                                      </td>
+                                    </tr>								    
+                            </tbody>
+                          </table>                 
+                        </form>  
+                        <br>
+                        <br>
+
+                        <!-- Xuất file : <a id="downloadUrl" href=""><img src="<?php echo $this->BaseUrl?>/files/images/ico_excel.gif" border="0"></a> -->
+
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span12">
+                          <table id="employee-grid" class="table table-bordered"  cellpadding="0" cellspacing="0" border="0" class="display" width="100%">
+                                <thead>
+                                  <tr>
+                                      <th>STT</th>
+                                      <th>Họ Tên </th>
+                                      <th>Năm sinh</th>
+                                      <th>Số thẻ</th>
+                                      <th>Số tháng</th>
+                                      <th>Tỷ lệ Trích nộp 50% Mức phí tháng</th>
+                                      <th>Số biên nhận</th>
+                                      <th>Số tiền</th>
+                                      <th>Từ </th> 
+                                      <th>Đến</th>   
+                                      <th>Hình thức đóng</th>                  
+                                  </tr>
+                                </thead>
+                          </table>
+                        </div>
+                    </div>  
+                </div>
+                <div id="tab2" class="tab-pane">
+                    <h3>Danh sách LS tham gia bồi dưỡng</h3>
+                    <div  style="margin-bottom:4%;">  
+                        <form method="post" id="filtertable2" action=""> 
+                          <table cellpadding="5" cellspacing="0">
+                            <tbody><tr>
+                            <td>   
+                                          Hình thức đóng phí : 
+                                      </td>
+                                      <td>   
+                                          <select name="type2" id="type2" style="width: 150px">
+                                              <option value="online">Đóng online</option>
+                                              <option value="offline">Đóng tại đoàn</option>
+                                              <option value="all">Tất cả</option>                                             
+                                          </select>	 
+                                      </td>	
+                                      <!-- <tr> -->
+                  
+                                        <td>													
+                                        Thời gian từ ngày: 
+                                        </td>
+                                        <td>                      
+                                            <div id="dpcmnd"  data-date="10/20/2018" class="input-append date datepicker-start2">
+                                            
+                                                <input id="startdate2" name="startdate2" type="text" data-date-format="mm-dd-yyyy" class="span2" >
+                                                <span class="add-on"><i class="icon-th"></i></span>
+                                            </div>                      
+                                        </td>	
+                                        <td>													
+                                        Thời gian đến ngày: 
+                                        </td>
+                                        <td>					 
+                     
+                                            <div id="dpcmnd"  data-date="10/20/2018" class="input-append date datepicker-end2">
+                                            
+                                                <input id="enddate2" name="enddate2" type="text" data-date-format="mm-dd-yyyy" class="span2" >
+                                                <span class="add-on"><i class="icon-th"></i></span>
+                                            </div>  
+                                        </td>								
+                                      <td>
+                                        <input type="submit" name="sbsearch" value="   Tìm   ">   
+                                      </td>
+                                    </tr>								    
+                            </tbody>
+                          </table>                 
+                        </form> 
+                        <br>
+                        <br> 
+
+                        <!-- Xuất file : <a id="downloadUrl2" href=""><img src="<?php echo $this->BaseUrl?>/files/images/ico_excel.gif" border="0"></a> -->
+
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span12">
+                          <table id="employee-grid2" class="table table-bordered"  cellpadding="0" cellspacing="0" border="0" class="display" width="100%">
+                                <thead>
+                                  <tr>
+                                      <th>STT</th>
+                                      <th>Họ Tên </th>
+                                      <th>Năm sinh</th>
+                                      <th>CMND</th>
+                                      <th>Đợt</th>
+                                      <th>Ngày gia nhập</th>
+                                      <th>Số ĐTDĐ</th>
+                                      <th>Số thẻ</th>
+                                      <th>Ngày cấp</th>
+                                      <th>Số tiền </th>
+                                      <th>Loại </th>                                                      
+                                  </tr>
+                                </thead>
+                          </table>
+                        </div>
+                    </div>  
+                
+                </div>
+                <div id="tab3" class="tab-pane">
+                    <h3>Danh sách đóng phí tập sự</h3>
+                    <div  style="margin-bottom:4%;">  
+                        <form method="post" id="filtertable3" action=""> 
+                          <table cellpadding="5" cellspacing="0">
+                            <tbody><tr>
+                            <td>   
+                                          Hình thức đóng phí : 
+                                      </td>
+                                      <td>   
+                                          <select name="type3" id="type3" style="width: 150px">
+                                              <!-- <option value="online">Đóng online</option> -->
+                                              <option value="offline">Đóng tại đoàn</option>
+                                              <!-- <option value="all">Tất cả</option>                                              -->
+                                          </select>	 
+                                      </td>	
+                                      <!-- <tr> -->
+                  
+                                        <td>													
+                                        Thời gian từ ngày: 
+                                        </td>
+                                        <td>                      
+                                            <div id="dpcmnd"  data-date="10/20/2018" class="input-append date datepicker-start3">
+                                            
+                                                <input id="startdate3" name="startdate3" type="text" data-date-format="mm-dd-yyyy" class="span2" >
+                                                <span class="add-on"><i class="icon-th"></i></span>
+                                            </div>                      
+                                        </td>	
+                                        <td>													
+                                        Thời gian đến ngày: 
+                                        </td>
+                                        <td>					 
+                     
+                                            <div id="dpcmnd"  data-date="10/20/2018" class="input-append date datepicker-end3">
+                                            
+                                                <input id="enddate3" name="enddate3" type="text" data-date-format="mm-dd-yyyy" class="span2" >
+                                                <span class="add-on"><i class="icon-th"></i></span>
+                                            </div>  
+                                        </td>										
+                                      <td>
+                                        <input type="submit" name="sbsearch" value="   Tìm   ">   
+                                      </td>
+                                    </tr>								    
+                            </tbody>
+                          </table>                 
+                        </form>  
+                        <br>
+                        <br>
+
+                        <!-- Xuất file : <a id="downloadUrl3" href=""><img src="<?php echo $this->BaseUrl?>/files/images/ico_excel.gif" border="0"></a> -->
+
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span12">
+                          <table id="employee-grid3" class="table table-bordered"  cellpadding="0" cellspacing="0" border="0" class="display" width="100%">
+                                <thead>
+                                  <tr>      
+                                      <th>STT</th>
+                                      <th>Họ tên</th>
+                                      <th>CMND </th>
+                                      <th>SĐT</th>
+                                      <th>Số biên nhận</th>
+                                      <th>Đợt tập sự</th>
+                                      <th>Ngày đóng</th>                                      
+                                      <th>Số tiền</th>
+                                      <th>Hình thức đóng</th>                     
+                                  </tr>
+                                </thead>
+                          </table>
+                        </div>
+                    </div>  
+  
+                </div>
+                <div id="tab4" class="tab-pane">
+                    <h3>Danh sách đóng phí gia nhập</h3>
+                    <div  style="margin-bottom:4%;">  
+                        <form method="post" id="filtertable4" action=""> 
+                          <table cellpadding="5" cellspacing="0">
+                            <tbody><tr>
+                            <td>   
+                                          Hình thức đóng phí : 
+                                      </td>
+                                      <td>   
+                                          <select name="type4" id="type4" style="width: 150px">
+                                              <!-- <option value="online">Đóng online</option> -->
+                                              <option value="offline">Đóng tại đoàn</option>
+                                              <!-- <option value="all">Tất cả</option>                                              -->
+                                          </select>	 
+                                      </td>	
+                                      <!-- <tr> -->
+                  
+                                        <td>													
+                                        Thời gian từ ngày: 
+                                        </td>
+                                        <td>                      
+                                            <div id="dpcmnd"  data-date="10/20/2018" class="input-append date datepicker-start4">
+                                            
+                                                <input id="startdate4" name="startdate4" type="text" data-date-format="mm-dd-yyyy" class="span2" >
+                                                <span class="add-on"><i class="icon-th"></i></span>
+                                            </div>                      
+                                        </td>	
+                                        <td>													
+                                        Thời gian đến ngày: 
+                                        </td>
+                                        <td>					 
+                     
+                                            <div id="dpcmnd"  data-date="10/20/2018" class="input-append date datepicker-end4">
+                                            
+                                                <input id="enddate4" name="enddate4" type="text" data-date-format="mm-dd-yyyy" class="span2" >
+                                                <span class="add-on"><i class="icon-th"></i></span>
+                                            </div>  
+                                        </td>											
+                                      <td>
+                                        <input type="submit" name="sbsearch" value="   Tìm   ">   
+                                      </td>
+                                    </tr>								    
+                            </tbody>
+                          </table>                 
+                        </form>  
+                        <br>
+                        <br>
+
+                        <!-- Xuất file : <a id="downloadUrl3" href=""><img src="<?php echo $this->BaseUrl?>/files/images/ico_excel.gif" border="0"></a> -->
+
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span12">
+                          <table id="employee-grid4" class="table table-bordered"  cellpadding="0" cellspacing="0" border="0" class="display" width="100%">
+                                <thead>
+                                  <tr>
+                                  <th>STT</th>
+                                  <th>Họ tên</th>
+                                      <th>CMND </th>                                      
+                                      <th>SĐT</th>
+                                      <th>Số biên nhận</th>
+                                      <th>Ngày đóng</th>                                      
+                                      <th>Số tiền</th>
+                                      <th>Hình thức đóng</th>                   
+                                  </tr>
+                                </thead>
+                          </table>
+                        </div>
+                    </div>  
+  
+                </div>
+                <!-- <div id="tab5" class="tab-pane">
+                    <h3>Danh sách nợ đóng phí tập sự</h3>
+                    <div  style="margin-bottom:4%;">  
+                         <form method="post" id="filtertable5" action=""> 
+                          <table cellpadding="5" cellspacing="0">
+                            <tbody>
+                            <tr>
+                                    
+                                        <td>													
+                                        Thời gian từ ngày: 
+                                        </td>
+                                        <td>                      
+                                            <div id="dpcmnd"  data-date="10/20/2018" class="input-append date datepicker-start5">
+                                            
+                                                <input id="startdate5" name="startdate5" type="text" data-date-format="mm-dd-yyyy" class="span2" >
+                                                <span class="add-on"><i class="icon-th"></i></span>
+                                            </div>                      
+                                        </td>	
+                                        <td>													
+                                        Thời gian đến ngày: 
+                                        </td>
+                                        <td>					 
+                     
+                                            <div id="dpcmnd"  data-date="10/20/2018" class="input-append date datepicker-end5">
+                                            
+                                                <input id="enddate5" name="enddate5" type="text" data-date-format="mm-dd-yyyy" class="span2" >
+                                                <span class="add-on"><i class="icon-th"></i></span>
+                                            </div>  
+                                        </td>											
+                                      <td>
+                                        <input type="submit" name="sbsearch" value="   Tìm   ">   
+                                      </td> 
+                                    </tr>								    
+                            </tbody>
+                          </table>                 
+                        </form>  
+                        <br>
+                      Xuất file : <a id="downloadUrl5" href=""><img src="<?php echo $this->BaseUrl?>/files/images/ico_excel.gif" border="0"></a>
+
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span12">
+                          <table id="employee-grid5" class="table table-bordered"  cellpadding="0" cellspacing="0" border="0" class="display" width="100%">
+                                <thead>
+                                  <tr>                         
+                                    <th>Họ tên</th>
+                                      <th>CMND </th>                                      
+                                      <th>SĐT</th>
+                                      <th>Đợt tập sự</th>
+                                      <th>Địa chỉ thường trú</th>
+                                      <th>Nơi ở hiện tại</th>                  
+                                     
+                                  </tr>
+                                </thead>
+                          </table>
+                        </div>
+                    </div>  
+  
+                </div> -->
+                <div id="tab6" class="tab-pane">
+                    <h3>Danh sách nợ đóng phí gia nhập</h3>
+                    <div  style="margin-bottom:4%;">  
+                        <form method="post" id="filtertable6" action=""> 
+                          <table cellpadding="5" cellspacing="0">
+                            <tbody>
+                            <!--<tr>
+                             <td>   
+                                          Hình thức đóng phí : 
+                                      </td>
+                                      <td>   
+                                          <select name="type4" id="type4" style="width: 150px">
+                                              <option value="online">Đóng online</option> 
+                                              <option value="offline">Đóng tại đoàn</option>
+                                              <option value="all">Tất cả</option>                                              
+                                          </select>	 
+                                      </td>	 -->
+                                       <tr> 
+                  
+                                         <td>													
+                                        Thời gian từ ngày: 
+                                        </td>
+                                        <td>                      
+                                            <div id="dpcmnd"  data-date="10/20/2018" class="input-append date datepicker-start6">
+                                            
+                                                <input id="startdate6" name="startdate6" type="text" data-date-format="mm-dd-yyyy" class="span2" >
+                                                <span class="add-on"><i class="icon-th"></i></span>
+                                            </div>                      
+                                        </td>	
+                                        <td>													
+                                        Thời gian đến ngày: 
+                                        </td>
+                                        <td>					 
+                     
+                                            <div id="dpcmnd"  data-date="10/20/2018" class="input-append date datepicker-end6">
+                                            
+                                                <input id="enddate6" name="enddate6" type="text" data-date-format="mm-dd-yyyy" class="span2" >
+                                                <span class="add-on"><i class="icon-th"></i></span>
+                                            </div>  
+                                        </td>											
+                                      <td>
+                                        <input type="submit" name="sbsearch" value="   Tìm   ">   
+                                      </td> 
+                                    </tr>								    
+                            </tbody>
+                          </table>                 
+                        </form>  
+                        <br>
+                        
+
+                        Xuất file : <a id="downloadUrl6" href=""><img src="<?php echo $this->BaseUrl?>/files/images/ico_excel.gif" border="0"></a>
+
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span12">
+                          <table id="employee-grid6" class="table table-bordered"  cellpadding="0" cellspacing="0" border="0" class="display" width="100%">
+                                <thead>
+                                  <tr>
+                                  <!-- <th>STT</th> -->
+                                  <th>Họ tên</th>
+                                      <th>CMND </th>                                      
+                                      <th>SĐT</th>
+                                      <th>Đợt gia nhập</th>
+                                      <th>Số thẻ LS</th>
+                                      <th>Ngày cấp thẻ</th>
+                                      <th>Địa chỉ thường trú</th>
+                                      <th>Nơi ở hiện tại</th>                                      
+                                      <!-- <th>Số tiền</th>
+                                      <th>Hình thức đóng</th>                    -->
+                                  </tr>
+                                </thead>
+                          </table>
+                        </div>
+                    </div>  
+  
+                </div>
+                <div id="tab7" class="tab-pane">
+                    <h3>Danh sách đóng phí khác</h3>
+                    <div  style="margin-bottom:4%;">  
+                        <form method="post" id="filtertable7" action=""> 
+                          <table cellpadding="5" cellspacing="0">
+                            <tbody>
+                            <!--<tr>
+                             <td>   
+                                          Hình thức đóng phí : 
+                                      </td>
+                                      <td>   
+                                          <select name="type4" id="type4" style="width: 150px">
+                                              <option value="online">Đóng online</option> 
+                                              <option value="offline">Đóng tại đoàn</option>
+                                              <option value="all">Tất cả</option>                                              
+                                          </select>	 
+                                      </td>	 -->
+                                       <tr> 
+                  
+                                         <td>													
+                                        Thời gian từ ngày: 
+                                        </td>
+                                        <td>                      
+                                            <div id="dpcmnd"  data-date="10/20/2018" class="input-append date datepicker-start7">
+                                            
+                                                <input id="startdate7" name="startdate7" type="text" data-date-format="mm-dd-yyyy" class="span2" >
+                                                <span class="add-on"><i class="icon-th"></i></span>
+                                            </div>                      
+                                        </td>	
+                                        <td>													
+                                        Thời gian đến ngày: 
+                                        </td>
+                                        <td>					 
+                     
+                                            <div id="dpcmnd"  data-date="10/20/2018" class="input-append date datepicker-end7">
+                                            
+                                                <input id="enddate7" name="enddate7" type="text" data-date-format="mm-dd-yyyy" class="span2" >
+                                                <span class="add-on"><i class="icon-th"></i></span>
+                                            </div>  
+                                        </td>											
+                                      <td>
+                                        <input type="submit" name="sbsearch" value="   Tìm   ">   
+                                      </td> 
+                                    </tr>								    
+                            </tbody>
+                          </table>                 
+                        </form>  
+                        <br>
+                        
+
+                        <!-- Xuất file : <a id="downloadUrl6" href=""><img src="<?php echo $this->BaseUrl?>/files/images/ico_excel.gif" border="0"></a> -->
+
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span12">
+                          <table id="employee-grid7" class="table table-bordered"  cellpadding="0" cellspacing="0" border="0" class="display" width="100%">
+                                <thead>
+                                  <tr>
+                                  <!-- <th>STT</th> -->
+                                      <th>Họ tên</th>
+                                      <th>CMND </th>                                      
+                                      <th>SĐT</th>
+                                      <!-- <th>Đợt gia nhập</th> -->
+                                      <th>Số thẻ LS</th>
+                                      <th>Ngày cấp thẻ</th>
+                                      <th>Địa chỉ thường trú</th>
+                                      <th>Nơi ở hiện tại</th>                                      
+                                      <th>Số tiền</th>
+                                      <th>Số biên nhận</th>
+                                      <th>Ngày thu</th>
+                                      <!-- <th>Hình thức đóng</th>                    -->
+                                  </tr>
+                                </thead>
+                          </table>
+                        </div>
+                    </div>  
+  
+                </div>
+            </div>                            
+        </div>
+
+
+  
+  </div>
+</div>
+
+<div id="model-warning" class="modal fade"  data-backdrop="static">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h5 class="modal-title" id="exampleModalLabel">Thông báo</h5>        
+      </div>        
+        <div class="modal-body">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary close-modal" data-dismiss="modal">Đóng</button>
+        </div>
+      
+    </div>
+  </div>
+</div>

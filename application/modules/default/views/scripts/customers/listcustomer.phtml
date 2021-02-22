@@ -1,0 +1,369 @@
+<script>
+$(document).ready(function(){
+  
+  
+  var dataTable;
+  initDataTable(dataTable);
+  
+  $("#search").hide();
+  $(".searchfield").hide();
+
+  $(".close-modal").on('click',function(){
+    location.reload();
+  });
+
+  $("#form-edit-lock").validate({            
+      submitHandler: function(form,e) {
+          console.log('Form submitted');
+          $.ajax({
+                type: "POST",
+                url: "<?php echo $this->BaseUrl?>/default/customers/updatestatuscustomer/",
+                data: $('#form-edit-lock').serialize() ,
+                cache: false,
+                success: function(html)
+                {   
+                  //alert(html);
+                  $(".modal-body").html(html);
+                  $("#model-warning").modal('show');
+                  //$("#message").html("Đổi mật khẩu thành công"); 
+                  //$(".close-modal").hide();  
+                                                                          
+                }
+          });
+          return false;                       
+      }
+  });
+
+  $("#form-edit-lock-online").validate({            
+      submitHandler: function(form,e) {
+          console.log('Form submitted');
+          $.ajax({
+                type: "POST",
+                url: "<?php echo $this->BaseUrl?>/default/customers/updatestatuscustomeronline/",
+                data: $('#form-edit-lock-online').serialize() ,
+                cache: false,
+                success: function(html)
+                {   
+                  //alert(html);
+                  $(".modal-body").html(html);
+                  $("#model-warning").modal('show');
+                  //$("#message").html("Đổi mật khẩu thành công"); 
+                  //$(".close-modal").hide();  
+                                                                          
+                }
+          });
+          return false;                       
+      }
+  });
+
+ $("#form-edit").validate({     
+            rules:{
+                password:{
+                  required:true
+                },
+                password2: {
+                  equalTo: "#password"
+                }
+            },
+            errorClass: "help-inline",
+            errorElement: "span",
+            highlight:function(element, errorClass, validClass) {
+                $(element).parents('.control-group').addClass('error');
+            },
+            unhighlight: function(element, errorClass, validClass) {
+                $(element).parents('.control-group').removeClass('error');
+                $(element).parents('.control-group').addClass('success');
+            },
+            messages: {
+                password: "Vui lòng nhập mật khẩu mới",
+				        password2: { equalTo: "Mật khẩu không khớp" },
+            },
+            submitHandler: function(form,e) {
+                console.log('Form submitted');
+                $.ajax({
+                      type: "POST",
+                      url: "<?php echo $this->BaseUrl?>/default/customers/updatenewpasswordcustomer/",
+                      data: $('#form-edit').serialize() ,
+                      cache: false,
+                      success: function(html)
+                      {   
+                        //alert(html);
+                        $(".modal-body").html(html);
+                        $("#model-warning").modal('show');
+                        //$("#message").html("Đổi mật khẩu thành công"); 
+                        //$(".close-modal").hide();  
+                                                                               
+                      }
+                });
+                return false;                       
+            }
+        });
+      
+});
+
+function initDataTable(dataTable){
+  dataTable = $('#customers-grid').DataTable( {
+    "language": {
+            "lengthMenu": "Hiển thị _MENU_ dòng trên trang",
+            "zeroRecords": "Không tìm thấy",
+            "info": "Hiển thị trang _PAGE_ of _PAGES_",
+            "infoEmpty": "Không có dữ liệu thích hợp",
+            "infoFiltered": "(lọc từ _MAX_ tổng số kết quả)",
+            "paginate": {
+                "first":      "Đầu",
+                "last":       "Cuối",
+                "next":       "Tới",
+                "previous":   "Sau"
+            }
+        },
+    "processing": true,
+    "serverSide": true,
+    "searching": true,
+    "aLengthMenu": [[10, 50, 75, -1], [10, 50, 75, "All"]],
+        "iDisplayLength": 10,
+    "ajax":{
+      url :"<?php echo $this->BaseUrl?>/default/customers/listcustomerdatatable", // json datasource
+      type: "post",  // method  , by default get
+      // done:function(){
+      //   $("#downloadUrl").attr("href", "<?php echo $this->BaseUrl?>/default/categorytraining/listtest"+dataString);
+      // },
+      error: function(){  // error handling
+        $(".customers-grid-error").html("");
+        $("#customers-grid").append('<tbody class="customers-grid-error"><tr><th colspan="3">Không tìm thấy kết quả</th></tr></tbody>');
+        $("#customers-grid_processing").css("display","none");
+        
+      }
+    },columns:
+       [
+          {data: 'cus_name'},
+          {data: 'cus_lawyer_number'},
+          {data: 'cus_sex'},
+          {data: 'cus_identity_card'},
+          {data: 'cus_identity_place'},
+          {data: 'cus_cellphone'},
+          {data: 'cus_birthday'},
+          {data: 'cus_status_text'},
+          {
+              data: null,
+              render: function (data, type, row) {
+                  var id = row.cus_id;
+                  var deleted_online = row.deleted_online;
+                  var status = row.cus_status;
+                  return '<button data-toggle="tooltip" title="Đổi mật khẩu" onClick="changePass('+id+');"><i class="icon-refresh"></i></button> '+ 
+                             '<button data-toggle="tooltip" title="Khóa tài tài khoản" onClick="lockUser('+id+','+status+');"><i class="icon-lock"></i></button> '+    
+                             '<button data-toggle="tooltip" title="Khóa tài tài khoản trực tuyến" onClick="lockUserOnline('+id+','+deleted_online+');"><i class="icon-remove"></i></button>';
+                
+              }
+          }         
+      ]
+  } );
+}
+
+ function changePass(id){      
+      $("#message").hide();
+      $("#cus_id").val(id);
+      $("#form-edit-lock").hide();
+      $("#form-edit-lock-online").hide();
+      $("#form-edit").show();
+      $("#model-warning").modal('show');
+    }
+
+ function lockUser(id,$status){
+      console.log($status);
+      if($status == 1){
+        $.uniform.update($("#cus_status_active").attr("checked", true));        
+      }else{
+        $.uniform.update($("#cus_status_inactive").attr("checked", true));        
+      }
+     $("#message").hide();
+      $("#cus_id_lock").val(id);
+      $("#form-edit").hide();
+      $("#form-edit-lock").show();
+      $("#form-edit-lock-online").hide();
+      $("#model-warning").modal('show');
+ } 
+
+  function lockUserOnline(id,$status){
+    console.log($status);
+      if($status == 1){
+        $.uniform.update($("#cus_status_online_active").attr("checked", true));        
+      }else{
+        $.uniform.update($("#cus_status_online_inactive").attr("checked", true));        
+      }
+      $("#message").hide();
+      $("#cus_id_lock_online").val(id);
+      $("#form-edit").hide();
+      $("#form-edit-lock").hide();
+      $("#form-edit-lock-online").show();
+      $("#model-warning").modal('show');
+ }     
+</script>
+
+<div id="content">
+  <div id="content-header">
+    <div id="breadcrumb"> <a href="#" title="Trang chủ" class="tip-bottom"><i class="icon-home"></i> Trang chủ</a> <a href="#" class="current">Danh sách luật sư</a> </div>
+    <h1>Danh sách luật sư </h1>
+  </div>
+  
+  <div class="container-fluid">   
+    <div class="row-fluid">
+      <div class="span12">
+        <div class="widget-box">
+          <div class="widget-title">
+             <span class="icon"><i class="icon-th"></i></span> 
+            <h5>Danh sách luật sư </h5>
+          </div>
+          <div class="widget-content nopadding">
+            <table id="customers-grid" class="table table-bordered ">
+              <thead>
+                <tr>
+                    <th>Tên </th>
+                    <th>Số thẻ LS</th>
+                    <th>Giới Tính</th>
+                    <th>CMND</th>
+                    <th>Nơi cấp</th>
+                    <th>Số điện thoại</th>                    
+                    <th>Ngày sinh</th>  
+                    <th>Trạng thái </th>
+                    <th>Thao tác</th> 
+                </tr>
+              </thead>
+              <!-- <tbody>  
+         
+                <?php  
+                    if($this->data != null){
+                        foreach ($this->data as $pay) {           
+                            // '<td>'.$pay['payment_lawyer_off_id'].'</td>'.
+                            //  $text = ''; 
+                            //  if($pay['cus_sex'] == 'nam'){
+                            //     $text = '<td>Nam</td>';
+                            //  }else{                             
+                            //     $text = '<td>Nữ</td>';  
+                            //  }    
+
+                             $status = '';
+                             if($pay['cus_status'] == 0){
+                              $status = '<td>Ngưng hoạt động</td>';
+                              }else{
+                                  $status = '<td>Hoạt động</td>';  
+                              }    
+
+                              $dateBirthdate = ($pay['cus_birthday'] != null && $pay['cus_birthday'] != ''
+                              && $pay['cus_birthday'] != '1900-01-01 00:00:00') ? date('d/m/Y', strtotime($pay['cus_birthday'])) : '';   
+                    
+
+                             echo ' <tr class="gradeC">'.
+                             '<td>'.$pay['cus_firstname'].' '.$pay['cus_lastname'].'</td>'.
+                             '<td>'.$pay['cus_lawyer_number'].'</td>'.   
+                             '<td>'.$pay['cus_sex'].'</td>'.
+                             '<td>'.$pay['cus_identity_card'].'</td>'.                             
+                             '<td>'.$pay['cus_identity_place'].'</td>'.                                         
+                             '<td>'.$pay['cus_cellphone'].'</td>'.   
+                             '<td>'.$dateBirthdate
+                             .'</td>'.  
+                             $status.  
+                             '<td>'.'<button data-toggle="tooltip" title="Đổi mật khẩu" onClick="changePass('.$pay['cus_id'].');"><i class="icon-refresh"></i></button>'.' '. 
+                             '<button data-toggle="tooltip" title="Khóa tài tài khoản" onClick="lockUser('.$pay['cus_id'].');"><i class="icon-lock"></i></button>'.' '.     
+                             '<button data-toggle="tooltip" title="Khóa tài tài khoản trực tuyến" onClick="lockUserOnline('.$pay['cus_id'].');"><i class="icon-remove"></i></button>'.                                                  
+                        '</tr>';                            
+                        }  
+                    }
+                ?>
+              </tbody> -->
+            </table>
+          </div>
+        </div>        
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="model-warning" class="modal fade"  data-backdrop="static">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h5 class="modal-title" id="exampleModalLabel">Cập nhật thông tin</h5>
+        
+      </div>
+        
+        <div class="modal-body">
+            <p id="message">Bạn đã cập nhật thành công.</p>
+            <form id="form-edit" class="form-horizontal">
+                   <input type="hidden" name="cus_id" id="cus_id" />                       
+
+                    <div class="control-group">        
+                          <label class="control-label">Nhập mật khẩu mới:</label>
+                          <div class="controls">
+                            <input id="password" type="password" name="password" />
+                          </div>
+                      </div> 
+
+                    <div class="control-group">        
+                        <label class="control-label">Xác nhận mật khẩu mới:</label>
+                        <div class="controls">
+                        <input id="password2" type="password" name="password2" />
+                        </div>
+                    </div> 
+                              
+                    <!-- <div class="form-actions"> -->
+                      <button style="float: right;" type="submit" class="btn">Lưu</button>
+                    <!-- </div> -->
+                  </form>
+
+                  <form id="form-edit-lock" class="form-horizontal">
+                   <input type="hidden" name="cus_id_lock" id="cus_id_lock" />                       
+
+                     <label class="control-label">Trạng thái tài khoản</label>
+                        <div class="controls">
+                          <div class="row-fluid">
+                              <div class="span3">
+                                <label>
+                                    <input type="radio" name="cus_status" id="cus_status_active" value="active"/>
+                            Hoạt động</label>
+                              </div>
+                              <div class="span6">
+                                    <label>
+                                  <input type="radio" name="cus_status" id="cus_status_inactive" value="inactive"/>
+                                  Ngưng hoạt động</label> 
+                              </div>
+                          </div>                                               
+                        </div>    
+                              
+                    <!-- <div class="form-actions"> -->
+                      <button style="float: right;" type="submit" class="btn">Lưu</button>
+                    <!-- </div> -->
+                  </form>
+                  <form id="form-edit-lock-online" class="form-horizontal">
+                   <input type="hidden" name="cus_id_lock" id="cus_id_lock_online" />                       
+
+                     <label class="control-label">Trạng thái tài khoản trực tuyến</label>
+                        <div class="controls">
+                          <div class="row-fluid">
+                              <div class="span3">
+                                <label>
+                                    <input type="radio" name="cus_status_online" id="cus_status_online_active" value="active"/>
+                            Hoạt động (trực tuyến) </label>
+                              </div>
+                              <div class="span6">
+                                    <label>
+                                  <input type="radio" name="cus_status_online" id="cus_status_online_inactive" value="inactive"/>
+                                  Ngưng hoạt động( trực tuyến)</label> 
+                              </div>
+                          </div>                                               
+                        </div>    
+                              
+                    <!-- <div class="form-actions"> -->
+                      <button style="float: right;" type="submit" class="btn">Lưu</button>
+                    <!-- </div> -->
+                  </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary close-modal" data-dismiss="modal">Đóng</button>
+        </div>
+      
+    </div>
+  </div>
+</div>

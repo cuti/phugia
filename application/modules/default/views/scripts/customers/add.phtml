@@ -1,0 +1,328 @@
+<script>
+    $(document).ready(function(){
+        $(".button-add-new-intern").on('click',function(){
+        //alert("add new intern");
+        $.ajax({
+          type: "GET",
+          url: "/zf2/default/intership/",
+          //data: dataString,
+          cache: false,
+          success: function(html)
+          {   
+            console.log(html);
+            $(".container-fluid").html('');
+            $(".container-fluid").html(html);                  
+          }
+      });
+    });  
+
+    $(".button-add-new-lawyer").on('click',function(){
+        alert("add new lawyer");
+        $(".container-fluid").html('');
+
+        $.ajax({
+          type: "GET",
+          url: "/zf2/default/lawyer/",
+          //data: dataString,
+          cache: false,
+          success: function(html)
+          {   
+            console.log(html);
+            $(".container-fluid").html('');
+            $(".container-fluid").html(html);                  
+          }
+      });
+
+    });  
+
+    $("#cus_cellphone").keyup(function() {
+           //alert($("#cus_cellphone").val());  
+           if(isNumber($("#cus_cellphone").val())){
+            if($.trim($("#cus_cellphone").val()) != '' && $.trim($("#cus_cellphone").val()) != null){
+              validateData("phone",$("#cus_cellphone").val());
+            }   
+           }                 
+    });
+
+    $("#cus_identity_card").keyup(function() {
+           //alert("validate cus_phone"); 
+           if(isNumber($("#cus_identity_card").val())){
+            validateData("phone",$("#cus_identity_card").val());
+           }
+
+    });
+
+    $(".save-customer").on('click',function(){
+      var data = {
+        cus_fullname : $("#cus_fullname").val(),       
+        cus_firstname : $("#cus_firstname").val(),
+        cus_lastname: $("#cus_lastname").val(),
+        cus_sex: $("#cus_sex").val() ,
+        cus_country:$("#cus_sex").val(),
+        cus_birthday:$("#cus_birthday").val(),
+        cus_nation: $("#cus_nation").val(),
+        cus_birthplace:$("#cus_birthplace").val(),
+        cus_cellphone:$("#cus_cellphone").val(),                                 
+        cus_username: $("#cus_username").val(),
+        cus_password: $("#cus_password").val()
+      }
+      $.ajax({
+            type: "POST",
+            url: "/zf2/default/customers/create/",
+            data: data ,
+            cache: false,
+            success: function(html)
+            {   
+              alert(html);
+              // $("#display-content-search").html('');
+              // $("#display-content-search").html(html);                  
+            }
+      });
+      return false;
+    });
+
+    // $("#cus_cellphone").keyup(function() {
+    //        alert("validate cus_phone"); 
+
+    // });
+});
+
+  function isNumber(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+  }
+
+  function validateData(validateType,data){
+    // $('#display-content-search').on('click', function(event) {
+    //   console.log("action event");
+    //   var id = $(event.target).attr('id');
+    //   var value = $("#"+id).val();
+    if($.trim(data) != null && $.trim(data) != ''){
+      console.log("call ajax");
+      console.log("data"+data);
+
+    
+      var dataString = '?type='+ validateType +'&data='+data;
+       $.ajax({
+            type: "GET",
+            url: "/zf2/default/customers/validate"+dataString ,
+            //data: dataString+'?format=html',
+            cache: false,
+            success: function(data)
+            {           
+                if(data != null && data != ''){
+                  $("#model-warning").modal('show');
+                }
+            }, error: function(msg){ 
+              
+            }           
+      });
+    }
+    // });
+  }
+
+</script>
+
+<!-- Modal -->
+<div id="model-warning" class="modal fade" id="exampleModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Thông báo</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          Trong hệ thống đã tồn tại luật sư, bạn có muốn chỉnh sửa thông tin luật sư đó.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <div id="content"> -->
+  <!-- <div class="container-fluid"> -->
+  <!-- <div class="row-fluid">
+    <div class="span3">
+            <div id="search">
+                <input type="text" placeholder="Search here..."/>
+                <button type="submit" class="tip-left" title="Search"><i class="icon-search icon-white"></i></button>
+            </div>
+        </div>  
+    </div>    
+  </div> -->
+    <div class="row-fluid">
+        <div class="span3">
+            <!-- <div id="search">
+                <input type="text" placeholder="Search here..."/>
+                <button type="submit" class="tip-left" title="Search"><i class="icon-search icon-white"></i></button>
+            </div> -->
+        </div> 
+        <div class="span3">           
+        </div> 
+        <!-- <div class="span3">
+        </div> -->
+        <div class="span6">
+            <button type="button" class="btn btn-primary button-add-customer">Thêm luật sư</button>  
+            <button type="button" class="btn btn-primary button-add-new-intern">Thêm luật sư tập sự</button>
+            <button type="button" class="btn btn-primary button-add-new-lawyer">Thêm luật sư chính thức</button>
+              <!-- <button type="submit" class="btn btn-info">Edit</button> -->
+        </div>        
+    </div>  
+    <h4>Thêm mới luật sư</h4>
+    <div class="row-fluid">     
+        <!-- open div-->
+        <div class="span12">          
+          <div class="widget-box">
+            <div class="widget-title"> <span class="icon"> <i class="icon-align-justify"></i> </span>
+              <h5>Thêm mới luật sư</h5>
+            </div>
+            <div class="widget-content nopadding" id="detail-information">
+            <!--start form-->             
+              <!-- <form class="form-horizontal"> -->
+                <div class="control-group">
+                  <label class="control-label">Số điện thoại :</label>
+                  <div class="controls">
+                    <input type="text"  type="number" id="cus_cellphone"  name="cus_cellphone" class="span4" placeholder="Số điện thoại" />                    
+                  </div>                
+                </div>  
+                <div class="control-group">
+                  <label class="control-label">Số chứng minh nhân dân:</label>
+                  <div class="controls">
+                       <input type="text" type="number" id="cus_identity_card" name="cus_identity_card" class="span4" placeholder="Số chứng minh nhân dân" />
+                </div>
+                <!-- <div class="control-group">
+                  <label class="control-label">Họ và tên</label>
+                  <div class="controls">
+                    <input type="text" id="cus_fullname" name="cus_fullname" class="span11" placeholder="Họ và tên" />
+                   
+                </div> -->
+                <div class="control-group">
+                  <label class="control-label">Họ và lót:</label>
+                  <div class="controls">
+                    <input type="text" id="cus_firstname" name="cus_firstname" class="span4" placeholder="Họ" />                   
+                  </div>
+                </div>  
+                <div class="control-group">
+                  <label class="control-label">Tên:</label>
+                  <div class="controls">
+                    <input type="text" id="cus_lastname" name="cus_lastname" class="span4" placeholder="Tên" />                   
+                  </div>
+                </div>  
+                <!-- <div class="control-group">
+                  <label class="control-label">Giới tính</label>
+                  <div class="controls">              
+                    <input type="text" id="cus_sex" name="cus_sex" class="span4" placeholder="Giới tính" />
+                  </div>
+                </div> -->
+                <div class="control-group">
+                  <label class="control-label">Chọn giới tính:</label>
+                  <div class="controls">
+                    <label>
+                      <input type="radio" name="radios" />
+                      Nam</label>
+                    <label>
+                      <input type="radio" name="radios" />
+                      Nữ</label>                   
+                  </div>
+                </div>
+                <div class="control-group">
+                  <label class="control-label">Ngày sinh:</label>
+                  <div class="controls">              
+                    <input type="text" id="cus_birthday" name="cus_birthday" class="span4" placeholder="Ngày sinh
+" />
+                  </div>
+                </div>
+                <div class="control-group">
+                <label class="control-label">Chọn tỉnh thành:</label>
+                <div class="controls">
+                  <select >
+                    <option>First option</option>
+                    <option>Second option</option>
+                    <option>Third option</option>
+                    <option>Fourth option</option>
+                    <option>Fifth option</option>
+                    <option>Sixth option</option>
+                    <option>Seventh option</option>
+                    <option>Eighth option</option>
+                  </select>
+                </div>
+              </div>
+                <!-- <div class="control-group">
+                  <label class="control-label">Tỉnh thành</label>
+                  <div class="controls">
+                     <div data-color-format="rgb" data-color="rgb(155, 142, 180)" class="input-append color colorpicker colorpicker-rgb">
+                      <input type="text" value="rgb(155, 142, 180)" class="span11">
+                      <span class="add-on"><i style="background-color: rgb(155, 142, 180)"></i></span> </div> 
+                      <input type="text" id="cus_country" name="cus_country" class="span4" placeholder="Tỉnh thành" />
+                  </div>
+                </div>     -->
+                <div class="control-group">
+                  <label class="control-label">Quốc tịch:</label>
+                  <div class="controls">
+                    <!-- <div data-color-format="hex" data-color="#000000"  class="input-append color colorpicker"> -->
+                      <input type="text" id="cus_nation" name="cus_nation" class="span4" placeholder="Quốc tịch" />
+                      <!-- <input type="text" value="#000000" class="span11">
+                      <span class="add-on"><i style="background-color: #000000"></i></span> </div> -->
+                  </div>
+                </div>
+                <div class="control-group">
+                  <label class="control-label">Tên đăng nhâp:</label>
+                  <div class="controls">              
+                    <input type="text" id="cus_username" name="cus_username" class="span4" placeholder="Tên đăng nhập" />
+                  </div>
+                </div>
+                <div class="control-group">
+                  <label class="control-label">Mật khẩu:</label>
+                  <div class="controls">              
+                    <input type="text" id="cus_password" name="cus_password" class="span4" placeholder="Mật khẩu" />
+                  </div>
+                </div>
+                <div class="form-actions">
+                  <a class="btn btn-success save-customer">Lưu</a>
+                  <!-- <button type="submit" class="btn btn-primary">Reset</button>
+                  <button type="submit" class="btn btn-info">Edit</button> -->
+                  <a class="btn btn-danger">Hủy bỏ</a>
+                </div>
+              <!-- </form> -->
+              <!-- end form -->
+            </div>          
+          </div>
+        </div>   
+      </div>     
+    </div>
+      <!--end div-->    
+  </div>
+  <div class="row-fluid">
+      <div class="span12"> 
+          <div class="widget-box">
+              <div class="widget-title">
+                  <ul class="nav nav-tabs">
+                      <!-- <li class="active"><a data-toggle="tab" id="tab-lawyer" href="">Thông tin luật sư chính thức</a></li> -->
+                      <li><a data-toggle="tab" id="tab-intership" href="#tab2">Thông tin luật sư tập sự </a></li>
+                      <!-- <li><a data-toggle="tab" href="#tab3">Tab3</a></li> -->
+                  </ul>
+              </div>
+              <div class="widget-content tab-content">
+                  <!--<div id="tab1" class="tab-pane active">
+                     <p>And is full of waffle to It has multiple paragraphs and is full of waffle to pad out the comment. Usually, you just wish these sorts of comments would come to an end.multiple paragraphs and is full of waffle to pad out the comment. Usually, you just wish these sorts of comments would come to an end.multiple paragraphs and is full of waffle to pad out the comment. Usually, you just wish these sorts of comments would come to an end. </p>
+               
+                  </div>-->
+                  <div id="tab2" class="tab-pane">
+                    <div id="tab2-content">
+                    </div>
+                  <!-- <p> waffle to pad out the comment. Usually, you just wish these sorts of comments would come to an end.multiple paragraphs and is full of waffle to pad out the comment. Usually, you just wish these sorts of comments would come to an end. </p>
+                   -->
+                  </div>
+                  <!-- <div id="tab3" class="tab-pane">
+                    <p>full of waffle to pad out the comment. Usually, you just wish these sorts of comments would come to an end.multiple paragraphs and is full of waffle to pad out the comment. Usually, you just wish these sorts of comments would come to an end. </p>
+
+                  </div> -->
+              </div>                            
+          </div>
+        </div>
+  <!-- </div> -->
+<!-- </div> -->

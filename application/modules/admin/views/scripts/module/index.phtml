@@ -1,0 +1,52 @@
+<script>
+$(document).ready(function(){
+    $("#search").hide();
+    $(".searchfield").hide();
+});
+
+</script>
+<div id="content">
+  <div id="content-header">
+    <div id="breadcrumb"> <a href="#" title="Trang chủ" class="tip-bottom"><i class="icon-home"></i> Trang chủ</a> <a href="#" class="current">Danh sách menu truy cập</a> </div>
+    <h1>Danh sách menu truy cập</h1>
+  </div>
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <div class="span12">
+        <div class="widget-box">
+          <div class="widget-title">
+             <span class="icon"><i class="icon-th"></i></span> 
+            <h5>Danh sách menu truy cập</h5>
+          </div>
+          <div class="widget-content nopadding">
+            <table class="table table-bordered data-table">
+              <thead>
+                <tr>
+                  <th>Tên module</th>
+                  <!-- <th>Hành động</th>
+                  <th>Trạng thái</th>                   -->
+                </tr>
+              </thead>
+              <tbody>       
+                <?php  
+                    if($this->modules != null){
+                        foreach ($this->modules as $mod) {
+ 
+                          echo ' <tr class="gradeC">'.
+                          '<td>'.$mod['module_name'].'</td>';
+                        //   .
+                        //   '<td>'.$mod['module_id'].'</td>'.
+                        //   '<td>'.$mod['module_id'].'</td>';                        
+                        
+                        }  
+                    }
+
+                ?>
+              </tbody>
+            </table>
+          </div>
+        </div>        
+      </div>
+    </div>
+  </div>
+</div>

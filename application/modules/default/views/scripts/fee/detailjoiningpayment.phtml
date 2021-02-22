@@ -1,0 +1,120 @@
+
+<script>
+$(document).ready(function(){
+
+    $(".close-modal").on('click',function(){
+       location.reload();
+    });
+
+    $("#form-edit").validate({     
+            rules:{
+                // law_code:{
+                // required:true
+                // },
+                // law_certfication_no:{
+                // required:true
+                // }
+            },
+            errorClass: "help-inline",
+            errorElement: "span",
+            highlight:function(element, errorClass, validClass) {
+                $(element).parents('.control-group').addClass('error');
+            },
+            unhighlight: function(element, errorClass, validClass) {
+                $(element).parents('.control-group').removeClass('error');
+                $(element).parents('.control-group').addClass('success');
+            },
+            messages: {
+                //cus_cellphone: "Vui lòng nhập số điện thoại !",
+                // cus_identity_card: "Vui lòng nhập số CMND !",
+                law_code: "Vui lòng nhập mã luật sư !",
+                law_certfication_no: "Vui lòng nhập số chứng chỉ !",
+            },
+            submitHandler: function(form,e) {
+                console.log('Form submitted');
+                $.ajax({
+                      type: "POST",
+                      url: "<?php echo $this->BaseUrl?>/default/fee/updatejoiningpayment/",
+                      data: $('#form-edit').serialize() ,
+                      cache: false,
+                      success: function(html)
+                      {   
+                        $("#message").html("Cập nhật biên nhận phí gia nhập thành công"); 
+                        //$(".close-modal").hide();  
+                                                                               
+                      }
+                });
+                return false;                       
+            }
+        });
+});  
+
+</script>
+
+<form id="form-edit" class="form-horizontal">
+<h4> Chỉnh sửa trạng thái biên nhận phí gia nhập </h3>
+              <p id="message"></p>
+              <input type="hidden" name="cus_id" value="<?php echo $this->paymentjoiningofflinedata['cus_id']; ?>" /> 
+              <input type="hidden" name="payment_joining_off_id" value="<?php echo $this->paymentjoiningofflinedata['payment_joining_off_id']; ?>" /> 
+              <input type="hidden" name="history_id" value="<?php echo $this->paymentjoiningofflinedata['history_id']; ?>" /> 
+              <div class="control-group">
+                    <label class="control-label">Tên luật sư :</label>
+                    <div class="controls">
+                        <input type="text" disabled class="span2" value="<?php echo $this->paymentjoiningofflinedata['cus_firstname']." ".$this->paymentjoiningofflinedata['cus_lastname']; ?>">
+                    </div>
+              </div>
+
+              <div class="control-group">        
+                    <label class="control-label">Mã số biên nhận:</label>
+                    <div class="controls">
+                    <input type="text" disabled value="<?php echo $this->paymentjoiningofflinedata['payment_joining_off_code']; ?>" class="span3" placeholder="Vui lòng nhập mã số chứng chỉ" />
+                    </div>
+                </div> 
+
+                  <div class="control-group">        
+                <label class="control-label">Ngày đóng phí:</label>
+                <div class="controls">
+                <input type="text" disabled value="<?php echo $this->paymentjoiningofflinedata['payment_joining_off_created_date']; ?>" class="span3" placeholder="Vui lòng nhập mã số chứng chỉ" />
+                </div>
+            </div>   
+
+            <div class="control-group">        
+                    <label class="control-label">Loại phí:</label>
+                    <div class="controls">
+                    <input type="text" disabled value="<?php echo $this->paymentjoiningofflinedata['name']; ?>" class="span3" placeholder="Vui lòng nhập mã số chứng chỉ" />
+                    </div>
+                </div>
+
+              <label class="control-label">Trạng thái biên nhận:</label>
+                <div class="controls">
+                    <div class="row-fluid">
+                    <?php if($this->actionname == "confirm"): ?>
+                        <div class="span3">
+                        <label>                            
+                            <input type="radio" name="payment_joining_off_status" value="1" <?php echo ($this->paymentjoiningofflinedata['payment_joining_off_status'] == 1) ? 'checked' :'' ?>/>
+                    Đã thanh toán</label>
+                        </div>
+                        <div class="span6">
+                            <label>
+                            <input type="radio" name="payment_joining_off_status" value="0" <?php echo ($this->paymentjoiningofflinedata['payment_joining_off_status'] == 0) ? 'checked' :'' ?>/>
+                            Chưa thanh toán</label> 
+                        </div>
+                    <?php else:  ?>                     
+                        <div class="span9">
+                            <label>                            
+                            <input type="radio" name="payment_joining_off_status" value="-1" />
+                    Hủy phiếu xác nhận thanh toán</label>
+                        </div>   
+                    <?php endif;  ?>     
+                    </div>                                               
+                </div> 
+             
+
+             
+              <!-- <div class="form-actions"> -->
+                <button style="float: right;" type="submit" class="btn">Lưu</button>
+              <!-- </div> -->
+            </form>
+         
+
+
