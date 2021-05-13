@@ -53,7 +53,7 @@
                                                             <td><?= '0'.substr($person->person_mobile,2,strlen($person->person_mobile)) ?></td>
                                                             <?php
                                                         } else {
-                                                            $customerModel = new Default_Model_Customers();
+                                                            $customerModel = new Default_Model_Customer();
                                                             $customer = $customerModel->fetchRow('cus_id = ' . $value->customer_id);
                                                             ?>
                                                             <td><?= $customer->cus_fullname ?></td>

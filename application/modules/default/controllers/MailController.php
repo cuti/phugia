@@ -37,7 +37,7 @@ class MailController extends Zend_Controller_Action
                 $mail[$key]['mail_datesend'] = ($value["mail_datesend"] != null && $value["mail_datesend"] != ''
                 && $value["mail_datesend"] != $dateEmpty) ? date('d/m/Y',strtotime($value['mail_datesend'])) : '';
             }
-        }        
+        }
         $this->view->mail = $mail;
     }
 
@@ -49,7 +49,7 @@ class MailController extends Zend_Controller_Action
         if ($this->getRequest()->isPost()) {
             $data = $this->getRequest()->getPost();
             if ($data['type_mail'] == 'send_email') {
-                $customerModel = new Default_Model_Customers();
+                $customerModel = new Default_Model_Customer();
                 $customer = $customerModel->fetchRow(['cus_email = ?' => $data['person_email']]);
                 $mailModel = new Default_Model_Mail();
                 if(empty($customer->cus_id)){

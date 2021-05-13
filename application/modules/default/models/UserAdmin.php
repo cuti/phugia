@@ -1,22 +1,21 @@
 <?php
 
 class Default_Model_UserAdmin  extends Zend_Db_Table_Abstract{
-    
+
     protected $_name = 'user_admin';
 
-    protected $_primary = 'user_id'; 
+    protected $_primary = 'user_id';
 
     function num($username, $password)
     {
-     
-        $result = count($this->getAdapter()->fetchAll("select * from  user_admin  where
-        user_username='".$username."' and 
-        user_password='".$password."' "));
 
-        //and users_active=1
-         
+        $result = count($this->getAdapter()->fetchAll("select * from user where
+        user_username='".$username."' and
+        user_password='".$password."' and
+        user_status=1 "));
+
         return $result;
-          
+
     }
 
     public function getUserAdminByUsername($username)
@@ -39,7 +38,7 @@ class Default_Model_UserAdmin  extends Zend_Db_Table_Abstract{
     //     $select = $this->select()
     //                    ->from($this)
     //                    ->where('phone_number LIKE ?', '%' . $q . '%');
-    
+
     //     $row = $this->fetchAll($select);
     //     return $row;
     // }
@@ -62,9 +61,9 @@ class Default_Model_UserAdmin  extends Zend_Db_Table_Abstract{
     //     //     ->where('phone_number_customer = ?', '0915928139');
     //     $resultSet = $db->fetchAll($select);
 
-       
 
-    //     //  $select = $this->select();    
+
+    //     //  $select = $this->select();
     //     // $adapter = new Zend_Paginator_Adapter_DbTableSelect($select);
     //     // return $adapter;
     // }
@@ -72,8 +71,8 @@ class Default_Model_UserAdmin  extends Zend_Db_Table_Abstract{
     // public function getCustomer($phone_number)
     // {
     //     $phone_number = (int)$phone_number;
-    //     //$select = $this->select() //select from usertable and memberdetail 
-    //     //->from(array('memberdetail', 'usertable')) //join memberdetail and usertable through memberid = username 
+    //     //$select = $this->select() //select from usertable and memberdetail
+    //     //->from(array('memberdetail', 'usertable')) //join memberdetail and usertable through memberid = username
     //     //->where('phone_number = ' . $phone_number or);
     //     $row = $this->fetchRow('phone_number = ' . $phone_number);
     //     if (!$row) {

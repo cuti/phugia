@@ -1,92 +1,77 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+
+<html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<script src="<?php echo $this->BaseUrl?>/library/ckeditor/ckeditor.js"></script>
-<link rel="stylesheet" href="<?php echo $this->BaseUrl?>/public/css/bootstrap.min.css" />
-<link rel="stylesheet" href="<?php echo $this->BaseUrl?>/public/css/bootstrap-responsive.min.css" />
-<link rel="stylesheet" href="<?php echo $this->BaseUrl?>/public/css/fullcalendar.css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<link rel="stylesheet" href="<?php echo $this->BaseUrl?>/public/css/datepicker.css">
-<link rel="stylesheet" href="<?php echo $this->BaseUrl?>/public/css/uniform.css">
-<link rel="stylesheet" href="<?php echo $this->BaseUrl?>/public/css/select2.css">
-<link rel="stylesheet" href="<?php echo $this->BaseUrl?>/public/css/maruti-style.css" />
-<link rel="stylesheet" href="<?php echo $this->BaseUrl?>/public/css/maruti-media.css" class="skin-color" />
-<!-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css"> -->
-<link rel="stylesheet" type="text/css" href="<?php echo $this->BaseUrl?>/public/css/jquery.dataTables.min.css">
-<link type="text/css" href="<?php echo $this->BaseUrl?>/public/css/dataTables.checkboxes.css" rel="stylesheet" />
-<title><?php echo $this->escape($this->pageTitle); ?></title>
+    <title><?php echo $this->escape($this->pageTitle); ?></title>
 
-<script type="text/javascript" src="<?php echo $this->BaseUrl?>/public/js/jquery.min.js"></script>
-<!-- <script type="text/javascript" src="<?php echo $this->BaseUrl?>/public/js/jquery-3.3.1.js"></script> -->
-<script type="text/javascript" src="<?php echo $this->BaseUrl?>/public/js/jquery.ui.custom.js"></script> 
-<script type="text/javascript" src="<?php echo $this->BaseUrl?>/public/js/bootstrap.min.js"></script>
-<!-- <script type="text/javascript" src="<?php echo $this->BaseUrl?>/public/js/jquery.dataTables.min.js"></script>  -->
+    <link rel="shortcut icon" href="<?=$this->BaseUrl?>/public/img/logo.png">
 
+    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/fullcalendar.css" />
+    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/datepicker.css">
+    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/uniform.css">
+    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/select2.css">
+    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/maruti-style.css" />
+    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/maruti-media.css" class="skin-color" />
+    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/dataTables.checkboxes.css" />
+    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/bootstrap-4-polyfill.css" />
 
-<script type="text/javascript" language="javascript" src="<?php echo $this->BaseUrl?>/public/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="<?php echo $this->BaseUrl?>/public/js/dataTables.checkboxes.min.js"></script>
-<!-- <script type="text/javascript" src="<?php echo $this->BaseUrl?>/public/js/maruti.form_common.js"></script> -->
-<style>
-/* width */
-::-webkit-scrollbar {
-    width: 10px;
-}
+    <script src="<?=$this->BaseUrl?>/library/ckeditor/ckeditor.js"></script>
+    <script src="<?=$this->BaseUrl?>/public/js/jquery.min.js"></script>
+    <script src="<?=$this->BaseUrl?>/public/js/jquery.ui.custom.js"></script>
+    <script src="<?=$this->BaseUrl?>/public/js/bootstrap.min.js"></script>
+    <script src="<?=$this->BaseUrl?>/public/js/jquery.dataTables.min.js"></script>
+    <script src="<?=$this->BaseUrl?>/public/js/dataTables.checkboxes.min.js"></script>
 
-/* Track */
-::-webkit-scrollbar-track {
-    background: #f1f1f1; 
-}
- 
-/* Handle */
-::-webkit-scrollbar-thumb {
-    background: #888; 
-}
+    <style type="text/css">
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
 
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-    background: #555; 
-}
-</style>
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
 </head>
 
 <body>
+    <?php
+        if (strpos($_SERVER['REQUEST_URI'], 'admin') > 0) {
+            $module = 'admin';
+        } else {
+            $module = 'default';
+        }
+    ?>
 
+    <?=$this->action('index', 'header', $module)?>
 
+    <div id="content" class="bg-white p-2">
+        <?=$this->layout()->content?>
+    </div>
 
-<?php 
+    <?=$this->action('index', 'footer', $module)?>
 
-if (strpos($_SERVER['REQUEST_URI'], 'admin') == true) {
-    echo $this->action('index', 'header', 'admin');
-}else{
-    echo $this->action('index', 'header', 'default');
-}
-
-echo $this->layout()->content;
-
-if (strpos($_SERVER['REQUEST_URI'], 'admin') == true) {
-    echo $this->action('index', 'footer', 'admin');
-}else{
-    echo $this->action('index', 'footer', 'default');
-}
-
-
-?>
-
-<script type="text/javascript" src="<?php echo $this->BaseUrl?>/public/js/bootstrap-colorpicker.js"></script> 
-<script type="text/javascript" src="<?php echo $this->BaseUrl?>/public/js/bootstrap-datepicker.js"></script> 
-<script type="text/javascript" src="<?php echo $this->BaseUrl?>/public/js/jquery.uniform.js"></script>
-<script type="text/javascript" src="<?php echo $this->BaseUrl?>/public/js/select2.min.js"></script>
-<script type="text/javascript" src="<?php echo $this->BaseUrl?>/public/js/jquery.validate.js"></script>
-
-<script type="text/javascript" src="<?php echo $this->BaseUrl?>/public/js/maruti.js"></script> 
-<script type="text/javascript" src="<?php echo $this->BaseUrl?>/public/js/maruti.tables.js"></script> 
-
-
-
-   
+    <script src="<?=$this->BaseUrl?>/public/js/bootstrap-colorpicker.js"></script>
+    <script src="<?=$this->BaseUrl?>/public/js/bootstrap-datepicker.js"></script>
+    <script src="<?=$this->BaseUrl?>/public/js/jquery.uniform.js"></script>
+    <script src="<?=$this->BaseUrl?>/public/js/select2.min.js"></script>
+    <script src="<?=$this->BaseUrl?>/public/js/jquery.validate.js"></script>
+    <script src="<?=$this->BaseUrl?>/public/js/maruti.js"></script>
+    <script src="<?=$this->BaseUrl?>/public/js/maruti.tables.js"></script>
 </body>
 
 </html>

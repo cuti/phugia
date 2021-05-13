@@ -1,8 +1,7 @@
 <?php
-// Login controller
+
 class LoginController extends Zend_Controller_Action
 {
-
     public function init()
     {
         $this->view->BaseUrl = $this->_request->getBaseUrl();
@@ -18,39 +17,28 @@ class LoginController extends Zend_Controller_Action
         Zend_Session::rememberMe(7200); // 1 hour
         Zend_Session::start();
 
-        $this->view->pageTitle = 'Default Page';
+        $this->view->pageTitle = 'Đăng Nhập';
 
-        $username = $this->_request->getParam('username', '');
-        $password = MD5($this->_request->getParam('password', ''));
         if ($this->_request->isPost()) {
-
-            $users = new Default_Model_UserAdmin();
+            $username = $this->_request->getParam('username', '');
+            $password = MD5($this->_request->getParam('password', ''));
+            $users = new Default_Model_User();
             $auth = Zend_Auth::getInstance();
-            $authAdapter = new Zend_Auth_Adapter_DbTable($users->getAdapter(), 'user_admin');
-            $authAdapter->setIdentityColumn('user_username')
-                ->setCredentialColumn('user_password');
-
-            $authAdapter->setIdentity($username)
-                ->setCredential($password);
-
+            $authAdapter = new Zend_Auth_Adapter_DbTable($users->getAdapter(), 'user');
+            $authAdapter->setIdentityColumn('user_username')->setCredentialColumn('user_password');
+            $authAdapter->setIdentity($username)->setCredential($password);
             $result = $auth->authenticate($authAdapter);
 
             if ($result->isValid()) {
-                // success: store database row to auth's storage
-                // (Not the password though if  take cus_password trong ''!)
-
                 $data = $authAdapter->getResultRowObject();
                 $auth->getStorage()->write($data);
                 $_SESSION['login'] = "good";
                 $_SESSION['config'] = $this->view->BaseUrl;
                 $_SESSION['username'] = $username;
-                $this->_redirect('/index');
+                $this->_redirect('index');
             } else {
-                $this->view->note = 'Thông tin username hoặc password không đúng!!!';
+                $this->view->note = 'Username hoặc password không đúng.';
             }
-
         }
-
     }
-
 }

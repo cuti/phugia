@@ -38,7 +38,7 @@ class Admin_IndexController extends Zend_Controller_Action
         $countlawyer = $lawyer->countLawyerActiveByFilter('1');
         $this->view->numberlawyer = count($countlawyer);
 
-        $customer = new Default_Model_Customers();
+        $customer = new Default_Model_Customer();
         $countcustomer = $customer->loadCustomers();
         $this->view->countcustomer = count($countcustomer);
 
