@@ -7,16 +7,16 @@ class OrganizationController extends Zend_Controller_Action
     }
 
     public function  preDispatch(){
- 	
+
         $this->auth = Zend_Auth::getInstance();
         $this->identity = $this->auth->getIdentity();
- 
+
         $username= $this->identity->user_username;
         $password= $this->identity->user_password;
- 
-        $users2 = new Default_Model_UserAdmin();  
-        if ($users2->num($username, $password)>0) {                     
-        
+
+        $users2 = new Default_Model_UserAdmin();
+        if ($users2->num($username, $password)>0) {
+
         }else{
               $this->_redirect('/default/login');exit;
         }
@@ -39,17 +39,17 @@ class OrganizationController extends Zend_Controller_Action
 
                 $filter = new Zend_Filter();
                 $arrInput = $this->_request->getParams();
-                $this->view->arrInput = $arrInput; 
-                
-                
+                $this->view->arrInput = $arrInput;
+
+
                 $model = new Default_Model_OrganizationLawyer();
 
-               
+
                 $check = $model->checkLawyerExistInOrgan($filter->filter($arrInput['law_name']),$filter->filter($arrInput['organ_detail_id']));
                 if( $check != null && count($check) >0){
                     $this->view->parError = 'Luật sư đã được thêm vào TCHN';
                 }
-                if($this->view->parError == ''){               
+                if($this->view->parError == ''){
                     $data = array(
                         // 'law_organ' => $filter->filter($arrInput['law_name']),
                         // 'law_birthday' => $filter->filter($arrInput['law_birthday']),
@@ -59,12 +59,12 @@ class OrganizationController extends Zend_Controller_Action
                         'note' => $filter->filter($arrInput['law_note']),
                         // 'law_certification' => $filter->filter($arrInput['law_certification']),
                         // 'law_certification_date' => $filter->filter($arrInput['law_certification_date']),
-                        // 'law_joining_organ_date' => $filter->filter($arrInput['law_joining_organ_date'])                       
-                        'createddate' => $currentdate->toString('YYYY-MM-dd HH:mm:ss')               
-                    );              
+                        // 'law_joining_organ_date' => $filter->filter($arrInput['law_joining_organ_date'])
+                        'createddate' => $currentdate->toString('YYYY-MM-dd HH:mm:ss')
+                    );
 
                     $model->insert($data);
-                        
+
                 }
             }
         }
@@ -80,13 +80,13 @@ class OrganizationController extends Zend_Controller_Action
             $data = $model->loadOrganzationsLaw();
             $this->view->organizations = $data;
 
-            $modelCustomers = new Default_Model_Customers();
+            $modelCustomers = new Default_Model_Customer();
             $customers = $modelCustomers->fetchAll();
-            $this->view->customers = $customers;       
+            $this->view->customers = $customers;
     }
 
     public function createAction(){
-        
+
         $this->_helper->layout('layout')->disableLayout();
 
         $customers = $this->getRequest()->getParam('customers');
@@ -94,8 +94,8 @@ class OrganizationController extends Zend_Controller_Action
         $myArray = '';
          //role with action
         if($customers != null && sizeof($customers)){
-            foreach($customers as $cus){             
-                $myArray += $cus +',';          
+            foreach($customers as $cus){
+                $myArray += $cus +',';
             }
         }
 
@@ -105,7 +105,7 @@ class OrganizationController extends Zend_Controller_Action
 
                 $filter = new Zend_Filter();
                 $arrInput = $this->_request->getParams();
-                $this->view->arrInput = $arrInput;            
+                $this->view->arrInput = $arrInput;
 
                 $currentdate = new Zend_Date();
                 $model = new Default_Model_OrganizationLawDetails();
@@ -118,8 +118,8 @@ class OrganizationController extends Zend_Controller_Action
                     $this->view->parError = 'Bạn phải chọn luật sư để tạo quản lý!';
                 }
 
-                if($this->view->parError == ''){                              
-                  
+                if($this->view->parError == ''){
+
                     $data = array(
                         'organ_name' => $filter->filter($arrInput['organ_name']),
                         'organ_type' => $filter->filter($arrInput['organ_type']),
@@ -132,11 +132,11 @@ class OrganizationController extends Zend_Controller_Action
                         'law_organ_address' => $filter->filter($arrInput['law_organ_address']),
                         'law_organ_address_hktt' => $filter->filter($arrInput['law_organ_address_hktt']),
                         'district'  => $filter->filter($arrInput['district']),
-                        'customers' => $myArray,      
-                        'createddate' => $currentdate->toString('YYYY-MM-dd HH:mm:ss')               
+                        'customers' => $myArray,
+                        'createddate' => $currentdate->toString('YYYY-MM-dd HH:mm:ss')
                     );
                     $model->insert($data);
-                        
+
                 }
 
             }
@@ -146,37 +146,37 @@ class OrganizationController extends Zend_Controller_Action
     // load danh sach tchn
     public function listorgandatatablefilterAction(){
         $start = $this->getRequest()->getParam('start');
-        $length = $this->getRequest()->getParam('length');      
+        $length = $this->getRequest()->getParam('length');
         $search = $this->getRequest()->getParam('search');
         $type = $this->getRequest()->getParam('type');
 
         $model = new Default_Model_OrganizationLaw();
         $data = $model->loadOrganzationLawByFilter($start,$length,$search,$type);
 
-        $results = array(            
+        $results = array(
         );
 
         if($data != null && sizeof($data)){
             $index = 0;
-            foreach($data as $pay){ 
-                // $index += 1;                
+            foreach($data as $pay){
+                // $index += 1;
                 array_push($results,[
-                'organ_detail_id' => $pay['organ_detail_id'],    
-                'organ_name' => $pay['organ_name'] != null ? $pay['organ_name'] : '' ,                    
+                'organ_detail_id' => $pay['organ_detail_id'],
+                'organ_name' => $pay['organ_name'] != null ? $pay['organ_name'] : '' ,
                 //date("d/m/Y", strtotime($pay['discipline_date'])),
-                'organ_certification' => $pay['organ_certification'],                
+                'organ_certification' => $pay['organ_certification'],
                 'organ_certification_date' => $pay['organ_certification_date'] != null ? $pay['organ_certification_date'] : '' ,
                 'organ_mobile' => $pay['organ_mobile'] != null ? $pay['organ_mobile'] : '' ,
                 'law_organ_address' => $pay['law_organ_address'] != null ? $pay['law_organ_address'] : '',
-                'law_organ_address_hktt' => $pay['law_organ_address_hktt'] != null ? $pay['law_organ_address_hktt'] : '',                
-                'organ_email' =>$pay['organ_email'] != null ? $pay['organ_email'] : '', 
-                'district' => $pay['district'] != null ? $pay['district'] : '', 
+                'law_organ_address_hktt' => $pay['law_organ_address_hktt'] != null ? $pay['law_organ_address_hktt'] : '',
+                'organ_email' =>$pay['organ_email'] != null ? $pay['organ_email'] : '',
+                'district' => $pay['district'] != null ? $pay['district'] : '',
                 'cus_fullname' => $pay['cus_firstname'].' '.$pay['cus_lastname'],
                 'cus_lawyer_number' => $pay['cus_lawyer_number'],
                 'law_certfication_no' => $pay['law_certfication_no'],
                 'thongtin_thaydoi' => $pay['thongtin_thaydoi'],
                 'ngaycapnhat' => $pay['ngaycapnhat']
-                ]);                 
+                ]);
             }
         }
 
@@ -189,7 +189,7 @@ class OrganizationController extends Zend_Controller_Action
             "recordsFiltered" => intval($totalrecords),
             "data"            => $results
         );
-            
+
         echo json_encode($json_data);
         exit;
     }
@@ -197,11 +197,11 @@ class OrganizationController extends Zend_Controller_Action
     // load detail cho organization law detail
     public function detailAction(){
         $this->_helper->layout('homelayout')->disableLayout();
-        $organDetailModel = new Default_Model_OrganizationLawDetails();   
+        $organDetailModel = new Default_Model_OrganizationLawDetails();
         $organ_detail_id = $this->getRequest()->getParam('organ_detail_id');
         $data = $organDetailModel->loadOrganzationsLawById($organ_detail_id);
 
-        $this->view->organdetail =  $data; 
+        $this->view->organdetail =  $data;
     }
 
     public function addinformationAction(){
@@ -215,22 +215,22 @@ class OrganizationController extends Zend_Controller_Action
                 $this->view->arrInput = $arrInput;
 
                 $currentdate = new Zend_Date();
-                if($this->view->parError == ''){ 
+                if($this->view->parError == ''){
                     $payment = new Default_Model_OrganizationLawDetails();
-                    $data = array(                 
+                    $data = array(
                         'total_law'=> $filter->filter($arrInput['total_law']),
-                        'total_law_native'=> $filter->filter($arrInput['total_law_native']),  
+                        'total_law_native'=> $filter->filter($arrInput['total_law_native']),
                         'total_law_foreign'=> $filter->filter($arrInput['total_law_foreign']),
-                        'total_job_done'=> $filter->filter($arrInput['total_job_done']), 
+                        'total_job_done'=> $filter->filter($arrInput['total_job_done']),
                         'total_procedure'=> $filter->filter($arrInput['total_procedure']),
                         'total_criminal' => $filter->filter($arrInput['total_criminal']),
                         'total_support_service'=> $filter->filter($arrInput['total_support_service']),
                         'total_support'=> $filter->filter($arrInput['total_support'])  ,
                         'amount'=> $filter->filter($arrInput['amount'])  ,
-                        'amount_charge'=> $filter->filter($arrInput['amount_charge'])       
+                        'amount_charge'=> $filter->filter($arrInput['amount_charge'])
                     );
-                    $payment->update($data, 'organ_detail_id = '. (int)($filter->filter($arrInput['organ_detail_id'])));                   
-                    
+                    $payment->update($data, 'organ_detail_id = '. (int)($filter->filter($arrInput['organ_detail_id'])));
+
                      /*insert log action*/
                     //  $this->auth = Zend_Auth::getInstance();
                     //  $this->identity = $this->auth->getIdentity();
@@ -246,11 +246,11 @@ class OrganizationController extends Zend_Controller_Action
                     //      'access_object' => $filter->filter($arrInput['payment_lawyer_off_id'])
                     //  );
                     //  $useradminlog->insert($datalog);
-                
-                
-                }        
+
+
+                }
             }
-        }    
+        }
 
     }
 
@@ -265,20 +265,20 @@ class OrganizationController extends Zend_Controller_Action
                 $this->view->arrInput = $arrInput;
 
                 $currentdate = new Zend_Date();
-                if($this->view->parError == ''){ 
+                if($this->view->parError == ''){
                     $payment = new Default_Model_OrganizationLawDetails();
-                    $data = array(                 
+                    $data = array(
                         'organ_name'=> $filter->filter($arrInput['organ_name']),
-                        'organ_certification'=> $filter->filter($arrInput['organ_certification']),  
+                        'organ_certification'=> $filter->filter($arrInput['organ_certification']),
                         'organ_mobile'=> $filter->filter($arrInput['organ_mobile']),
-                        'law_organ_address'=> $filter->filter($arrInput['law_organ_address']), 
+                        'law_organ_address'=> $filter->filter($arrInput['law_organ_address']),
                         'law_organ_address_hktt'=> $filter->filter($arrInput['law_organ_address_hktt']),
                         'modified_date' => $currentdate->toString('YYYY-MM-dd HH:mm:ss'),
                         'thongtin_thaydoi'=> $filter->filter($arrInput['thongtin_thaydoi']),
-                        'ngaycapnhat'=> $filter->filter($arrInput['ngaycapnhat'])       
+                        'ngaycapnhat'=> $filter->filter($arrInput['ngaycapnhat'])
                     );
-                    $payment->update($data, 'organ_detail_id = '. (int)($filter->filter($arrInput['organ_detail_id'])));                   
-                    
+                    $payment->update($data, 'organ_detail_id = '. (int)($filter->filter($arrInput['organ_detail_id'])));
+
                      /*insert log action*/
                     //  $this->auth = Zend_Auth::getInstance();
                     //  $this->identity = $this->auth->getIdentity();
@@ -294,27 +294,27 @@ class OrganizationController extends Zend_Controller_Action
                     //      'access_object' => $filter->filter($arrInput['payment_lawyer_off_id'])
                     //  );
                     //  $useradminlog->insert($datalog);
-                
-                
-                }        
+
+
+                }
             }
-        }    
+        }
     }
 
     public function exportexcelorganizationdetailsAction(){
-         
+
         $this->_helper->layout('layout')->disableLayout();
         date_default_timezone_set('Asia/Ho_Chi_Minh');
         $modelOrganizationDetails = new Default_Model_OrganizationLawDetails();
-        $data = $modelOrganizationDetails->loadOrganzationDetails();        
-          
-        $excel = new Default_Model_Excel();      
-          
+        $data = $modelOrganizationDetails->loadOrganzationDetails();
+
+        $excel = new Default_Model_Excel();
+
         $excel->setActiveSheetIndex(0);
-            
+
         $excel->getActiveSheet()->setTitle('TC HNLS');
 
-           
+
         $excel->getActiveSheet()->getColumnDimension('A')->setWidth(20);
         $excel->getActiveSheet()->getColumnDimension('B')->setWidth(20);
         $excel->getActiveSheet()->getColumnDimension('C')->setWidth(30);
@@ -334,9 +334,9 @@ class OrganizationController extends Zend_Controller_Action
         $excel->getActiveSheet()->getColumnDimension('R')->setWidth(30);
         $excel->getActiveSheet()->getColumnDimension('S')->setWidth(30);
 
-            
+
         $excel->getActiveSheet()->getStyle('A1:S1')->getFont()->setBold(true);
-      
+
         $excel->getActiveSheet()->setCellValue('A1', 'TÊN TỔ CHỨC HNLS');
         $excel->getActiveSheet()->setCellValue('B1', 'TRƯỞNG VĂN PHÒNG');
         $excel->getActiveSheet()->setCellValue('C1', 'SỐ CCHN');
@@ -365,14 +365,14 @@ class OrganizationController extends Zend_Controller_Action
             $excel->getActiveSheet()->setCellValue('D'.$numRow, $row['law_certfication_no']);
             $excel->getActiveSheet()->setCellValue('E'.$numRow, date("d/m/Y", strtotime($row['cus_birthday'])));
             $excel->getActiveSheet()->setCellValue('F'.$numRow, $row['cus_cellphone']);
-            $excel->getActiveSheet()->setCellValue('G'.$numRow, '');                           
+            $excel->getActiveSheet()->setCellValue('G'.$numRow, '');
             $excel->getActiveSheet()->setCellValue('H'.$numRow, $row['law_organ_address']);
             $excel->getActiveSheet()->setCellValue('I'.$numRow, $row['law_organ_address_hktt']);
             $excel->getActiveSheet()->setCellValue('J'.$numRow, $row['district']);
             $excel->getActiveSheet()->setCellValue('K'.$numRow, $row['organ_mobile']);
             $excel->getActiveSheet()->setCellValue('L'.$numRow, $row['organ_fax']);
             $excel->getActiveSheet()->setCellValue('M'.$numRow, $row['organ_email']);
-            $excel->getActiveSheet()->setCellValue('N'.$numRow, $row['organ_certification']);            
+            $excel->getActiveSheet()->setCellValue('N'.$numRow, $row['organ_certification']);
             $excel->getActiveSheet()->setCellValue('O'.$numRow, $row['organ_certification_date']);
             $excel->getActiveSheet()->setCellValue('P'.$numRow, $row['thongtin_thaydoi']);
             $excel->getActiveSheet()->setCellValue('Q'.$numRow, $row['ngaycapnhat']);
@@ -380,7 +380,7 @@ class OrganizationController extends Zend_Controller_Action
             $excel->getActiveSheet()->setCellValue('S'.$numRow, $row['chidinh']);
             $numRow++;
         }
-       
+
         $styleArray = array(
             'borders' => array(
                 'allborders' => array(
@@ -389,15 +389,15 @@ class OrganizationController extends Zend_Controller_Action
                 ),
             ),
         );
-            
-        $excel->getActiveSheet()->getStyle('A1:S'.$numRow)->applyFromArray($styleArray);       
-        
+
+        $excel->getActiveSheet()->getStyle('A1:S'.$numRow)->applyFromArray($styleArray);
+
         $excel->getActiveSheet()->getStyle('A1:S'.$numRow)->applyFromArray($styleArray);
         foreach(range('A','K') as $columnID) {
             $excel->getActiveSheet()->getColumnDimension($columnID)
                 ->setAutoSize(true);
         }
-        
+
         header('Content-type: application/vnd.ms-excel');
         header('Content-Disposition: attachment; filename="Danhsach_TCHN.xlsx"');
         PHPExcel_IOFactory::createWriter($excel, 'Excel2007')->save('php://output');

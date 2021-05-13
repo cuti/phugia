@@ -1,5 +1,5 @@
 <?php
-// Fee controller 
+// Fee controller
 class FeeController extends Zend_Controller_Action
 {
     public function init(){
@@ -7,16 +7,16 @@ class FeeController extends Zend_Controller_Action
     }
 
     public function  preDispatch(){
- 	
+
         $this->auth = Zend_Auth::getInstance();
         $this->identity = $this->auth->getIdentity();
- 
+
         $username= $this->identity->user_username;
         $password= $this->identity->user_password;
- 
-        $users2 = new Default_Model_UserAdmin();  
-        if ($users2->num($username, $password)>0) {                     
-        
+
+        $users2 = new Default_Model_UserAdmin();
+        if ($users2->num($username, $password)>0) {
+
         }else{
               $this->_redirect('/default/login');exit;
         }
@@ -34,17 +34,17 @@ class FeeController extends Zend_Controller_Action
         $this->view->payment_lawyer_off_code = $payment_lawyer_off_code;
 
 
-        $categoryFree = new Default_Model_CategoryFee();         
+        $categoryFree = new Default_Model_CategoryFee();
         $data = $categoryFree->loadCategoryFee('member');
         $currentDate = new Zend_Date();
-        $year =  $currentDate->get('YYYY'); 
-       
+        $year =  $currentDate->get('YYYY');
+
         // lấy giá tiền phí thành viên năm hiện tại
         $amountYear = 0;
         if($data != null && sizeof($data)>0){
             foreach($data as $value){
                 if($value['year'] == $year ){
-                    $amountYear = $value['mooney'];                   
+                    $amountYear = $value['mooney'];
                     break;
                 }
             }
@@ -57,17 +57,17 @@ class FeeController extends Zend_Controller_Action
     /*fee internship*/
     public function intershipAction(){
 
-        $categoryFree = new Default_Model_CategoryFee();         
+        $categoryFree = new Default_Model_CategoryFee();
         $data = $categoryFree->loadCategoryFee('intership');
         $currentDate = new Zend_Date();
-        $year =  $currentDate->get('YYYY'); 
-       
+        $year =  $currentDate->get('YYYY');
+
         // lấy giá tiền phí thành viên năm hiện tại
         $amountYear = 0;
         if($data != null && sizeof($data)>0){
             foreach($data as $value){
                 if($value['year'] == $year ){
-                    $amountYear = $value['mooney'];                   
+                    $amountYear = $value['mooney'];
                     break;
                 }
             }
@@ -83,11 +83,11 @@ class FeeController extends Zend_Controller_Action
         $paymentintershipoffline = new Default_Model_PaymentIntershipOffline();
         $payment_inter_off_code = $paymentintershipoffline->generationCode('PTS','');
         $this->view->payment_inter_off_code = $payment_inter_off_code;
-        
+
     }
 
     public function joiningAction(){
-        $categoryfreelawyer = new Default_Model_CategoryFee();         
+        $categoryfreelawyer = new Default_Model_CategoryFee();
         $data = $categoryfreelawyer->loadCategoryFee('joining');
         $this->view->categoryfee =  $data;
 
@@ -102,18 +102,18 @@ class FeeController extends Zend_Controller_Action
     /*load history fee by customer id*/
     public function listAction(){
         $this->_helper->layout('homelayout')->disableLayout();
-        $paymentoffline = new Default_Model_PaymentLawyerOffline();   
+        $paymentoffline = new Default_Model_PaymentLawyerOffline();
         $cus_id = $this->getRequest()->getParam('cus_id');
         $data = $paymentoffline->loadPaymentLawyerOfflineByCusId($cus_id);
-        $this->view->paymentofflines =  $data; 
+        $this->view->paymentofflines =  $data;
     }
 
     public function listdataAction(){
         $this->_helper->layout('homelayout')->disableLayout();
-        $paymentoffline = new Default_Model_PaymentLawyerOffline();   
+        $paymentoffline = new Default_Model_PaymentLawyerOffline();
         $cus_id = $this->getRequest()->getParam('cus_id');
         $data = $paymentoffline->loadPaymentLawyerOfflineByCusId($cus_id);
-        //$this->view->paymentofflines =  $data; 
+        //$this->view->paymentofflines =  $data;
 
         //$dateEmpty = '1900-01-01 00:00:00';
         array_walk ( $data, function (&$key) {
@@ -124,53 +124,53 @@ class FeeController extends Zend_Controller_Action
            // $key["intership_address"] = ($key["intership_address"] != '' && $key["intership_address"] != null) ? $key["intership_address"] : '';
         } );
         echo json_encode($data);
-        exit; 
+        exit;
     }
 
       /*load history fee intership by customer id*/
     public function listintershipAction(){
         $this->_helper->layout('homelayout')->disableLayout();
-        $paymentoffline = new Default_Model_PaymentIntershipOffline();   
+        $paymentoffline = new Default_Model_PaymentIntershipOffline();
         $cus_id = $this->getRequest()->getParam('cus_id');
         $data = $paymentoffline->loadPaymentIntershipOfflineByCusId($cus_id);
-        $this->view->paymentofflines =  $data; 
+        $this->view->paymentofflines =  $data;
     }
 
       /*load history fee intership by customer id*/
     public function listjoiningAction(){
         $this->_helper->layout('homelayout')->disableLayout();
-        $paymentoffline = new Default_Model_PaymentJoiningOffline();   
+        $paymentoffline = new Default_Model_PaymentJoiningOffline();
         $cus_id = $this->getRequest()->getParam('cus_id');
         $data = $paymentoffline->loadPaymentJoiningOfflineByCusId($cus_id);
-        $this->view->paymentofflines =  $data; 
+        $this->view->paymentofflines =  $data;
     }
-    
+
     /*load list history fee*/
     public function confirmfeelistAction(){
         //$this->_helper->layout('homelayout')->disableLayout();
-        $paymentoffline = new Default_Model_PaymentLawyerOffline();   
+        $paymentoffline = new Default_Model_PaymentLawyerOffline();
         $datapaymentofflines = $paymentoffline->loadPaymentLawyerOffline();
         $this->view->paymentofflines =  $datapaymentofflines;
 
-        $paymentjoiningoffline = new Default_Model_PaymentJoiningOffline();   
+        $paymentjoiningoffline = new Default_Model_PaymentJoiningOffline();
         $datapaymentjoiningofflines = $paymentjoiningoffline->loadPaymentJoiningOffline();
-        $this->view->paymentjoiningofflines =  $datapaymentjoiningofflines; 
- 
-        $paymentintershipoffline = new Default_Model_PaymentIntershipOffline();   
+        $this->view->paymentjoiningofflines =  $datapaymentjoiningofflines;
+
+        $paymentintershipoffline = new Default_Model_PaymentIntershipOffline();
         $datapaymentintershipofflines = $paymentintershipoffline->loadPaymentIntershipOffline();
         $this->view->paymentintershipofflines =  $datapaymentintershipofflines;
-        
-        $modelPaymentOffline = new Default_Model_PaymentOffline();   
+
+        $modelPaymentOffline = new Default_Model_PaymentOffline();
         $paymentOffline = $modelPaymentOffline->loadPaymentOffline();
         $this->view->paymentOfflines =  $paymentOffline;
     }
 
     public function detailconfirmfeeAction(){
         $this->_helper->layout('homelayout')->disableLayout();
-        $paymentoffline = new Default_Model_PaymentLawyerOffline();   
+        $paymentoffline = new Default_Model_PaymentLawyerOffline();
         $id = $this->getRequest()->getParam('id');
         $data = $paymentoffline->loadPaymentLawyerOfflinegById($id);
-        $this->view->paymentofflinedata =  $data; 
+        $this->view->paymentofflinedata =  $data;
     }
 
      /*create fee memberr*/
@@ -193,20 +193,20 @@ class FeeController extends Zend_Controller_Action
                     // $model = new Default_Model_Lawyer();
                     // $datalawyer = $model->loadLawyerByCusId($arrInput['cus_id']);
                     // if(sizeof($datalawyer) == 0){
-                    //     $this->view->parError = 'Bạn chưa được thêm mới gia nhập vào Đoàn nên không thể đóng phí gia nhập!';    
+                    //     $this->view->parError = 'Bạn chưa được thêm mới gia nhập vào Đoàn nên không thể đóng phí gia nhập!';
                     // }
 
                     //if(Zend_Validate::is($arrInput['cus_id'],'NotEmpty')){
                         $cus_id = $arrInput['cus_id'];
-                        
-                        $modelCustomers = new Default_Model_Customers();
-                        
+
+                        $modelCustomers = new Default_Model_Customer();
+
                         $dataCustomer = $modelCustomers->getCustomerByUserId($cus_id);
-    
+
                         // if($dataCustomer != null && $dataCustomer['cus_lawyer_cityid'] == 1 ){
-                        //     $this->view->parError = 'Bạn là luật sư ở tỉnh, bạn không thể đóng phí tập sự' ;   
+                        //     $this->view->parError = 'Bạn là luật sư ở tỉnh, bạn không thể đóng phí tập sự' ;
                         // }
-                            
+
                         if($dataCustomer != null )
                             $db = Zend_Db_Table::getDefaultAdapter();
                             $select = new Zend_Db_Select($db);
@@ -215,28 +215,28 @@ class FeeController extends Zend_Controller_Action
                             ->where('history_joining.payment_joining_status = ?',0)
                             ->order('history_joining_id desc')
                             ->limit(1);
-                            
-                            $resultSet = $db->fetchRow($select); 
-                            
+
+                            $resultSet = $db->fetchRow($select);
+
                             if($resultSet != null){
                                 if($resultSet['payment_joining_status'] == 1){
-                                    $this->view->parError = 'Hiện tại đợt gia nhập của bạn đã được đóng phí' ;   
+                                    $this->view->parError = 'Hiện tại đợt gia nhập của bạn đã được đóng phí' ;
                                 }else{
-                                    $history_id = $resultSet['history_joining_id'];                                    
-                                }                           
+                                    $history_id = $resultSet['history_joining_id'];
+                                }
                             }else{
-                                $this->view->parError = 'Bạn không thể đóng phí gia nhập khi chưa được thêm vào gia nhập mới. Bạn phải thêm vào đợt tập sự, trước khi đóng phí.' ;   
-                            }    
-                            
-                        }                                
-                    //}  
+                                $this->view->parError = 'Bạn không thể đóng phí gia nhập khi chưa được thêm vào gia nhập mới. Bạn phải thêm vào đợt tập sự, trước khi đóng phí.' ;
+                            }
+
+                        }
+                    //}
 
                 }
 
                 // if(Zend_Validate::is($arrInput['cus_member'],'NotEmpty')){
                 //    if($arrInput['cus_member'] == 1){
                 //     $this->view->parError = 'Bạn đã là thành viên của Đoàn, bạn không cần gia nhập!';
-                //    }                    
+                //    }
                 // }
 
                 if($this->view->parError == ''){
@@ -245,7 +245,7 @@ class FeeController extends Zend_Controller_Action
                     $paymentoffline = new Default_Model_PaymentJoiningOffline();
 
                     $data_paymentoffline = array(
-                        'payment_joining_off_code' => $filter->filter($arrInput['payment_joining_off_code']),                        
+                        'payment_joining_off_code' => $filter->filter($arrInput['payment_joining_off_code']),
                         'payment_joining_off_status' => '0',
                         'payment_joining_off_created_date' => $date->toString('YYYY-MM-dd HH:mm:ss'),
                         'amount' => $filter->filter($arrInput['amount']),
@@ -254,9 +254,9 @@ class FeeController extends Zend_Controller_Action
                         'cus_id' => $filter->filter($arrInput['cus_id']),
                         'payment_type' => 'offline',
                         'history_id' => $history_id
-                        
+
                     );
-                    $idpaymentjoining = $paymentoffline ->insert($data_paymentoffline);  
+                    $idpaymentjoining = $paymentoffline ->insert($data_paymentoffline);
 
                      /*insert log action*/
                      $this->auth = Zend_Auth::getInstance();
@@ -273,10 +273,10 @@ class FeeController extends Zend_Controller_Action
                          'access_object' => $idpaymentjoining
                      );
                      $useradminlog->insert($datalog);
-                                      
-                 }                   
+
+                 }
              }
-             
+
     }
 
 
@@ -290,7 +290,7 @@ class FeeController extends Zend_Controller_Action
     //         'bill_fee_lawyer_temp',
     //         'bill_fee_lawyer_temp.bill_feeoffline_id = payment_intership.bill_feelawyer_temp_id',
     //         array())
-    //     ->where('bill_fee_lawyer_temp.cus_id = ?', $cus_id); 
+    //     ->where('bill_fee_lawyer_temp.cus_id = ?', $cus_id);
 
     //     $query1 = $select->from('payment_intership_offline',array('payment_inter_off_id'))
     //     ->joinInner(
@@ -300,7 +300,7 @@ class FeeController extends Zend_Controller_Action
     //     ->where('bill_fee_offline.cus_id = ?', $cus_id);
     //     //union($query2);
 
-       
+
     //     echo $query1;
 
     //     exit;
@@ -334,55 +334,55 @@ class FeeController extends Zend_Controller_Action
                                 $this->view->parError = 'Bạn đã trên 75 tuổi. Bạn không cần phải đóng phí thành viên!';
                             }
                         }
-                         // check xem nếu lơn hơn 75 thì không cần nộp phí                   
+                         // check xem nếu lơn hơn 75 thì không cần nộp phí
                          // check cho neu no tien thi van phai dong tien
                         // if(Zend_Validate::is($arrInput['cus_age'],'NotEmpty')){
                         //     if($arrInput['cus_age'] >= 75){
-                        //         $modelCustomers = new Default_Model_Customers(); 
+                        //         $modelCustomers = new Default_Model_Customer();
                         //         $endmonth = $modelCustomers->getEndMonthByCusId($arrInput['cus_id']);
                         //         if($endmonth != null && $endmonth != $dateEmpty && $endmonth != '' ){
                         //             //$currentdate = new Zend_Date();
                         //             $endyear = $arrInput['cus_age_year'] + 75;
                         //             //$month = date('n');
                         //             //$year = date('Y');
-                        //             $data = preg_split("#/#", $endmonth); 
+                        //             $data = preg_split("#/#", $endmonth);
                         //             if($data[1] < $endyear){
 
                         //             }
                         //             //print_r($var);
                         //         }else{
-                                    
-                        //         }    
+
+                        //         }
 
                         //         //$this->view->parError = 'Bạn đã trên 75 tuổi. Bạn không cần phải đóng phí thành viên!';
-                        //     }                            
-                        // }                
-                           
-                    }      
+                        //     }
+                        // }
+
+                    }
                 }
-                         
+
 
                 //check xem ngày hiện tại đã đến hạn nộp phí chưa
-             
-               
+
+
                if($this->view->parError == ''){
-                    $date = new Zend_Date();                   
-                              
+                    $date = new Zend_Date();
+
                     $numbermonth = 0;
                     if($filter->filter($arrInput['month']) >0 ){
                         $numbermonth = $filter->filter($arrInput['month']) - 1;
                     }
-                    
+
                     $text = "+".$numbermonth." months";
 
-                    
+
                     $dateUse = str_replace('/', '-', '01/'.$filter->filter($arrInput['startmonth']));
                     $effectiveMonth = date('m/Y', strtotime($text,strtotime($dateUse))
                     );
-                   
+
                     $yearSaving = date('Y', strtotime($text,strtotime($dateUse)));
                     $endmonthdate = $yearSaving.'-'.date('m', strtotime($text,strtotime($dateUse))).'-01 00:00:00';
-                                      
+
                     $paymentoffline = new Default_Model_PaymentLawyerOffline();
 
                     $data_paymentoffline = array(
@@ -398,9 +398,9 @@ class FeeController extends Zend_Controller_Action
                         'endmonthdate' => $endmonthdate,
                         'year' => $yearSaving,
                         'cus_id'=> $filter->filter($arrInput['cus_id']),
-                        'category_fee_id' => $filter->filter($arrInput['category_fee_id'])                       
+                        'category_fee_id' => $filter->filter($arrInput['category_fee_id'])
                     );
-                    $idpaymentfeemember = $paymentoffline ->insert($data_paymentoffline);  
+                    $idpaymentfeemember = $paymentoffline ->insert($data_paymentoffline);
 
                     /*insert log action*/
                     $this->auth = Zend_Auth::getInstance();
@@ -417,13 +417,13 @@ class FeeController extends Zend_Controller_Action
                         'access_object' => $idpaymentfeemember
                     );
                     $useradminlog->insert($datalog);
-                                      
-                 }                   
+
+                 }
              }
-         }    
+         }
     }
 
- 
+
     public function createfeeintershipAction(){
         $this->_helper->layout('layout')->disableLayout();
 
@@ -447,18 +447,18 @@ class FeeController extends Zend_Controller_Action
 
                 if(Zend_Validate::is($arrInput['cus_id'],'NotEmpty')){
                     $cus_id = $arrInput['cus_id'];
-                    
-                    $modelCustomers = new Default_Model_Customers();
-                    
+
+                    $modelCustomers = new Default_Model_Customer();
+
                     $dataCustomer = $modelCustomers->getCustomerByUserId($cus_id);
 
                     // if($dataCustomer != null && $dataCustomer['cus_lawyer_cityid'] == 1 ){
-                    //     $this->view->parError = 'Bạn là luật sư ở tỉnh, bạn không thể đóng phí tập sự' ;   
+                    //     $this->view->parError = 'Bạn là luật sư ở tỉnh, bạn không thể đóng phí tập sự' ;
                     // }
 
                     if($dataCustomer != null && $dataCustomer['cus_member'] != null &&
                     $dataCustomer['cus_member'] == 1){
-                        $this->view->parError = 'Bạn không thể đóng phí tập sự khi đã là thành viên của Đoàn.' ;   
+                        $this->view->parError = 'Bạn không thể đóng phí tập sự khi đã là thành viên của Đoàn.' ;
                     }else{
                         $db = Zend_Db_Table::getDefaultAdapter();
                         $select = new Zend_Db_Select($db);
@@ -466,45 +466,45 @@ class FeeController extends Zend_Controller_Action
                         // ->joinInner(
                         //     'intership_number',
                         //     'intership_number.intership_number_id = intership.intership_number_id',
-                        //     array('intership_number_enddate'))   
+                        //     array('intership_number_enddate'))
                         ->where('intership.cus_id = ?',$cus_id)
                         ->where('intership.payment_inter_status = ?',0)
                         ->order('inter_id desc')
                         ->limit(1);
-                        
-                        $resultSet = $db->fetchRow($select); 
-                        
+
+                        $resultSet = $db->fetchRow($select);
+
                         if($resultSet != null){
                             // if($resultSet['payment_inter_status'] == 1){
-                            //     $this->view->parError = 'Hiện tại đợt tập sự của bạn đã được đóng phí' ;   
+                            //     $this->view->parError = 'Hiện tại đợt tập sự của bạn đã được đóng phí' ;
                             // }else{
                                 $inter_id = $resultSet['inter_id'];
                                 // $db = Zend_Db_Table::getDefaultAdapter();
                                 // $select = new Zend_Db_Select($db);
-                                // $select->from('payment_intership_offline', array('inter_id','cus_id','payment_inter_off_id'))                           
+                                // $select->from('payment_intership_offline', array('inter_id','cus_id','payment_inter_off_id'))
                                 // ->where('payment_intership_offline.cus_id = ?',$cus_id)
                                 // ->where('payment_intership_offline.inter_id = ?',$resultSet['inter_id'])
                                 // //->order('inter_id desc')
-                                // ->limit(1);   
-                                
-                                // $resultSet1 = $db->fetchRow($select); 
+                                // ->limit(1);
+
+                                // $resultSet1 = $db->fetchRow($select);
                                 // if($resultSet1 != null){
                                 //     if($resultSet1['payment_inter_off_id'] != null){
-    
+
                                 //     }
-                                // }       
-                            //}                           
+                                // }
+                            //}
                         }else{
-                            $this->view->parError = 'Bạn không thể đóng phí tập sự khi chưa được thêm vào đợt tập sự. Bạn phải thêm vào đợt tập sự, trước khi đóng phí.' ;   
-                        }    
-                        
-                    }                                
-                }             
-               
+                            $this->view->parError = 'Bạn không thể đóng phí tập sự khi chưa được thêm vào đợt tập sự. Bạn phải thêm vào đợt tập sự, trước khi đóng phí.' ;
+                        }
+
+                    }
+                }
+
                if($this->view->parError == ''){
                     $date = new Zend_Date();
                     $law_num = new Default_Model_LawyerNumber();
-                                    
+
                     // $mil = $filter->filter($arrInput['regis_date']);
                     // $seconds = $mil / 1000;
                     // $time_regis_date =  date("Y-m-d H:m:s", $seconds);
@@ -529,7 +529,7 @@ class FeeController extends Zend_Controller_Action
                         'inter_id' => $inter_id
                     );
 
-                    $idpaymentinter = $paymentoffline ->insert($data_paymentoffline);  
+                    $idpaymentinter = $paymentoffline ->insert($data_paymentoffline);
 
                      /*insert log action*/
                      $this->auth = Zend_Auth::getInstance();
@@ -546,19 +546,19 @@ class FeeController extends Zend_Controller_Action
                          'access_object' => $idpaymentinter
                      );
                      $useradminlog->insert($datalog);
-                                      
-                 }                   
+
+                 }
              }
-         }    
+         }
     }
 
     public function detailjoiningpaymentAction(){
         $this->_helper->layout('homelayout')->disableLayout();
-        $paymentjoiningoffline = new Default_Model_PaymentJoiningOffline();   
+        $paymentjoiningoffline = new Default_Model_PaymentJoiningOffline();
         $payment_joining_off_id = $this->getRequest()->getParam('payment_joining_off_id');
         $data = $paymentjoiningoffline->loadPaymentJoiningOfflineById($payment_joining_off_id);
-        $this->view->paymentjoiningofflinedata =  $data; 
-    
+        $this->view->paymentjoiningofflinedata =  $data;
+
         $type= $this->getRequest()->getParam('type');
         if($type == "confirm"){
             $this->view->actionname = "confirm";
@@ -577,27 +577,27 @@ class FeeController extends Zend_Controller_Action
                 $arrInput = $this->_request->getParams();
                 $this->view->arrInput = $arrInput;
 
-                if($this->view->parError == ''){ 
+                if($this->view->parError == ''){
                     $payment = new Default_Model_PaymentJoiningOffline();
-                    $data = array(                 
-                        'payment_joining_off_status'=> $filter->filter($arrInput['payment_joining_off_status'])                      
+                    $data = array(
+                        'payment_joining_off_status'=> $filter->filter($arrInput['payment_joining_off_status'])
                     );
                     //$this->view->data = $data;
-                    $payment->update($data, 'payment_joining_off_id = '. (int)($filter->filter($arrInput['payment_joining_off_id'])));                   
-                
+                    $payment->update($data, 'payment_joining_off_id = '. (int)($filter->filter($arrInput['payment_joining_off_id'])));
+
                     if($filter->filter($arrInput['payment_joining_off_status']) == 1){
-                        $customer = new Default_Model_Customers();
+                        $customer = new Default_Model_Customer();
                         $dataCus = array(
                             'cus_member' => 1
                         );
-                        $customer->update($dataCus, 'cus_id = '. (int)($filter->filter($arrInput['cus_id'])));   
-                    
+                        $customer->update($dataCus, 'cus_id = '. (int)($filter->filter($arrInput['cus_id'])));
+
                         $modelHistory = new Default_Model_HistoryJoining();
-                        $dataHistory = array(                            
+                        $dataHistory = array(
                             'payment_joining_status' => 1
                         );
                         $modelHistory->update($dataHistory, 'history_joining_id = '. (int)($filter->filter($arrInput['history_id'])));
-                    
+
                     }
 
                      /*insert log action*/
@@ -615,11 +615,11 @@ class FeeController extends Zend_Controller_Action
                          'access_object' => $filter->filter($arrInput['payment_joining_off_id'])
                      );
                      $useradminlog->insert($datalog);
-                
-                
-                }        
+
+
+                }
             }
-        }    
+        }
 
     }
 
@@ -633,14 +633,14 @@ class FeeController extends Zend_Controller_Action
                 $arrInput = $this->_request->getParams();
                 $this->view->arrInput = $arrInput;
 
-                if($this->view->parError == ''){ 
+                if($this->view->parError == ''){
                     $payment = new Default_Model_PaymentOffline();
-                    $data = array(                 
-                        'payment_off_status'=> $filter->filter($arrInput['payment_off_status'])                      
+                    $data = array(
+                        'payment_off_status'=> $filter->filter($arrInput['payment_off_status'])
                     );
                     //$this->view->data = $data;
-                    $payment->update($data, 'payment_id = '. (int)($filter->filter($arrInput['payment_id'])));                   
-                
+                    $payment->update($data, 'payment_id = '. (int)($filter->filter($arrInput['payment_id'])));
+
                       /*insert log action*/
                       $this->auth = Zend_Auth::getInstance();
                       $this->identity = $this->auth->getIdentity();
@@ -656,10 +656,10 @@ class FeeController extends Zend_Controller_Action
                           'access_object' => $filter->filter($arrInput['payment_lawyer_off_id'])
                       );
                       $useradminlog->insert($datalog);
-                
-                }        
+
+                }
             }
-        }    
+        }
 
     }
 
@@ -674,18 +674,18 @@ class FeeController extends Zend_Controller_Action
 
     public function detailmemberpaymentAction(){
         $this->_helper->layout('homelayout')->disableLayout();
-        $paymentlawyertrainingoffline = new Default_Model_PaymentLawyerOffline();   
+        $paymentlawyertrainingoffline = new Default_Model_PaymentLawyerOffline();
         $payment_lawyer_off_id = $this->getRequest()->getParam('payment_lawyer_off_id');
         $data = $paymentlawyertrainingoffline->loadPaymentLawyerOfflineById($payment_lawyer_off_id);
-        $this->view->paymentlawyerofflinedata =  $data; 
-        
+        $this->view->paymentlawyerofflinedata =  $data;
+
         $type= $this->getRequest()->getParam('type');
         if($type == "confirm"){
             $this->view->actionname = "confirm";
         }else{
             $this->view->actionname = "cancel";
         }
-        
+
     }
 
     public function updatememberpaymentAction(){
@@ -698,23 +698,23 @@ class FeeController extends Zend_Controller_Action
                 $arrInput = $this->_request->getParams();
                 $this->view->arrInput = $arrInput;
 
-                if($this->view->parError == ''){ 
+                if($this->view->parError == ''){
                     $payment = new Default_Model_PaymentLawyerOffline();
-                    $data = array(                 
-                        'payment_lawyer_off_status'=> $filter->filter($arrInput['payment_lawyer_off_status'])                      
+                    $data = array(
+                        'payment_lawyer_off_status'=> $filter->filter($arrInput['payment_lawyer_off_status'])
                     );
                     //$this->view->data = $data;
-                    $payment->update($data, 'payment_lawyer_off_id = '. (int)($filter->filter($arrInput['payment_lawyer_off_id'])));                   
-                    
+                    $payment->update($data, 'payment_lawyer_off_id = '. (int)($filter->filter($arrInput['payment_lawyer_off_id'])));
+
                     //update thông tin luật sư nếu payment được thanh toán
                     // if($filter->filter($arrInput['payment_lawyer_off_status']) == 1){
                     //     $modelLawyer = new Default_Model_Lawyer();
-                    //     $dataLawyer = array(                 
+                    //     $dataLawyer = array(
                     //         'startmonth'=> $filter->filter($arrInput['startedmonth']),
-                    //         'endmonth' => $filter->filter($arrInput['endmonth'])                     
+                    //         'endmonth' => $filter->filter($arrInput['endmonth'])
                     //     );
-                    //     $modelLawyer->update($dataLawyer, 'cus_id = '. (int)($filter->filter($arrInput['cus_id'])));                   
-                                   
+                    //     $modelLawyer->update($dataLawyer, 'cus_id = '. (int)($filter->filter($arrInput['cus_id'])));
+
                     // }
 
                      /*insert log action*/
@@ -732,11 +732,11 @@ class FeeController extends Zend_Controller_Action
                          'access_object' => $filter->filter($arrInput['payment_lawyer_off_id'])
                      );
                      $useradminlog->insert($datalog);
-                
-                
-                }        
+
+
+                }
             }
-        }    
+        }
 
     }
 
@@ -744,10 +744,10 @@ class FeeController extends Zend_Controller_Action
 
     public function detailintershippaymentAction(){
         $this->_helper->layout('homelayout')->disableLayout();
-        $paymentintershipoffline = new Default_Model_PaymentIntershipOffline();   
+        $paymentintershipoffline = new Default_Model_PaymentIntershipOffline();
         $payment_inter_off_id = $this->getRequest()->getParam('payment_inter_off_id');
         $data = $paymentintershipoffline->loadPaymentIntershipOfflineById($payment_inter_off_id);
-        $this->view->paymentintershipofflinedata =  $data; 
+        $this->view->paymentintershipofflinedata =  $data;
 
         $type= $this->getRequest()->getParam('type');
         if($type == "confirm"){
@@ -755,7 +755,7 @@ class FeeController extends Zend_Controller_Action
         }else{
             $this->view->actionname = "cancel";
         }
-        
+
     }
 
     public function updateintershippaymentAction(){
@@ -768,25 +768,25 @@ class FeeController extends Zend_Controller_Action
                 $arrInput = $this->_request->getParams();
                 $this->view->arrInput = $arrInput;
 
-                if($this->view->parError == ''){ 
+                if($this->view->parError == ''){
                     $payment = new Default_Model_PaymentIntershipOffline();
-                    $data = array(                 
-                        'payment_inter_off_status'=> $filter->filter($arrInput['payment_inter_off_status'])                      
+                    $data = array(
+                        'payment_inter_off_status'=> $filter->filter($arrInput['payment_inter_off_status'])
                     );
                     //$this->view->data = $data;
-                    $payment->update($data, 'payment_inter_off_id = '. (int)($filter->filter($arrInput['payment_inter_off_id'])));                   
+                    $payment->update($data, 'payment_inter_off_id = '. (int)($filter->filter($arrInput['payment_inter_off_id'])));
 
-                   
+
                     //$this->view->data = $data;
                     if($filter->filter($arrInput['payment_inter_off_status']) == 1){
                         $intership = new Default_Model_Intership();
-                        $data = array(                 
-                            'payment_inter_status'=> 1                      
+                        $data = array(
+                            'payment_inter_status'=> 1
                         );
-                        $intership->update($data, 'inter_id = '. (int)($filter->filter($arrInput['inter_id'])));                   
+                        $intership->update($data, 'inter_id = '. (int)($filter->filter($arrInput['inter_id'])));
                     }
-                    
-                
+
+
                       /*insert log action*/
                       $this->auth = Zend_Auth::getInstance();
                       $this->identity = $this->auth->getIdentity();
@@ -802,22 +802,22 @@ class FeeController extends Zend_Controller_Action
                           'access_object' => $filter->filter($arrInput['payment_lawyer_off_id'])
                       );
                       $useradminlog->insert($datalog);
-                
-                }        
+
+                }
             }
-        }    
+        }
 
     }
 
     public function differentAction(){
-        $categoryfreelawyer = new Default_Model_CategoryFeeLawyer();         
+        $categoryfreelawyer = new Default_Model_CategoryFeeLawyer();
         $data = $categoryfreelawyer->loadCategoryFeeLawyer('different');
         $this->view->categoryfee =  $data;
 
         $lawyer = new Default_Model_Lawyer();
         $data = $lawyer->loadLawyer();
         $this->view->lawyers = $data;
-        
+
         $paymentdifferent = new Default_Model_PaymentOffline();
         $payment_different_off_code = $paymentdifferent->generationCode('PTT','');
         $this->view->payment_different_off_code = $payment_different_off_code;
@@ -832,15 +832,15 @@ class FeeController extends Zend_Controller_Action
             if ($this->getRequest()->isPost()) {
                 //$request = $this->getRequest();
                 $arrInput = $this->_request->getParams();
-                $this->view->arrInput = $arrInput;    
-    
-                
+                $this->view->arrInput = $arrInput;
+
+
                 if($this->view->parError == ''){
                     $date = new Zend_Date();
                     // $law_num = new Default_Model_LawyerNumber();
-                                    
-                    // $data = array(   
-                    //     //'month'=>$filter->filter($arrInput['month']),   
+
+                    // $data = array(
+                    //     //'month'=>$filter->filter($arrInput['month']),
                     //     'law_fromdate' => $filter->filter($arrInput['regis_date']),
                     //     'law_enddate' => '',
                     //     'category_fee_lawyer_id' => $filter->filter($arrInput['category_fee_lawyer_id']),
@@ -858,7 +858,7 @@ class FeeController extends Zend_Controller_Action
                     //     'community' => $filter->filter($arrInput['community'])
 
                     // );
-                    // $bill_feeoffline_id = $billoffline ->insert($data_lawyernumber);  
+                    // $bill_feeoffline_id = $billoffline ->insert($data_lawyernumber);
 
                     $law_id = null;
                     $community = null;
@@ -867,8 +867,8 @@ class FeeController extends Zend_Controller_Action
                     }else{
                         $community = $filter->filter($arrInput['community']);
                     }
-                    
-                    
+
+
                     $paymentoffline = new Default_Model_PaymentOffline();
 
                     $data_paymentoffline = array(
@@ -883,7 +883,7 @@ class FeeController extends Zend_Controller_Action
                         'payment_type' => 'offline'
 
                     );
-                    $idpaymentdifferent = $paymentoffline ->insert($data_paymentoffline);  
+                    $idpaymentdifferent = $paymentoffline ->insert($data_paymentoffline);
 
                         /*insert log action*/
                     $this->auth = Zend_Auth::getInstance();
@@ -900,10 +900,10 @@ class FeeController extends Zend_Controller_Action
                         'access_object' => $idpaymentdifferent
                     );
                     $useradminlog->insert($datalog);
-                                        
-                    }                   
+
+                    }
                 }
-            }    
+            }
     }
 
     /**
@@ -911,7 +911,7 @@ class FeeController extends Zend_Controller_Action
      */
     public function printlawyerfeeAction(){
          $this->_helper->layout('homelayout')->disableLayout();
-        $paymentlawyertrainingoffline = new Default_Model_PaymentLawyerOffline();   
+        $paymentlawyertrainingoffline = new Default_Model_PaymentLawyerOffline();
         $payment_lawyer_off_id = $this->getRequest()->getParam('payment_lawyer_off_id');
         $data = $paymentlawyertrainingoffline->loadPaymentLawyerOfflineById($payment_lawyer_off_id);
         $valueWords = $this->convertNumberToWords( $data["amount"]);
@@ -923,8 +923,8 @@ class FeeController extends Zend_Controller_Action
 
         // $data['endMonth'] = $endMonth;
         // $data['startedMonth'] = $startedMonth;
-        
-        $this->view->paymentlawyerofflinedata =  $data; 
+
+        $this->view->paymentlawyerofflinedata =  $data;
 
         /*insert log action*/
         $this->auth = Zend_Auth::getInstance();
@@ -942,9 +942,9 @@ class FeeController extends Zend_Controller_Action
         );
         $useradminlog->insert($datalog);
 
-        
-    }   
-    
+
+    }
+
     /**
      * In biên nhập khác
      */
@@ -961,12 +961,12 @@ class FeeController extends Zend_Controller_Action
      */
     public function printjoiningfeeAction(){
        $this->_helper->layout('homelayout')->disableLayout();
-       $paymentjoiningoffline = new Default_Model_PaymentJoiningOffline();   
+       $paymentjoiningoffline = new Default_Model_PaymentJoiningOffline();
        $payment_joining_off_id = $this->getRequest()->getParam('payment_joining_off_id');
        $data = $paymentjoiningoffline->loadPaymentJoiningOfflineById($payment_joining_off_id);
        $valueWords = $this->convertNumberToWords( $data["amount"]);
        $data["amount_word"] = $valueWords; // works
-       $this->view->paymentjoiningofflinedata =  $data; 
+       $this->view->paymentjoiningofflinedata =  $data;
 
         /*insert log action*/
         $this->auth = Zend_Auth::getInstance();
@@ -984,23 +984,23 @@ class FeeController extends Zend_Controller_Action
         );
         $useradminlog->insert($datalog);
 
-       
-   }    
+
+   }
 
    /**
     * In biên nhận phí bồi dưỡng
     */
    public function printintershipfeeAction(){
         $this->_helper->layout('homelayout')->disableLayout();
-        $paymentintershipoffline = new Default_Model_PaymentIntershipOffline();   
+        $paymentintershipoffline = new Default_Model_PaymentIntershipOffline();
         $payment_inter_off_id = $this->getRequest()->getParam('payment_inter_off_id');
         $data = $paymentintershipoffline->loadPaymentIntershipOfflineById($payment_inter_off_id);
-        
+
 
         $valueWords = $this->convertNumberToWords( $data["amount"]);
         $data["amount_word"] = $valueWords; // works
 
-        $this->view->paymentintershipofflinedata =  $data; 
+        $this->view->paymentintershipofflinedata =  $data;
 
         /*insert log action*/
         $this->auth = Zend_Auth::getInstance();
@@ -1017,30 +1017,30 @@ class FeeController extends Zend_Controller_Action
             'access_object' => $payment_inter_off_id
         );
         $useradminlog->insert($datalog);
-    }    
+    }
 
     public function cancellistAction(){
          //$this->_helper->layout('homelayout')->disableLayout();
-         $paymentoffline = new Default_Model_PaymentLawyerOffline();   
+         $paymentoffline = new Default_Model_PaymentLawyerOffline();
          $data = $paymentoffline->loadPaymentLawyerOffline();
-         $this->view->paymentofflines =  $data; 
- 
-         $paymentjoiningoffline = new Default_Model_PaymentJoiningOffline();   
+         $this->view->paymentofflines =  $data;
+
+         $paymentjoiningoffline = new Default_Model_PaymentJoiningOffline();
          $data = $paymentjoiningoffline->loadPaymentJoiningOffline();
-         $this->view->paymentjoiningofflines =  $data; 
- 
-         $paymentintershipoffline = new Default_Model_PaymentIntershipOffline();   
+         $this->view->paymentjoiningofflines =  $data;
+
+         $paymentintershipoffline = new Default_Model_PaymentIntershipOffline();
          $data = $paymentintershipoffline->loadPaymentIntershipOffline();
          $this->view->paymentintershipofflines =  $data;
-         
-         $modelPaymentOffline = new Default_Model_PaymentOffline();   
+
+         $modelPaymentOffline = new Default_Model_PaymentOffline();
          $paymentOffline = $modelPaymentOffline->loadPaymentOffline();
          $this->view->paymentOfflines =  $paymentOffline;
     }
 
     /* function convert number to char*/
     private function convertNumberToWords($number) {
- 
+
         $hyphen      = ' ';
         $conjunction = '  ';
         $separator   = ' ';
@@ -1083,11 +1083,11 @@ class FeeController extends Zend_Controller_Action
         1000000000000000    => 'ngàn triệu triệu',
         1000000000000000000 => 'tỷ tỷ'
         );
-         
+
         if (!is_numeric($number)) {
         return false;
         }
-         
+
         if (($number >= 0 && (int) $number < 0) || (int) $number < 0 - PHP_INT_MAX) {
         // overflow
         trigger_error(
@@ -1096,17 +1096,17 @@ class FeeController extends Zend_Controller_Action
         );
         return false;
         }
-         
+
         if ($number < 0) {
         return $negative . $this->convertNumberToWords(abs($number));
         }
-         
+
         $string = $fraction = null;
-         
+
         if (strpos($number, '.') !== false) {
         list($number, $fraction) = explode('.', $number);
         }
-         
+
         switch (true) {
         case $number < 21:
         $string = $dictionary[$number];
@@ -1138,7 +1138,7 @@ class FeeController extends Zend_Controller_Action
         }
         break;
         }
-         
+
         if (null !== $fraction && is_numeric($fraction)) {
         $string .= $decimal;
         $words = array();
@@ -1147,7 +1147,7 @@ class FeeController extends Zend_Controller_Action
         }
         $string .= implode(' ', $words);
         }
-         
+
         return $string;
     }
 }

@@ -36,7 +36,7 @@ class GroupController extends Zend_Controller_Action
 
     public function addAction()
     {
-        $modelCustomers = new Default_Model_Customers();
+        $modelCustomers = new Default_Model_Customer();
         $customers = $modelCustomers->fetchAll();
         $this->view->customers = $customers;
 
@@ -44,7 +44,7 @@ class GroupController extends Zend_Controller_Action
             $data = $this->getRequest()->getPost();
             $modelGroups = new Default_Model_Group();
             $customersListPost = $data['customers'];
-            $data['customers'] = implode(",", $customersListPost);          
+            $data['customers'] = implode(",", $customersListPost);
 
             $result = $modelGroups->insert($data);
             if ($result) {
@@ -67,15 +67,15 @@ class GroupController extends Zend_Controller_Action
     }
 
     public function detailAction(){
-  
+
         $this->_helper->layout('homelayout')->disableLayout();
-        $modelGroup = new Default_Model_Group();   
+        $modelGroup = new Default_Model_Group();
         $group_id = $this->getRequest()->getParam('group_id');
         $data = $modelGroup->loadGroupById($group_id);
         $this->view->group = $data;
 
-        $modelCustomers = new Default_Model_Customers();
-        $customersExisted = $modelCustomers->loadCustomersByIds($data['customers']);        
+        $modelCustomers = new Default_Model_Customer();
+        $customersExisted = $modelCustomers->loadCustomersByIds($data['customers']);
         $customers = $modelCustomers->fetchAll();
 
         $this->view->customers = $customers;
@@ -83,16 +83,16 @@ class GroupController extends Zend_Controller_Action
         $temp = array();
         if($customersExisted != null && sizeof($customersExisted) > 0){
             foreach($customersExisted as $cus){
-                array_push($temp, $cus['cus_id']); 
+                array_push($temp, $cus['cus_id']);
             }
         }
-        $this->view->existed = $temp != null 
+        $this->view->existed = $temp != null
          && sizeof($temp) > 0 ? $temp : null;
 
- 
+
     }
 
-    
+
     /*update information of customer*/
     public function updateAction(){
         $this->_helper->layout('layout')->disableLayout();
@@ -104,16 +104,16 @@ class GroupController extends Zend_Controller_Action
                 $arrInput = $this->_request->getParams();
                 $this->view->arrInput = $arrInput;
 
-               if($this->view->parError == ''){ 
+               if($this->view->parError == ''){
                     $modelGroup = new Default_Model_Group();
                     $data = array(
                        'group_name'=> $filter->filter($arrInput['group_name'])
                     );
-                   
-                    $modelGroup->update($data, 'group_id = '. (int)($filter->filter($arrInput['group_id'])));                   
-                }        
+
+                    $modelGroup->update($data, 'group_id = '. (int)($filter->filter($arrInput['group_id'])));
+                }
             }
-        }    
+        }
 
     }
 

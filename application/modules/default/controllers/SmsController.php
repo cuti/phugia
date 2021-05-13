@@ -37,7 +37,7 @@ class SmsController extends Zend_Controller_Action
                 $sms[$key]['sms_datesend'] = ($value['sms_datesend'] != null && $value['sms_datesend'] != '' &&
                 $value['sms_datesend'] != $dateEmpty) ? date('d/m/Y',strtotime($value['sms_datesend'])) :'';
             }
-        }        
+        }
         $this->view->sms = $sms;
     }
 
@@ -49,7 +49,7 @@ class SmsController extends Zend_Controller_Action
         if ($this->getRequest()->isPost()) {
             $data = $this->getRequest()->getPost();
             if ($data['type_sms'] == 'send_mobile') {
-                $customerModel = new Default_Model_Customers();
+                $customerModel = new Default_Model_Customer();
                 $customer = $customerModel->fetchRow('cus_cellphone = 0' . substr($data['person_mobile'],2,strlen($data['person_mobile'])));
                 $smsModel = new Default_Model_Sms();
                 if(empty($customer->cus_id)){

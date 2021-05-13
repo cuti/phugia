@@ -7,16 +7,16 @@ class ProfileController extends Zend_Controller_Action
     }
 
     public function  preDispatch(){
- 	
+
         $this->auth = Zend_Auth::getInstance();
         $this->identity = $this->auth->getIdentity();
- 
+
         $username= $this->identity->user_username;
         $password= $this->identity->user_password;
- 
-        $users2 = new Default_Model_UserAdmin();  
-        if ($users2->num($username, $password)>0) {                     
-        
+
+        $users2 = new Default_Model_UserAdmin();
+        if ($users2->num($username, $password)>0) {
+
         }else{
               $this->_redirect('/default/login');exit;
         }
@@ -25,7 +25,7 @@ class ProfileController extends Zend_Controller_Action
     public function indexAction(){
 
         // $this->_helper->layout('homelayout')->disableLayout();
-        // $customer = new Default_Model_Customers();   
+        // $customer = new Default_Model_Customer();
         // $q = $this->getRequest()->getParam('searchword');
         // $data = $customer->getCustomer($q);
 
@@ -49,7 +49,7 @@ class ProfileController extends Zend_Controller_Action
 
         // $this->view->profile = $data;
         // echo json_encode($data);
-        // exit; 
+        // exit;
 
     }
 

@@ -1,5 +1,5 @@
 <?php
-// Customers controller 
+// Customers controller
 class StatisticController extends Zend_Controller_Action
 {
     public function init(){
@@ -7,16 +7,16 @@ class StatisticController extends Zend_Controller_Action
     }
 
     public function  preDispatch(){
- 	
+
         $this->auth = Zend_Auth::getInstance();
         $this->identity = $this->auth->getIdentity();
- 
+
         $username= $this->identity->user_username;
         $password= $this->identity->user_password;
- 
-        $users2 = new Default_Model_UserAdmin();  
-        if ($users2->num($username, $password)>0) {                     
-        
+
+        $users2 = new Default_Model_UserAdmin();
+        if ($users2->num($username, $password)>0) {
+
         }else{
               $this->_redirect('/default/login');exit;
         }
@@ -32,22 +32,22 @@ class StatisticController extends Zend_Controller_Action
         $model = new Default_Model_PaymentOffline();
         $data = $model->loadPaymentOfflineFilter($start,$length,$startdate,$enddate);
 
-        $results = array(            
+        $results = array(
         );
 
         $dateEmpty = '1900-01-01 00:00:00';
         $index = 0;
         //$currentDate = new Zend_Date();
         if($data != null && sizeof($data)){
-            foreach($data as $law){ 
-                
-                    //$age = (int)date('Y') - (int)date('Y',strtotime($law['cus_birthday']));         
-                    
+            foreach($data as $law){
+
+                    //$age = (int)date('Y') - (int)date('Y',strtotime($law['cus_birthday']));
+
                     //if($search!= null && $search != '' && $age >= (int)$search){
-                        // $dateCertification = ($law['law_certification_createdate'] != null && 
-                        // $law['law_certification_createdate'] != '' && $law['law_certification_createdate'] != $dateEmpty) ? 
+                        // $dateCertification = ($law['law_certification_createdate'] != null &&
+                        // $law['law_certification_createdate'] != '' && $law['law_certification_createdate'] != $dateEmpty) ?
                         // date('d/m/Y',strtotime($law['law_certification_createdate'])) : '';
-                        
+
                         array_push($results,[$law['cus_firstname'].' '.$law['cus_lastname'],
                         $law['cus_identity_card'],
                         $law['cus_cellphone'],
@@ -57,12 +57,12 @@ class StatisticController extends Zend_Controller_Action
                         $law['cus_address_resident'],
                         number_format($law['amount']),
                         $law['payment_off_code'],
-                        $law['payment_off_created_date'] != null &&  $law['payment_off_created_date'] != $dateEmpty ? date('d/m/Y',strtotime($law['payment_off_created_date'])) : '' 
-                        // $age                    
+                        $law['payment_off_created_date'] != null &&  $law['payment_off_created_date'] != $dateEmpty ? date('d/m/Y',strtotime($law['payment_off_created_date'])) : ''
+                        // $age
                         ]);
                         //$index +=1;
-                    //}                    
-                                
+                    //}
+
             }
         }
 
@@ -73,7 +73,7 @@ class StatisticController extends Zend_Controller_Action
             "recordsFiltered" => intval(count($total)),
             "data"            => ($results)
         );
-           
+
         echo json_encode($json_data);
         exit;
     }
@@ -88,7 +88,7 @@ class StatisticController extends Zend_Controller_Action
         $model = new Default_Model_Lawyer();
         $data = $model->loadListLoanPaymentJoining('','',$startdate,$enddate);
 
-        $results = array(            
+        $results = array(
         );
 
         $dateEmpty = '1900-01-01 00:00:00';
@@ -96,13 +96,13 @@ class StatisticController extends Zend_Controller_Action
         if($data != null && sizeof($data) > 0){
             foreach($data as $law){
                 //if($law['cus_birthday'] != $dateEmpty && $law['cus_birthday'] != null && $law['cus_birthday'] != ''){
-                    //$age = (int)date('Y') - (int)date('Y',strtotime($law['cus_birthday']));         
-                    
+                    //$age = (int)date('Y') - (int)date('Y',strtotime($law['cus_birthday']));
+
                     //if($search != null && $search !='' && $age >= (int)$search){
-                        // $dateCertification = ($law['law_certification_createdate'] != null && 
-                        // $law['law_certification_createdate'] != '' && $law['law_certification_createdate'] != $dateEmpty) ? 
+                        // $dateCertification = ($law['law_certification_createdate'] != null &&
+                        // $law['law_certification_createdate'] != '' && $law['law_certification_createdate'] != $dateEmpty) ?
                         // date('d/m/Y',strtotime($law['law_certification_createdate'])) : '';
-                        
+
                         array_push($results,[$law['cus_firstname'].' '.$law['cus_lastname'],
                         $law['cus_identity_card'],
                         // $law['cus_birthday'] != '' && $law['cus_birthday'] != $dateEmpty ? date("d/m/Y", strtotime($law['cus_birthday'])) : '',
@@ -110,10 +110,10 @@ class StatisticController extends Zend_Controller_Action
                         $law['cus_lawyer_number'],
                         $law['cus_date_lawyer_number'] != null && $law['cus_date_lawyer_number'] != $dateEmpty ? date('d/m/Y',strtotime($law['cus_date_lawyer_number'])) : '' ,
                         $law['cus_address_resident'],
-                        $law['cus_address_resident_now']                    
+                        $law['cus_address_resident_now']
                         ]);
-                    //}                    
-                //}                
+                    //}
+                //}
             }
         }
             //Khởi tạo đối tượng
@@ -138,8 +138,8 @@ class StatisticController extends Zend_Controller_Action
                     'color' => array('argb' => '#000000'),
                 ),
             ),
-        );        
-        
+        );
+
         //Tạo tiêu đề cho từng cột
         //Vị trí có dạng như sau:
         /**
@@ -152,17 +152,17 @@ class StatisticController extends Zend_Controller_Action
         $excel->getActiveSheet()->setCellValue('B1', 'CMND');
         // $excel->getActiveSheet()->setCellValue('C1', 'Ngày sinh');
         $excel->getActiveSheet()->setCellValue('C1', 'Số điện thoại');
-        $excel->getActiveSheet()->setCellValue('D1', 'Số thẻ LS');        
-        $excel->getActiveSheet()->setCellValue('E1', 'Ngày cấp số thẻ LS'); 
+        $excel->getActiveSheet()->setCellValue('D1', 'Số thẻ LS');
+        $excel->getActiveSheet()->setCellValue('E1', 'Ngày cấp số thẻ LS');
         $excel->getActiveSheet()->setCellValue('F1', 'Địa chỉ thường trú');
         $excel->getActiveSheet()->setCellValue('G1', 'Nơi ở hiện tại');
         $excel->getActiveSheet()->getStyle('A1:G1')->applyFromArray($styleArray);
-              
+
 
         // thực hiện thêm dữ liệu vào từng ô bằng vòng lặp
         // dòng bắt đầu = 2
         $numRow = 2;
-        if($results != null && sizeof($results) >0 ){   
+        if($results != null && sizeof($results) >0 ){
             foreach($results as $row){
                 $excel->getActiveSheet()->setCellValue('A'.$numRow, $row[0]);
                 $excel->getActiveSheet()->setCellValue('B'.$numRow, $row[1]);
@@ -172,16 +172,16 @@ class StatisticController extends Zend_Controller_Action
                 $excel->getActiveSheet()->setCellValue('F'.$numRow, $row[5]);
                 $excel->getActiveSheet()->setCellValue('G'.$numRow, $row[6]);
                 // $excel->getActiveSheet()->setCellValue('F'.$numRow, $row[7]);
-                
+
                 $numRow++;
-            }     
-        }   
+            }
+        }
         // Khởi tạo đối tượng PHPExcel_IOFactory để thực hiện ghi file
         // ở đây mình lưu file dưới dạng excel2007 và cho người dùng download luôn
         header('Content-type: application/vnd.ms-excel');
         header('Content-Disposition: attachment; filename="DS_LuatSu_NoPhiGiaNhap.xlsx"');
         PHPExcel_IOFactory::createWriter($excel, 'Excel2007')->save('php://output');
-        return;   
+        return;
 
     }
 
@@ -192,21 +192,21 @@ class StatisticController extends Zend_Controller_Action
         $model = new Default_Model_Intership();
         $data = $model->loadListLoanPaymentIntership('','');
 
-        $results = array(            
+        $results = array(
         );
 
         $dateEmpty = '1900-01-01 00:00:00';
         //$currentDate = new Zend_Date();
         if($data != null && sizeof($data)){
-            foreach($data as $law){ 
+            foreach($data as $law){
                 //if($law['cus_birthday'] != $dateEmpty && $law['cus_birthday'] != null && $law['cus_birthday'] != ''){
-                    //$age = (int)date('Y') - (int)date('Y',strtotime($law['cus_birthday']));         
-                    
+                    //$age = (int)date('Y') - (int)date('Y',strtotime($law['cus_birthday']));
+
                     //if($search != null && $search !='' && $age >= (int)$search){
-                        // $dateCertification = ($law['law_certification_createdate'] != null && 
-                        // $law['law_certification_createdate'] != '' && $law['law_certification_createdate'] != $dateEmpty) ? 
+                        // $dateCertification = ($law['law_certification_createdate'] != null &&
+                        // $law['law_certification_createdate'] != '' && $law['law_certification_createdate'] != $dateEmpty) ?
                         // date('d/m/Y',strtotime($law['law_certification_createdate'])) : '';
-                        
+
                         array_push($results,[$law['cus_firstname'].' '.$law['cus_lastname'],
                         $law['cus_identity_card'],
                         $law['cus_birthday'] != '' && $law['cus_birthday'] != $dateEmpty ? date("d/m/Y", strtotime($law['cus_birthday'])) : '',
@@ -214,10 +214,10 @@ class StatisticController extends Zend_Controller_Action
                         $law['cus_lawyer_number'],
                         $law['cus_date_lawyer_number'] != null && $law['cus_date_lawyer_number'] != $dateEmpty ? date('d/m/Y',strtotime($law['cus_date_lawyer_number'])) : '' ,
                         $law['cus_address_resident'],
-                        $law['cus_address_resident_now']                    
+                        $law['cus_address_resident_now']
                         ]);
-                    //}                    
-                //}                
+                    //}
+                //}
             }
         }
             //Khởi tạo đối tượng
@@ -242,8 +242,8 @@ class StatisticController extends Zend_Controller_Action
                     'color' => array('argb' => '#000000'),
                 ),
             ),
-        );        
-        
+        );
+
         //Tạo tiêu đề cho từng cột
         //Vị trí có dạng như sau:
         /**
@@ -256,17 +256,17 @@ class StatisticController extends Zend_Controller_Action
         $excel->getActiveSheet()->setCellValue('B1', 'CMND');
         $excel->getActiveSheet()->setCellValue('C1', 'Ngày sinh');
         $excel->getActiveSheet()->setCellValue('D1', 'Số điện thoại');
-        // $excel->getActiveSheet()->setCellValue('E1', 'Số thẻ LS');        
-        // $excel->getActiveSheet()->setCellValue('F1', 'Ngày cấp số thẻ LS'); 
+        // $excel->getActiveSheet()->setCellValue('E1', 'Số thẻ LS');
+        // $excel->getActiveSheet()->setCellValue('F1', 'Ngày cấp số thẻ LS');
         $excel->getActiveSheet()->setCellValue('E1', 'Địa chỉ thường trú');
         $excel->getActiveSheet()->setCellValue('F1', 'Nơi ở hiện tại');
         $excel->getActiveSheet()->getStyle('A1:F1')->applyFromArray($styleArray);
-              
+
 
         // thực hiện thêm dữ liệu vào từng ô bằng vòng lặp
         // dòng bắt đầu = 2
         $numRow = 2;
-        if($results != null && sizeof($results) >0 ){   
+        if($results != null && sizeof($results) >0 ){
             foreach($results as $row){
                 $excel->getActiveSheet()->setCellValue('A'.$numRow, $row[0]);
                 $excel->getActiveSheet()->setCellValue('B'.$numRow, $row[1]);
@@ -276,22 +276,22 @@ class StatisticController extends Zend_Controller_Action
                 // $excel->getActiveSheet()->setCellValue('F'.$numRow, $row[5]);
                 $excel->getActiveSheet()->setCellValue('E'.$numRow, $row[6]);
                 $excel->getActiveSheet()->setCellValue('F'.$numRow, $row[7]);
-                
+
                 $numRow++;
-            }     
-        }   
+            }
+        }
         // Khởi tạo đối tượng PHPExcel_IOFactory để thực hiện ghi file
         // ở đây mình lưu file dưới dạng excel2007 và cho người dùng download luôn
         header('Content-type: application/vnd.ms-excel');
         header('Content-Disposition: attachment; filename="DS_LuatSu_NoPhiTapSu.xlsx"');
         PHPExcel_IOFactory::createWriter($excel, 'Excel2007')->save('php://output');
-        return;   
+        return;
 
     }
 
           //load list loan intership
     public function listloanpaymentjoiningdatatableAction(){
-        
+
         $start = $this->getRequest()->getParam('start');
         $length = $this->getRequest()->getParam('length');
         // $search = $this->getRequest()->getParam('search');
@@ -301,22 +301,22 @@ class StatisticController extends Zend_Controller_Action
         $model = new Default_Model_Lawyer();
         $data = $model->loadListLoanPaymentJoining($start,$length,$startdate,$enddate);
 
-        $results = array(            
+        $results = array(
         );
 
         $dateEmpty = '1900-01-01 00:00:00';
         $index = 0;
         //$currentDate = new Zend_Date();
         if($data != null && sizeof($data)){
-            foreach($data as $law){ 
-                
-                    //$age = (int)date('Y') - (int)date('Y',strtotime($law['cus_birthday']));         
-                    
+            foreach($data as $law){
+
+                    //$age = (int)date('Y') - (int)date('Y',strtotime($law['cus_birthday']));
+
                     //if($search!= null && $search != '' && $age >= (int)$search){
-                        // $dateCertification = ($law['law_certification_createdate'] != null && 
-                        // $law['law_certification_createdate'] != '' && $law['law_certification_createdate'] != $dateEmpty) ? 
+                        // $dateCertification = ($law['law_certification_createdate'] != null &&
+                        // $law['law_certification_createdate'] != '' && $law['law_certification_createdate'] != $dateEmpty) ?
                         // date('d/m/Y',strtotime($law['law_certification_createdate'])) : '';
-                        
+
                         array_push($results,[$law['cus_firstname'].' '.$law['cus_lastname'],
                         $law['cus_identity_card'],
                         $law['cus_cellphone'],
@@ -325,11 +325,11 @@ class StatisticController extends Zend_Controller_Action
                         $law['cus_date_lawyer_number'] != null &&  $law['cus_date_lawyer_number'] != $dateEmpty ? date('d/m/Y',strtotime($law['cus_date_lawyer_number'])) : '' ,
                         $law['cus_address_resident'],
                         $law['cus_address_resident_now']
-                        // $age                    
+                        // $age
                         ]);
                         //$index +=1;
-                    //}                    
-                                
+                    //}
+
             }
         }
 
@@ -340,14 +340,14 @@ class StatisticController extends Zend_Controller_Action
             "recordsFiltered" => intval(count($total)),
             "data"            => ($results)
         );
-           
+
         echo json_encode($json_data);
         exit;
     }
 
      //load list loan intership
     public function listloanpaymentintershipdatatableAction(){
-        
+
         $start = $this->getRequest()->getParam('start');
         $length = $this->getRequest()->getParam('length');
         // $search = $this->getRequest()->getParam('search');
@@ -357,22 +357,22 @@ class StatisticController extends Zend_Controller_Action
         $modelIntership = new Default_Model_Intership();
         $dataIntership = $modelIntership->loadListLoanPaymentIntership($start,$length,$startdate,$enddate);
 
-        $results = array(            
+        $results = array(
         );
 
         $dateEmpty = '1900-01-01 00:00:00';
         $index = 0;
         //$currentDate = new Zend_Date();
         if($dataIntership != null && sizeof($dataIntership)){
-            foreach($dataIntership as $law){ 
-                
-                    //$age = (int)date('Y') - (int)date('Y',strtotime($law['cus_birthday']));         
-                    
+            foreach($dataIntership as $law){
+
+                    //$age = (int)date('Y') - (int)date('Y',strtotime($law['cus_birthday']));
+
                     //if($search!= null && $search != '' && $age >= (int)$search){
-                        // $dateCertification = ($law['law_certification_createdate'] != null && 
-                        // $law['law_certification_createdate'] != '' && $law['law_certification_createdate'] != $dateEmpty) ? 
+                        // $dateCertification = ($law['law_certification_createdate'] != null &&
+                        // $law['law_certification_createdate'] != '' && $law['law_certification_createdate'] != $dateEmpty) ?
                         // date('d/m/Y',strtotime($law['law_certification_createdate'])) : '';
-                        
+
                         array_push($results,[$law['cus_firstname'].' '.$law['cus_lastname'],
                         $law['cus_identity_card'],
                         $law['cus_cellphone'],
@@ -381,11 +381,11 @@ class StatisticController extends Zend_Controller_Action
                         $law['cus_address_resident_now']
                         // $dateCertification,
                         // $law['law_joining_number'],
-                        // $age                    
+                        // $age
                         ]);
                         //$index +=1;
-                    //}                    
-                                
+                    //}
+
             }
         }
 
@@ -395,9 +395,9 @@ class StatisticController extends Zend_Controller_Action
             "draw"            => intval( $_REQUEST['draw'] ),
             "recordsTotal"    => intval(count($total)),
             "recordsFiltered" => intval(count($total)),
-            "data"            => $results 
+            "data"            => $results
         );
-           
+
         echo json_encode($json_data);
         exit;
     }
@@ -412,21 +412,21 @@ class StatisticController extends Zend_Controller_Action
         $modelLawyer = new Default_Model_Lawyer();
         $dataLawyer75 = $modelLawyer->loadLawyer75YearOldByFilter();
 
-        $results = array(            
+        $results = array(
         );
 
         $dateEmpty = '1900-01-01 00:00:00';
         //$currentDate = new Zend_Date();
         if($dataLawyer75 != null && sizeof($dataLawyer75)){
-            foreach($dataLawyer75 as $law){ 
+            foreach($dataLawyer75 as $law){
                 if($law['cus_birthday'] != $dateEmpty && $law['cus_birthday'] != null && $law['cus_birthday'] != ''){
-                    $age = (int)date('Y') - (int)date('Y',strtotime($law['cus_birthday']));         
-                    
+                    $age = (int)date('Y') - (int)date('Y',strtotime($law['cus_birthday']));
+
                     if($search != null && $search !='' && $age >= (int)$search){
-                        $dateCertification = ($law['law_certification_createdate'] != null && 
-                        $law['law_certification_createdate'] != '' && $law['law_certification_createdate'] != $dateEmpty) ? 
+                        $dateCertification = ($law['law_certification_createdate'] != null &&
+                        $law['law_certification_createdate'] != '' && $law['law_certification_createdate'] != $dateEmpty) ?
                         date('d/m/Y',strtotime($law['law_certification_createdate'])) : '';
-                        
+
                         array_push($results,[$law['cus_firstname'].' '.$law['cus_lastname'],
                         $law['cus_identity_card'],
                         $law['cus_birthday'] != '' && $law['cus_birthday'] != $dateEmpty ? date("d/m/Y", strtotime($law['cus_birthday'])) : '',
@@ -437,10 +437,10 @@ class StatisticController extends Zend_Controller_Action
                         $law['law_joining_number'],
                         $age,
                         $law['cus_address_resident'],
-                        $law['cus_address_resident_now']                    
+                        $law['cus_address_resident_now']
                         ]);
-                    }                    
-                }                
+                    }
+                }
             }
         }
             //Khởi tạo đối tượng
@@ -465,8 +465,8 @@ class StatisticController extends Zend_Controller_Action
                     'color' => array('argb' => '#000000'),
                 ),
             ),
-        );        
-        
+        );
+
         //Tạo tiêu đề cho từng cột
         //Vị trí có dạng như sau:
         /**
@@ -486,12 +486,12 @@ class StatisticController extends Zend_Controller_Action
         $excel->getActiveSheet()->setCellValue('I1', 'Địa chỉ thường trú');
         $excel->getActiveSheet()->setCellValue('J1', 'Nơi ở hiện tại');
         $excel->getActiveSheet()->getStyle('A1:J1')->applyFromArray($styleArray);
-              
+
 
         // thực hiện thêm dữ liệu vào từng ô bằng vòng lặp
         // dòng bắt đầu = 2
         $numRow = 2;
-        if($results != null && sizeof($results) >0 ){   
+        if($results != null && sizeof($results) >0 ){
             foreach($results as $row){
                 $excel->getActiveSheet()->setCellValue('A'.$numRow, $row[0]);
                 $excel->getActiveSheet()->setCellValue('B'.$numRow, $row[1]);
@@ -505,14 +505,14 @@ class StatisticController extends Zend_Controller_Action
                 $excel->getActiveSheet()->setCellValue('I'.$numRow, $row[10]);
 
                 $numRow++;
-            }     
-        }   
+            }
+        }
         // Khởi tạo đối tượng PHPExcel_IOFactory để thực hiện ghi file
         // ở đây mình lưu file dưới dạng excel2007 và cho người dùng download luôn
         header('Content-type: application/vnd.ms-excel');
         header('Content-Disposition: attachment; filename="DS_LuatSu_Hon75Tuoi.xlsx"');
         PHPExcel_IOFactory::createWriter($excel, 'Excel2007')->save('php://output');
-        return;   
+        return;
 
     }
 
@@ -525,38 +525,38 @@ class StatisticController extends Zend_Controller_Action
         $modelLawyer = new Default_Model_Lawyer();
         $dataLawyer75 = $modelLawyer->loadLawyer75YearOldByFilter();
 
-        $results = array(            
+        $results = array(
         );
 
         $dateEmpty = '1900-01-01 00:00:00';
         $index = 0;
         //$currentDate = new Zend_Date();
         if($dataLawyer75 != null && sizeof($dataLawyer75)){
-            foreach($dataLawyer75 as $law){ 
+            foreach($dataLawyer75 as $law){
                 if($law['cus_birthday'] != $dateEmpty && $law['cus_birthday'] != null && $law['cus_birthday'] != ''){
-                    $age = (int)date('Y') - (int)date('Y',strtotime($law['cus_birthday']));         
-                    
+                    $age = (int)date('Y') - (int)date('Y',strtotime($law['cus_birthday']));
+
                     if($search!= null && $search != '' && $age >= (int)$search){
-                        $dateCertification = ($law['law_certification_createdate'] != null && 
-                        $law['law_certification_createdate'] != '' && $law['law_certification_createdate'] != $dateEmpty) ? 
+                        $dateCertification = ($law['law_certification_createdate'] != null &&
+                        $law['law_certification_createdate'] != '' && $law['law_certification_createdate'] != $dateEmpty) ?
                         date('d/m/Y',strtotime($law['law_certification_createdate'])) : '';
-                        
+
                         array_push($results,[$law['cus_firstname'].' '.$law['cus_lastname'],
                         $law['cus_identity_card'],
-                        ($law['cus_birthday'] != null && $law['cus_birthday'] != '' && 
+                        ($law['cus_birthday'] != null && $law['cus_birthday'] != '' &&
                         $law['cus_birthday'] != $dateEmpty) ? date('d/m/Y', strtotime($law['cus_birthday'])) : '',
                         $law['cus_cellphone'],
                         $law['cus_lawyer_number'],
-                        ($law['cus_date_lawyer_number'] != null && $law['cus_date_lawyer_number'] != '' && 
+                        ($law['cus_date_lawyer_number'] != null && $law['cus_date_lawyer_number'] != '' &&
                         $law['cus_date_lawyer_number'] != $dateEmpty) ? date('d/m/Y', strtotime($law['cus_date_lawyer_number'])) : '',
                         $law['law_certfication_no'],
                         $dateCertification,
                         $law['law_joining_number'],
-                        $age                    
+                        $age
                         ]);
                         $index +=1;
-                    }                    
-                }                
+                    }
+                }
             }
         }
 
@@ -566,13 +566,13 @@ class StatisticController extends Zend_Controller_Action
             "recordsFiltered" => intval($index),
             "data"            => ($results != null && sizeof($results) > 0) ? array_slice($results,$start,$length) : 0
         );
-           
+
         echo json_encode($json_data);
         exit;
     }
 
     public function listlawyer75Action(){
-       
+
     }
 
     //danh sach luat su hanh nghe hon 15 nam
@@ -582,27 +582,27 @@ class StatisticController extends Zend_Controller_Action
 
         $this->_helper->layout('layout')->disableLayout();
         date_default_timezone_set('Asia/Ho_Chi_Minh');
-        $modelCustomer = new Default_Model_Customers();
+        $modelCustomer = new Default_Model_Customer();
         $modelLawyer = new Default_Model_Lawyer();
         $dataLawyer15 = $modelLawyer->loadLawyer15YearCertificationByFilter();
 
-        $results = array(            
+        $results = array(
         );
 
         $dateEmpty = '1900-01-01 00:00:00';
         //$currentDate = new Zend_Date();
         if($dataLawyer15 != null && sizeof($dataLawyer15)){
-            foreach($dataLawyer15 as $law){ 
+            foreach($dataLawyer15 as $law){
                 if($law['cus_date_lawyer_number'] != $dateEmpty && $law['cus_date_lawyer_number'] != null && $law['cus_date_lawyer_number'] != ''){
-                    $age = (int)date('Y') - (int)date('Y',strtotime($law['cus_date_lawyer_number']));         
-                    
+                    $age = (int)date('Y') - (int)date('Y',strtotime($law['cus_date_lawyer_number']));
+
                     if($search != null && $search !='' && $age >= (int)$search){
                         $endmonth = $modelCustomer->getEndMonthByCusId($law['cus_id']);
 
-                        $dateCertification = ($law['law_certification_createdate'] != null && 
-                        $law['law_certification_createdate'] != '' && $law['law_certification_createdate'] != $dateEmpty) ? 
+                        $dateCertification = ($law['law_certification_createdate'] != null &&
+                        $law['law_certification_createdate'] != '' && $law['law_certification_createdate'] != $dateEmpty) ?
                         date('d/m/Y',strtotime($law['law_certification_createdate'])) : '';
-                        
+
                         array_push($results,[$law['cus_firstname'].' '.$law['cus_lastname'],
                         $law['cus_identity_card'],
                         $law['cus_cellphone'],
@@ -613,8 +613,8 @@ class StatisticController extends Zend_Controller_Action
                         $age,
                         $endmonth
                         ]);
-                    }                    
-                }                
+                    }
+                }
             }
         }
             //Khởi tạo đối tượng
@@ -639,8 +639,8 @@ class StatisticController extends Zend_Controller_Action
                     'color' => array('argb' => '#000000'),
                 ),
             ),
-        );        
-        
+        );
+
         //Tạo tiêu đề cho từng cột
         //Vị trí có dạng như sau:
         /**
@@ -658,12 +658,12 @@ class StatisticController extends Zend_Controller_Action
         $excel->getActiveSheet()->setCellValue('G1', 'Đợt gia nhập');
         $excel->getActiveSheet()->setCellValue('H1', 'Đóng phí đến');
         $excel->getActiveSheet()->getStyle('A1:H1')->applyFromArray($styleArray);
-              
+
 
         // thực hiện thêm dữ liệu vào từng ô bằng vòng lặp
         // dòng bắt đầu = 2
         $numRow = 2;
-        if($results != null && sizeof($results) >0 ){       
+        if($results != null && sizeof($results) >0 ){
             foreach($results as $row){
                 $excel->getActiveSheet()->setCellValue('A'.$numRow, $row[0]);
                 $excel->getActiveSheet()->setCellValue('B'.$numRow, $row[1]);
@@ -675,14 +675,14 @@ class StatisticController extends Zend_Controller_Action
                 $excel->getActiveSheet()->setCellValue('H'.$numRow, $row[8]);
 
                 $numRow++;
-            }  
-        }      
+            }
+        }
         // Khởi tạo đối tượng PHPExcel_IOFactory để thực hiện ghi file
         // ở đây mình lưu file dưới dạng excel2007 và cho người dùng download luôn
         header('Content-type: application/vnd.ms-excel');
         header('Content-Disposition: attachment; filename="DS_LuatSu_Hon15NamHanhNghe.xlsx"');
         PHPExcel_IOFactory::createWriter($excel, 'Excel2007')->save('php://output');
-        return;   
+        return;
 
     }
 
@@ -694,36 +694,36 @@ class StatisticController extends Zend_Controller_Action
         $modelLawyer = new Default_Model_Lawyer();
         $dataLawyer15 = $modelLawyer->loadLawyer15YearCertificationByFilter();
 
-        $results = array(            
+        $results = array(
         );
 
         $dateEmpty = '1900-01-01 00:00:00';
         $index = 0;
         //$currentDate = new Zend_Date();
         if($dataLawyer15 != null && sizeof($dataLawyer15)){
-            foreach($dataLawyer15 as $law){ 
+            foreach($dataLawyer15 as $law){
                 if($law['cus_date_lawyer_number'] != $dateEmpty && $law['cus_date_lawyer_number'] != null && $law['cus_date_lawyer_number'] != ''){
-                    $age = (int)date('Y') - (int)date('Y',strtotime($law['cus_date_lawyer_number']));         
-                    
+                    $age = (int)date('Y') - (int)date('Y',strtotime($law['cus_date_lawyer_number']));
+
                     if($search!= null && $search != '' && $age >= (int)$search){
-                        $dateCertification = ($law['law_certification_createdate'] != null && 
-                        $law['law_certification_createdate'] != '' && $law['law_certification_createdate'] != $dateEmpty) ? 
+                        $dateCertification = ($law['law_certification_createdate'] != null &&
+                        $law['law_certification_createdate'] != '' && $law['law_certification_createdate'] != $dateEmpty) ?
                         date('d/m/Y',strtotime($law['law_certification_createdate'])) : '';
-                        
+
                         array_push($results,[$law['cus_firstname'].' '.$law['cus_lastname'],
                         $law['cus_identity_card'],
                         $law['cus_cellphone'],
                         $law['cus_lawyer_number'],
-                        ($law['cus_date_lawyer_number'] != null && $law['cus_date_lawyer_number'] != '' && 
+                        ($law['cus_date_lawyer_number'] != null && $law['cus_date_lawyer_number'] != '' &&
                         $law['cus_date_lawyer_number'] != $dateEmpty) ? date('d/m/Y', strtotime($law['cus_date_lawyer_number'])) : '',
                         $law['law_certfication_no'],
                         $dateCertification,
                         $law['law_joining_number'],
-                        $age                    
+                        $age
                         ]);
                         $index +=1;
-                    }                    
-                }                
+                    }
+                }
             }
         }
         // $this->view->dataLawyer75 = $results;
@@ -733,18 +733,18 @@ class StatisticController extends Zend_Controller_Action
             "recordsFiltered" => intval($index),
             "data"            => ($results != null && sizeof($results) > 0) ? array_slice($results,$start,$length) : 0
         );
-           
+
         echo json_encode($json_data);
         exit;
     }
-   
-    public function listlawyer15Action(){ 
+
+    public function listlawyer15Action(){
     }
 
 
 
 
-     //danh sach luật sư tham gia bồi dưỡng 
+     //danh sach luật sư tham gia bồi dưỡng
     public function listpersontrainedAction(){
 
     }
@@ -753,34 +753,34 @@ class StatisticController extends Zend_Controller_Action
     public function reportlawyerfeedatatableAction(){
         $start = $this->getRequest()->getParam('start');
         $length = $this->getRequest()->getParam('length');
-        $search = $this->getRequest()->getParam('search');        
+        $search = $this->getRequest()->getParam('search');
         //$year = $this->getRequest()->getParam('year');
         $type = $this->getRequest()->getParam('type');
         $startdate = $this->getRequest()->getParam('startdate');
         $enddate = $this->getRequest()->getParam('enddate');
 
-        $results = array(            
+        $results = array(
         );
 
         //offline
         $model = new Default_Model_PaymentLawyerOffline();
-        
-        if($type == 'offline'){  
-            $index = 0;         
+
+        if($type == 'offline'){
+            $index = 0;
             $data = $model->loadPaymentLawyerByFilterStatistic($start, $length,$startdate,$enddate,'offline');
-            if($data != null && sizeof($data)){            
-                foreach($data as $pay){ 
+            if($data != null && sizeof($data)){
+                foreach($data as $pay){
                     $index += 1;
                     //$time=strtotime($pay['payment_lawyer_off_created_date']);
                     //$month=date("m/Y",$time);
-                    
+
                     // $duration = $pay['month'];
                     // $text = "+".$pay['month']." months";
                     //$effectiveMonth = date('m/Y', strtotime($text, strtotime($pay['payment_lawyer_off_created_date'])));
-                    
+
                     array_push($results,[
                         $index,
-                        $pay['cus_firstname'].' '.$pay['cus_lastname'],                
+                        $pay['cus_firstname'].' '.$pay['cus_lastname'],
                         date("d/m/Y", strtotime($pay['cus_birthday'])),
                         $pay['cus_lawyer_number'],
                         $pay['month'],
@@ -792,8 +792,8 @@ class StatisticController extends Zend_Controller_Action
                         $pay['endmonth'] != null ? $pay['endmonth'] : '',
                         //$month,
                         //$effectiveMonth,
-                        'Đóng tại đoàn'     
-                    ]);                 
+                        'Đóng tại đoàn'
+                    ]);
                 }
             }
         }
@@ -804,19 +804,19 @@ class StatisticController extends Zend_Controller_Action
             $index = 0;
             //$model = new Default_Model_PaymentLawyerOffline();
             $data = $model->loadPaymentLawyerByFilterStatistic($start, $length,$startdate,$enddate,'online');
-            if($data != null && sizeof($data)){            
-                foreach($data as $pay){ 
+            if($data != null && sizeof($data)){
+                foreach($data as $pay){
                     $index += 1;
                     // $time=strtotime($pay['payment_lawyer_off_created_date']);
                     // $month=date("m/Y",$time);
-                    
+
                     // $duration = $pay['month'];
                     // $text = "+".$pay['month']." months";
                     // $effectiveMonth = date('m/Y', strtotime($text, strtotime($pay['payment_lawyer_off_created_date'])));
-                    
+
                     array_push($results,[
                         $index,
-                        $pay['cus_firstname'].' '.$pay['cus_lastname'],                
+                        $pay['cus_firstname'].' '.$pay['cus_lastname'],
                         date("d/m/Y", strtotime($pay['cus_birthday'])),
                         $pay['cus_lawyer_number'],
                         $pay['month'],
@@ -828,8 +828,8 @@ class StatisticController extends Zend_Controller_Action
                         // $effectiveMonth,
                         $pay['startedmonth'] != null ? $pay['startedmonth'] : '',
                         $pay['endmonth'] != null ? $pay['endmonth'] : '',
-                        'Đóng qua mạng'     
-                    ]);                 
+                        'Đóng qua mạng'
+                    ]);
                 }
             }
         }
@@ -840,8 +840,8 @@ class StatisticController extends Zend_Controller_Action
             //$model = new Default_Model_PaymentLawyerOffline();
             $index = 0;
             $data = $model->loadPaymentLawyerByFilterStatistic($start, $length,$startdate,$enddate,'all');
-            if($data != null && sizeof($data)){            
-                foreach($data as $pay){ 
+            if($data != null && sizeof($data)){
+                foreach($data as $pay){
                     $index += 1;
                     // $time=strtotime($pay['payment_lawyer_off_created_date']);
                     // $month=date("m/Y",$time);
@@ -849,7 +849,7 @@ class StatisticController extends Zend_Controller_Action
                     // $duration = $pay['month'];
                     // $text = "+".$pay['month']." months";
                     // $effectiveMonth = date('m/Y', strtotime($text, strtotime($pay['payment_lawyer_off_created_date'])));
-                    
+
                     $text = '';
                     if($pay['payment_type'] == 'online'){
                         $text = 'Đóng qua mạng';
@@ -858,7 +858,7 @@ class StatisticController extends Zend_Controller_Action
                     }
                     array_push($results,[
                         $index,
-                        $pay['cus_firstname'].' '.$pay['cus_lastname'],                
+                        $pay['cus_firstname'].' '.$pay['cus_lastname'],
                         date("d/m/Y", strtotime($pay['cus_birthday'])),
                         $pay['cus_lawyer_number'],
                         $pay['month'],
@@ -870,8 +870,8 @@ class StatisticController extends Zend_Controller_Action
                         $pay['endmonth'] != null ? $pay['endmonth'] : '',
                         // $pay['startedmonth'],//$month,
                         // $pay['endmonth'],//$effectiveMonth,
-                        $text     
-                    ]);                 
+                        $text
+                    ]);
                 }
             }
         }
@@ -883,7 +883,7 @@ class StatisticController extends Zend_Controller_Action
 
         $total = 0;
         if($type == 'online'){
-            $total = $model->loadPaymentLawyerByFilterStatisticTotals($startdate,$enddate,'online');            
+            $total = $model->loadPaymentLawyerByFilterStatisticTotals($startdate,$enddate,'online');
         }else if($type == 'offline'){
             $total = $model->loadPaymentLawyerByFilterStatisticTotals($startdate,$enddate,'offline');
         }else{
@@ -897,7 +897,7 @@ class StatisticController extends Zend_Controller_Action
             "data"            => $results
         );
         //$cattraining = new Default_Model_CategoryTraining();
-        
+
         echo json_encode($json_data);
         exit;
     }
@@ -906,14 +906,14 @@ class StatisticController extends Zend_Controller_Action
         //prapre data
         $results = array();
         $resultsTime = array();
-        if($data != null && sizeof($data)){                
-            foreach($data as $d){ 
-                array_push($results,                              
-                        $d['cus_id']                  
+        if($data != null && sizeof($data)){
+            foreach($data as $d){
+                array_push($results,
+                        $d['cus_id']
                 );
             }
         }
-      
+
         if($results != null && sizeof($results)){
             //$array = array(5, 5, 2, 1);
             $counts = array_count_values($results); // Array(5 => 2, 2 => 1, 1 => 1)
@@ -921,24 +921,24 @@ class StatisticController extends Zend_Controller_Action
                 if($hours != null){
                     if($hours == '8'){
                         if($val == 1){
-                            array_push($resultsTime,                               
-                                $key                  
+                            array_push($resultsTime,
+                                $key
                             );
                         }
-                    
+
                     }else{
                         if($val >= 2){
-                            array_push($resultsTime,                               
-                                $key                  
+                            array_push($resultsTime,
+                                $key
                             );
                         }
                     }
                 }else{
-                    array_push($resultsTime,                               
-                        $key                  
+                    array_push($resultsTime,
+                        $key
                     );
                 }
-                    
+
             }
         }
 
@@ -951,72 +951,72 @@ class StatisticController extends Zend_Controller_Action
     public function reportlawyertrainingbyhoursdatatableAction(){
         $start = $this->getRequest()->getParam('start');
         $length = $this->getRequest()->getParam('length');
-        $search = $this->getRequest()->getParam('search');  
-        $hours = $this->getRequest()->getParam('hours'); 
+        $search = $this->getRequest()->getParam('search');
+        $hours = $this->getRequest()->getParam('hours');
 
         $model = new Default_Model_PaymentTrainingOffline();
         //$modelOnline = new Default_Model_PaymentTrainingOnline();
-        $data = $model->loadLawyerTrainedByHoursFilter($start,$length,$search,null);   
-        $resultsFinal = array(            
+        $data = $model->loadLawyerTrainedByHoursFilter($start,$length,$search,null);
+        $resultsFinal = array(
         );
 
-        $idsFinal = array(            
+        $idsFinal = array(
         );
         $idsFinal = $this->countHoursForLeaner($data,$hours);
         $index = 0;
         $dateEmpty = '1900-01-01 00:00:00';
         if($hours == '8'){
-            $data = $model->loadLawyerTrainedByHoursFilter($start,$length,$search,$idsFinal);   
+            $data = $model->loadLawyerTrainedByHoursFilter($start,$length,$search,$idsFinal);
             if($data != null && sizeof($data)){
-                
-                foreach($data as $pay){ 
-                    $index += 1;  
-                                  
+
+                foreach($data as $pay){
+                    $index += 1;
+
                     array_push($resultsFinal,[
                     $index,
-                    $pay['cus_firstname'].' '.$pay['cus_lastname'],              
-                    $pay['cus_identity_card'], 
-                    $pay['cus_cellphone'],  
-                    $pay['cus_birthday'] != $dateEmpty ? date("d/m/Y", strtotime($pay['cus_birthday'])) : '',      
+                    $pay['cus_firstname'].' '.$pay['cus_lastname'],
+                    $pay['cus_identity_card'],
+                    $pay['cus_cellphone'],
+                    $pay['cus_birthday'] != $dateEmpty ? date("d/m/Y", strtotime($pay['cus_birthday'])) : '',
                     $pay['cus_lawyer_number'] == null ? '' :$pay['cus_lawyer_number'],
                     $pay['cus_date_lawyer_number'] != $dateEmpty ? date("d/m/Y", strtotime($pay['cus_date_lawyer_number'])) : '',
                     $pay['cus_address_resident'],
-                    $pay['cus_address_resident_now']                                         
-                    ]);                 
+                    $pay['cus_address_resident_now']
+                    ]);
                 }
             }
 
         }
-       
+
 
         if($hours == '16'){
-            $data = $model->loadLawyerTrainedByHoursFilter($start,$length,$search,$idsFinal);       
+            $data = $model->loadLawyerTrainedByHoursFilter($start,$length,$search,$idsFinal);
             if($data != null && sizeof($data)){
                 $index = 0;
-                foreach($data as $pay){ 
-                    $index += 1;  
-                                  
+                foreach($data as $pay){
+                    $index += 1;
+
                     array_push($resultsFinal,[
                     $index,
-                    $pay['cus_firstname'].' '.$pay['cus_lastname'],              
-                    $pay['cus_identity_card'], 
-                    $pay['cus_cellphone'],  
-                    date("d/m/Y", strtotime($pay['cus_birthday'])),      
+                    $pay['cus_firstname'].' '.$pay['cus_lastname'],
+                    $pay['cus_identity_card'],
+                    $pay['cus_cellphone'],
+                    date("d/m/Y", strtotime($pay['cus_birthday'])),
                     $pay['cus_lawyer_number'] == null ? '' :$pay['cus_lawyer_number']
-                           
-                    ]);                 
+
+                    ]);
                 }
             }
 
         }
-        
+
         if($hours == 'all'){
-            //online    
-            $data = $model->loadLawyerTrainedByHoursFilter($start,$length,$search,$idsFinal);       
+            //online
+            $data = $model->loadLawyerTrainedByHoursFilter($start,$length,$search,$idsFinal);
             if($data != null && sizeof($data)){
                 $index = 0;
-                foreach($data as $pay){ 
-                    $index += 1;  
+                foreach($data as $pay){
+                    $index += 1;
 
                     $type = '';
                     if($pay['payment_type'] == 'offline'){
@@ -1024,15 +1024,15 @@ class StatisticController extends Zend_Controller_Action
                     }else{
                         $type = 'Đóng qua mạng';
                     }
-                                  
+
                     array_push($resultsFinal,[
                     $index,
-                    $pay['cus_firstname'].' '.$pay['cus_lastname'],              
-                    $pay['cus_identity_card'], 
-                    $pay['cus_cellphone'],  
-                    date("d/m/Y", strtotime($pay['cus_birthday'])),      
+                    $pay['cus_firstname'].' '.$pay['cus_lastname'],
+                    $pay['cus_identity_card'],
+                    $pay['cus_cellphone'],
+                    date("d/m/Y", strtotime($pay['cus_birthday'])),
                     $pay['cus_lawyer_number'] == null ? '' :$pay['cus_lawyer_number']
-                    ]);                 
+                    ]);
                 }
             }
        }
@@ -1045,7 +1045,7 @@ class StatisticController extends Zend_Controller_Action
             "recordsFiltered" => intval(count($resultsFinal)),
             "data"            => $resultsFinal
         );
-     
+
         echo json_encode($json_data);
         exit;
     }
@@ -1055,77 +1055,77 @@ class StatisticController extends Zend_Controller_Action
     public function reportlawyertrainingdatatableAction(){
         $start = $this->getRequest()->getParam('start');
         $length = $this->getRequest()->getParam('length');
-        $search = $this->getRequest()->getParam('search');  
-        $type = $this->getRequest()->getParam('type');  
- 
+        $search = $this->getRequest()->getParam('search');
+        $type = $this->getRequest()->getParam('type');
+
 
         $model = new Default_Model_PaymentTrainingOffline();
         //$modelOnline = new Default_Model_PaymentTrainingOnline();
-        $resultsFinal = array(            
+        $resultsFinal = array(
         );
         $index = 0;
         $dateEmpty = '1900-01-01 00:00:00';
         if($type == 'offline'){
-            $data = $model->loadLawyerTrainedByFilter($start,$length,$search,'offline');       
+            $data = $model->loadLawyerTrainedByFilter($start,$length,$search,'offline');
             if($data != null && sizeof($data)){
-                
-                foreach($data as $pay){ 
-                    $index += 1;  
-                                  
+
+                foreach($data as $pay){
+                    $index += 1;
+
                     array_push($resultsFinal,[
                     $index,
-                    $pay['cus_firstname'].' '.$pay['cus_lastname'],              
-                    $pay['cus_identity_card'], 
-                    $pay['cus_cellphone'],  
-                    date("d/m/Y", strtotime($pay['cus_birthday'])),      
+                    $pay['cus_firstname'].' '.$pay['cus_lastname'],
+                    $pay['cus_identity_card'],
+                    $pay['cus_cellphone'],
+                    date("d/m/Y", strtotime($pay['cus_birthday'])),
                     $pay['cus_lawyer_number'],
-                    $pay['cus_date_lawyer_number'] != $dateEmpty ? date("d/m/Y", strtotime($pay['cus_date_lawyer_number'])) : '',           
+                    $pay['cus_date_lawyer_number'] != $dateEmpty ? date("d/m/Y", strtotime($pay['cus_date_lawyer_number'])) : '',
                     $pay['cus_address_resident'],
                     $pay['cus_address_resident_now'],
                     date("d/m/Y", strtotime($pay['payment_training_off_created_date'])),
                     number_format($pay['amount']),
-                    'Đóng tại đoàn'          
-                    ]);                 
+                    'Đóng tại đoàn'
+                    ]);
                 }
             }
 
         }
-       
+
 
         if($type == 'online'){
-            $data = $model->loadLawyerTrainedByFilter($start,$length,$search,'online');       
+            $data = $model->loadLawyerTrainedByFilter($start,$length,$search,'online');
             if($data != null && sizeof($data)){
                 $index = 0;
-                foreach($data as $pay){ 
-                    $index += 1;  
-                                  
+                foreach($data as $pay){
+                    $index += 1;
+
                     array_push($resultsFinal,[
                     $index,
-                    $pay['cus_firstname'].' '.$pay['cus_lastname'],              
-                    $pay['cus_identity_card'], 
-                    $pay['cus_cellphone'],  
-                    date("d/m/Y", strtotime($pay['cus_birthday'])),      
+                    $pay['cus_firstname'].' '.$pay['cus_lastname'],
+                    $pay['cus_identity_card'],
+                    $pay['cus_cellphone'],
+                    date("d/m/Y", strtotime($pay['cus_birthday'])),
                     $pay['cus_lawyer_number'],
-                    $pay['cus_date_lawyer_number'] != $dateEmpty ? date("d/m/Y", strtotime($pay['cus_date_lawyer_number'])) : '',          
+                    $pay['cus_date_lawyer_number'] != $dateEmpty ? date("d/m/Y", strtotime($pay['cus_date_lawyer_number'])) : '',
                     $pay['cus_address_resident'],
                     $pay['cus_address_resident_now'],
                     date("d/m/Y", strtotime($pay['payment_training_off_created_date'])),
                     number_format($pay['amount']),
-                    'Đóng online'          
-                    ]);                 
+                    'Đóng online'
+                    ]);
                 }
             }
 
         }
-        
+
         if($type == 'all'){
-            //online    
-            $data = $model->loadLawyerTrainedByFilter($start,$length,$search,'');       
-           
+            //online
+            $data = $model->loadLawyerTrainedByFilter($start,$length,$search,'');
+
             if($data != null && sizeof($data)){
                 $index = 0;
-                foreach($data as $pay){ 
-                    $index += 1;  
+                foreach($data as $pay){
+                    $index += 1;
 
                     $type = '';
                     if($pay['payment_type'] == 'offline'){
@@ -1133,42 +1133,42 @@ class StatisticController extends Zend_Controller_Action
                     }else{
                         $type = 'Đóng qua mạng';
                     }
-                                  
+
                     array_push($resultsFinal,[
                     $index,
-                    $pay['cus_firstname'].' '.$pay['cus_lastname'],              
-                    $pay['cus_identity_card'], 
-                    $pay['cus_cellphone'],  
-                    date("d/m/Y", strtotime($pay['cus_birthday'])),      
+                    $pay['cus_firstname'].' '.$pay['cus_lastname'],
+                    $pay['cus_identity_card'],
+                    $pay['cus_cellphone'],
+                    date("d/m/Y", strtotime($pay['cus_birthday'])),
                     $pay['cus_lawyer_number'],
                     $pay['cus_address_resident'],
                     $pay['cus_address_resident_now'],
-                    $pay['cus_date_lawyer_number'] != $dateEmpty ? date("d/m/Y", strtotime($pay['cus_date_lawyer_number'])) : '',          
+                    $pay['cus_date_lawyer_number'] != $dateEmpty ? date("d/m/Y", strtotime($pay['cus_date_lawyer_number'])) : '',
                     date("d/m/Y", strtotime($pay['payment_training_off_created_date'])),
                     number_format($pay['amount']),
-                    $type       
-                    ]);                 
+                    $type
+                    ]);
                 }
             }
 
-            // $dataOffline = $model->loadLawyerTrainedByFilter($start,$length,$search);       
+            // $dataOffline = $model->loadLawyerTrainedByFilter($start,$length,$search);
             // if($dataOffline != null && sizeof($dataOffline)){
-                
-            //     foreach($dataOffline as $pay){ 
-            //         $index += 1;  
-                                  
+
+            //     foreach($dataOffline as $pay){
+            //         $index += 1;
+
             //         array_push($resultsFinal,[
             //         $index,
-            //         $pay['cus_firstname'].' '.$pay['cus_lastname'],              
-            //         $pay['cus_identity_card'], 
-            //         $pay['cus_cellphone'],  
-            //         date("d/m/Y", strtotime($pay['cus_birthday'])),      
+            //         $pay['cus_firstname'].' '.$pay['cus_lastname'],
+            //         $pay['cus_identity_card'],
+            //         $pay['cus_cellphone'],
+            //         date("d/m/Y", strtotime($pay['cus_birthday'])),
             //         //$pay['law_joining_number'],
-            //         //$pay['law_code'],           
+            //         //$pay['law_code'],
             //         date("d/m/Y", strtotime($pay['payment_training_off_created_date'])),
             //         $pay['amount'],
-            //         'Đóng tại đoàn'          
-            //         ]);                 
+            //         'Đóng tại đoàn'
+            //         ]);
             //     }
             // }
 
@@ -1182,7 +1182,7 @@ class StatisticController extends Zend_Controller_Action
             "recordsFiltered" => intval(count($resultsFinal)),
             "data"            => $resultsFinal
         );
-     
+
         echo json_encode($json_data);
         exit;
     }
@@ -1192,76 +1192,76 @@ class StatisticController extends Zend_Controller_Action
     public function reportlawyertrainingintimedatatableAction(){
         $start = $this->getRequest()->getParam('start');
         $length = $this->getRequest()->getParam('length');
-        $search = $this->getRequest()->getParam('search');  
-        $type = $this->getRequest()->getParam('type');  
-        $startdate = $this->getRequest()->getParam('startdate');  
-        $enddate = $this->getRequest()->getParam('enddate');        
-        
+        $search = $this->getRequest()->getParam('search');
+        $type = $this->getRequest()->getParam('type');
+        $startdate = $this->getRequest()->getParam('startdate');
+        $enddate = $this->getRequest()->getParam('enddate');
+
 
         $model = new Default_Model_PaymentTrainingOffline();
         //$modelOnline = new Default_Model_PaymentTrainingOnline();
-        $resultsFinal = array(            
+        $resultsFinal = array(
         );
         $index = 0;
 
         if($type == 'offline'){
-            $data = $model->loadLawyerTrainingByFilter($start,$length,'offline',$startdate,$enddate);       
+            $data = $model->loadLawyerTrainingByFilter($start,$length,'offline',$startdate,$enddate);
             if($data != null && sizeof($data)){
-                
-                foreach($data as $pay){ 
-                    $index += 1;  
-                                  
+
+                foreach($data as $pay){
+                    $index += 1;
+
                     array_push($resultsFinal,[
                         $index,
-                        $pay['cus_firstname'].' '.$pay['cus_lastname'],  
-                        date("d/m/Y", strtotime($pay['cus_birthday'])),             
-                        $pay['cus_identity_card'], 
+                        $pay['cus_firstname'].' '.$pay['cus_lastname'],
+                        date("d/m/Y", strtotime($pay['cus_birthday'])),
+                        $pay['cus_identity_card'],
                         $pay['law_joining_number'] != null ? $pay['law_joining_number'] : "",
                         '',
-                        $pay['cus_cellphone'],                   
-                        $pay['cus_lawyer_number'],          
+                        $pay['cus_cellphone'],
+                        $pay['cus_lawyer_number'],
                         date("d/m/Y", strtotime($pay['payment_training_off_created_date'])),
                         number_format($pay['amount']),
-                        'Đóng tại đoàn'          
-                    ]);                 
+                        'Đóng tại đoàn'
+                    ]);
                 }
             }
 
         }
-       
+
 
         if($type == 'online'){
             $data = $model->loadLawyerTrainingByFilter($start,$length,'online',$startdate,$enddate);
             if($data != null && sizeof($data)){
                 $index = 0;
-                foreach($data as $pay){ 
-                    $index += 1;  
-                                  
+                foreach($data as $pay){
+                    $index += 1;
+
                     array_push($resultsFinal,[
                     $index,
-                    $pay['cus_firstname'].' '.$pay['cus_lastname'],  
-                    date("d/m/Y", strtotime($pay['cus_birthday'])),             
-                    $pay['cus_identity_card'], 
+                    $pay['cus_firstname'].' '.$pay['cus_lastname'],
+                    date("d/m/Y", strtotime($pay['cus_birthday'])),
+                    $pay['cus_identity_card'],
                     $pay['law_joining_number'] != null ? $pay['law_joining_number'] : "",
                     '',
-                    $pay['cus_cellphone'],                   
-                    $pay['cus_lawyer_number'],          
+                    $pay['cus_cellphone'],
+                    $pay['cus_lawyer_number'],
                     date("d/m/Y", strtotime($pay['payment_training_off_created_date'])),
                     number_format($pay['amount']),
-                    'Đóng online'          
-                    ]);                 
+                    'Đóng online'
+                    ]);
                 }
             }
 
         }
-        
+
         if($type == 'all'){
-            //online    
+            //online
             $data = $model->loadLawyerTrainingByFilter($start,$length,'all',$startdate,$enddate);
             if($data != null && sizeof($data)){
                 $index = 0;
-                foreach($data as $pay){ 
-                    $index += 1;  
+                foreach($data as $pay){
+                    $index += 1;
 
                     $type = '';
                     if($pay['payment_type'] == 'offline'){
@@ -1269,20 +1269,20 @@ class StatisticController extends Zend_Controller_Action
                     }else{
                         $type = 'Đóng qua mạng';
                     }
-                                  
+
                     array_push($resultsFinal,[
                     $index,
-                    $pay['cus_firstname'].' '.$pay['cus_lastname'],  
-                    date("d/m/Y", strtotime($pay['cus_birthday'])),             
-                    $pay['cus_identity_card'], 
+                    $pay['cus_firstname'].' '.$pay['cus_lastname'],
+                    date("d/m/Y", strtotime($pay['cus_birthday'])),
+                    $pay['cus_identity_card'],
                     $pay['law_joining_number'] != null ? $pay['law_joining_number'] : "",
                     '',
-                    $pay['cus_cellphone'],                   
-                    $pay['cus_lawyer_number'],          
+                    $pay['cus_cellphone'],
+                    $pay['cus_lawyer_number'],
                     date("d/m/Y", strtotime($pay['payment_training_off_created_date'])),
                     number_format($pay['amount']),
-                    $type       
-                    ]);                 
+                    $type
+                    ]);
                 }
             }
 
@@ -1296,32 +1296,32 @@ class StatisticController extends Zend_Controller_Action
             "recordsFiltered" => intval(count($totalrecords)),
             "data"            => $resultsFinal
         );
-     
+
         echo json_encode($json_data);
         exit;
     }
 
      //dách sách luật sư gia nhập
      public function listjoiningAction(){
-         
+
      }
 
      public function listjoiningdatatableAction(){
 
         $start = $this->getRequest()->getParam('start');
         $length = $this->getRequest()->getParam('length');
-        $search = $this->getRequest()->getParam('search');        
+        $search = $this->getRequest()->getParam('search');
 
         $model = new Default_Model_PaymentJoiningOffline();
         $data = $model->loadPaymentJoiningOfflineByFilter($start,$length,$search);
 
-        $results = array(            
+        $results = array(
         );
         $dateEmpty = '1900-01-01 00:00:00';
         if($data != null && sizeof($data)){
-            foreach($data as $pay){ 
+            foreach($data as $pay){
                 array_push($results,[
-      
+
                 $pay['cus_firstname'].' '.$pay['cus_lastname'],
                 $pay['cus_identity_card'],
                 $pay['payment_joining_off_code'],
@@ -1335,8 +1335,8 @@ class StatisticController extends Zend_Controller_Action
                 $pay['cus_address_resident_now'],
                 ($pay['payment_joining_off_created_date'] != null && $pay['payment_joining_off_created_date'] !='' &&
                 $pay['payment_joining_off_created_date'] != $dateEmpty) ? date('d/m/Y', strtotime($pay['payment_joining_off_created_date'])) : '',
-                number_format($pay['amount'])              
-                ]);                 
+                number_format($pay['amount'])
+                ]);
             }
         }
 
@@ -1345,8 +1345,8 @@ class StatisticController extends Zend_Controller_Action
             "recordsTotal"    => intval(count($results)),
             "recordsFiltered" => intval(count($results)),
             "data"            => $results
-        );  
-     
+        );
+
         echo json_encode($json_data);
         exit;
 
@@ -1356,25 +1356,25 @@ class StatisticController extends Zend_Controller_Action
 
         $start = $this->getRequest()->getParam('start');
         $length = $this->getRequest()->getParam('length');
-        $type = $this->getRequest()->getParam('type');  
-        $startdate = $this->getRequest()->getParam('startdate');  
-        $enddate = $this->getRequest()->getParam('enddate'); 
+        $type = $this->getRequest()->getParam('type');
+        $startdate = $this->getRequest()->getParam('startdate');
+        $enddate = $this->getRequest()->getParam('enddate');
 
         $model = new Default_Model_PaymentJoiningOffline();
         $data = $model->loadPaymentJoiningOfflineStatisticByFilter($start,
         $length,$type,$startdate,$enddate);
 
-        $results = array(            
+        $results = array(
         );
 
         $dateEmpty = '1900-01-01 00:00:00';
 
         if($data != null && sizeof($data)){
             $index = 0;
-            foreach($data as $pay){        
-                $index += 1;              
+            foreach($data as $pay){
+                $index += 1;
                 $dateToShow = ($pay['payment_joining_off_created_date'] != null && $pay['payment_joining_off_created_date'] != ''
-                && $pay['payment_joining_off_created_date'] != $dateEmpty) ? date('d/m/Y',strtotime($pay['payment_joining_off_created_date'])) : '';           
+                && $pay['payment_joining_off_created_date'] != $dateEmpty) ? date('d/m/Y',strtotime($pay['payment_joining_off_created_date'])) : '';
                 array_push($results,[
                     $index,
                 $pay['cus_firstname'].' '.$pay['cus_lastname'],
@@ -1382,10 +1382,10 @@ class StatisticController extends Zend_Controller_Action
                 $pay['cus_cellphone'],
                 $pay['payment_joining_off_code'],
                 $dateToShow,
-                number_format($pay['amount']),              
+                number_format($pay['amount']),
                 $pay['payment_type'] == 'offline' ? 'Đóng tại đoàn' : 'Đóng qua mạng'
-                ]); 
-           
+                ]);
+
             }
         }
 
@@ -1395,8 +1395,8 @@ class StatisticController extends Zend_Controller_Action
             "recordsTotal"    => intval(count($total)),
             "recordsFiltered" => intval(count($total)),
             "data"            => $results
-        );  
-     
+        );
+
         echo json_encode($json_data);
         exit;
 
@@ -1415,29 +1415,29 @@ class StatisticController extends Zend_Controller_Action
         if($ids != null && sizeof($ids) > 0 ){
             foreach($ids as $i){
                 $where = $model->getAdapter()->quoteInto('organ_lawyer_id = ?',$i);
-                $model->delete($where);               
+                $model->delete($where);
             }
         }
-        
+
      }
 
      //danh sách luật sư tổ chức datatable
      public function listlawyeroforgandatatableAction(){
         $start = $this->getRequest()->getParam('start');
         $length = $this->getRequest()->getParam('length');
-        $search = $this->getRequest()->getParam('search');        
+        $search = $this->getRequest()->getParam('search');
 
         $model = new Default_Model_OrganizationLawyer();
         $data = $model->loadOrganizationLawyerByFilter($start,$length,$search);
 
-        $results = array(            
+        $results = array(
         );
-        
+
         $dateEmpty = '1900-01-01 00:00:00';
         if($data != null && sizeof($data)){
-            foreach($data as $pay){ 
-                array_push($results,[  
-                $pay['organ_lawyer_id'],                      
+            foreach($data as $pay){
+                array_push($results,[
+                $pay['organ_lawyer_id'],
                 $pay['cus_firstname'].' '.$pay['cus_lastname'],
                 $pay['cus_identity_card'],
                 $pay['cus_lawyer_number'],
@@ -1448,13 +1448,13 @@ class StatisticController extends Zend_Controller_Action
                 $pay['law_certification_createdate'] != $dateEmpty) ? date('d/m/Y', strtotime($pay['law_certification_createdate'])) : '',
                 $pay['cus_address_resident'],
                 $pay['cus_address_resident_now'],
-                ($pay['cus_birthday'] != '' && $pay['cus_birthday'] != null && 
+                ($pay['cus_birthday'] != '' && $pay['cus_birthday'] != null &&
                  $pay['cus_birthday'] != $dateEmpty) ? date('d/m/Y', strtotime($pay['cus_birthday'])) : '',
                 'Việt Nam',
                 $pay['organ_name']
-                // date('d/m/Y', strtotime($pay['law_joining_organ_date']))               
+                // date('d/m/Y', strtotime($pay['law_joining_organ_date']))
                 //''
-                ]);                 
+                ]);
             }
         }
 
@@ -1468,7 +1468,7 @@ class StatisticController extends Zend_Controller_Action
             "data"            => $results
         );
        //$cattraining = new Default_Model_CategoryTraining();
-     
+
         echo json_encode($json_data);
         exit;
     }
@@ -1477,23 +1477,23 @@ class StatisticController extends Zend_Controller_Action
      public function listtraineddatatableAction(){
         $start = $this->getRequest()->getParam('start');
         $length = $this->getRequest()->getParam('length');
-        $search = $this->getRequest()->getParam('search');        
+        $search = $this->getRequest()->getParam('search');
 
         $payment = new Default_Model_PaymentTrainingOffline();
         $data = $payment->loadPaymentLawyerOfflineByFilter($start,$length,$search);
 
-        $results = array(            
+        $results = array(
         );
 
         $dateEmpty = '1900-01-01 00:00:00';
         if($data != null && sizeof($data)){
-            foreach($data as $pay){ 
-                $text = ''; 
+            foreach($data as $pay){
+                $text = '';
                 if($pay['payment_training_off_status'] == 1){
                    $text = 'Đã thanh toán';
                 }else{
-                   $text = 'Chưa thanh toán';  
-                }    
+                   $text = 'Chưa thanh toán';
+                }
 
                 $values  = $pay['payment_training_off_code'];
                 $value = explode("_", $values);
@@ -1511,7 +1511,7 @@ class StatisticController extends Zend_Controller_Action
                 $pay['cat_train_number']
                 //,
                 // $value[0]
-                ]);                 
+                ]);
             }
         }
 
@@ -1525,25 +1525,25 @@ class StatisticController extends Zend_Controller_Action
             "data"            => $results
         );
        //$cattraining = new Default_Model_CategoryTraining();
-     
+
         echo json_encode($json_data);
         exit;
      }
 
      // danh sashc luật sư không tham gia traning
      public function listtrainedAction(){
-        $categorytraining = new Default_Model_CategoryTraining();         
+        $categorytraining = new Default_Model_CategoryTraining();
         $data = $categorytraining->loadCategoryTrainingActive();
         $this->view->categoriestrainings =  $data;
      }
-   
+
 
      public function activelawyerandintershipAction(){
-         
+
      }
 
      public function listactivelawyerAction(){
-       
+
      }
 
 
@@ -1559,32 +1559,32 @@ class StatisticController extends Zend_Controller_Action
         $lawyer = new Default_Model_Lawyer();
         $dataactivelawyer = $lawyer->loadLawyerActiveByFilter($search,$start,$length,$startdate,$enddate,'1');
 
-        $results = array(            
+        $results = array(
         );
         $dateEmpty = '1900-01-01 00:00:00';
         if($dataactivelawyer != null && sizeof($dataactivelawyer)){
-            foreach($dataactivelawyer as $law){ 
+            foreach($dataactivelawyer as $law){
                 // if($law['cus_sex'] == 'Nam'){
                 //     $text = 'Nam';
                 //  }else{
-                //     $text = 'Nữ';  
-                //  }                   
+                //     $text = 'Nữ';
+                //  }
                 array_push($results,[$law['cus_firstname'].' '.$law['cus_lastname'],
                 $law['cus_sex'],
                 $law['cus_identity_card'],
                 $law['cus_cellphone'],
                 $law['cus_lawyer_number'],
-                ($law['cus_date_lawyer_number'] != null && $law['cus_date_lawyer_number'] != '' && 
+                ($law['cus_date_lawyer_number'] != null && $law['cus_date_lawyer_number'] != '' &&
                 $law['cus_date_lawyer_number'] != $dateEmpty) ? date('d/m/Y', strtotime($law['cus_date_lawyer_number'])) : '',
                 $law['law_certfication_no'],
-                ($law['law_certification_createdate'] != null && $law['law_certification_createdate'] != '' && 
+                ($law['law_certification_createdate'] != null && $law['law_certification_createdate'] != '' &&
                 $law['law_certification_createdate'] != $dateEmpty) ? date('d/m/Y', strtotime($law['law_certification_createdate'])) : '',
                 $law['cus_address_resident'],
                 $law['cus_address_resident_now'],
                 $law['organ_name'],
                 $law['law_type'],
-                'Đang hoạt động' 
-                ]); 
+                'Đang hoạt động'
+                ]);
             }
         }
 
@@ -1598,7 +1598,7 @@ class StatisticController extends Zend_Controller_Action
             "data"            => $results
         );
        //$cattraining = new Default_Model_CategoryTraining();
-     
+
         echo json_encode($json_data);
         exit;
      }
@@ -1606,13 +1606,13 @@ class StatisticController extends Zend_Controller_Action
 
      /* xuat excel ds luat su hoat dong*/
      public function activelawyerAction() {
-        
+
         $start = $this->getRequest()->getParam('start');
         $length = $this->getRequest()->getParam('length');
         $search = $this->getRequest()->getParam('search');
         $startdate = $this->getRequest()->getParam('startdate');
         $enddate = $this->getRequest()->getParam('enddate');
-        
+
         $this->_helper->layout('layout')->disableLayout();
         date_default_timezone_set('Asia/Ho_Chi_Minh');
         $lawyer = new Default_Model_Lawyer();
@@ -1655,11 +1655,11 @@ class StatisticController extends Zend_Controller_Action
         foreach($data as $row){
             $excel->getActiveSheet()->setCellValue('A'.$numRow, $row['cus_firstname'].' '.$row['cus_lastname']);
             //if($row['cus_sex'] == 'nam'){
-                $excel->getActiveSheet()->setCellValue('B'.$numRow, $row['cus_sex']);    
+                $excel->getActiveSheet()->setCellValue('B'.$numRow, $row['cus_sex']);
             //}else{
-            //    $excel->getActiveSheet()->setCellValue('B'.$numRow, 'Nữ');    
+            //    $excel->getActiveSheet()->setCellValue('B'.$numRow, 'Nữ');
             //}
-                
+
             $excel->getActiveSheet()->setCellValue('C'.$numRow, $row['cus_identity_card']);
             $excel->getActiveSheet()->setCellValue('D'.$numRow, $row['cus_cellphone']);
             $excel->getActiveSheet()->setCellValue('E'.$numRow, $row['cus_lawyer_number']);
@@ -1677,7 +1677,7 @@ class StatisticController extends Zend_Controller_Action
         return;
      }
 
-     public function listmoveorgAction(){     
+     public function listmoveorgAction(){
 
      }
 
@@ -1693,32 +1693,32 @@ class StatisticController extends Zend_Controller_Action
         $lawyer = new Default_Model_Lawyer();
         $dataactivelawyer = $data = $lawyer->loadLawyerActiveByFilter($search,$start,$length,$startdate,$enddate,'3');
 
-        $results = array(            
+        $results = array(
         );
         $dateEmpty = '1900-01-01 00:00:00';
         if($dataactivelawyer != null && sizeof($dataactivelawyer)){
-            foreach($dataactivelawyer as $law){ 
+            foreach($dataactivelawyer as $law){
                 // if($law['cus_sex'] == 'nam'){
                 //     $text = 'Nam';
                 //     }else{
-                //     $text = 'Nữ';  
-                //     }                   
+                //     $text = 'Nữ';
+                //     }
                 array_push($results,[$law['cus_firstname'].' '.$law['cus_lastname'],
                 $law['cus_sex'],
                 $law['cus_identity_card'],
                 $law['cus_cellphone'],
                 $law['cus_lawyer_number'],
-                ($law['cus_date_lawyer_number'] != null && $law['cus_date_lawyer_number'] != '' && 
+                ($law['cus_date_lawyer_number'] != null && $law['cus_date_lawyer_number'] != '' &&
                 $law['cus_date_lawyer_number'] != $dateEmpty) ? date('d/m/Y', strtotime($law['cus_date_lawyer_number'])) : '',
                 $law['law_certfication_no'],
-                ($law['law_certification_createdate'] != null && $law['law_certification_createdate'] != '' && 
+                ($law['law_certification_createdate'] != null && $law['law_certification_createdate'] != '' &&
                 $law['law_certification_createdate'] != $dateEmpty) ? date('d/m/Y', strtotime($law['law_certification_createdate'])) : '',
                 $law['cus_address_resident'],
                 $law['cus_address_resident_now'],
                 $law['organ_name'],
                 $law['law_type'],
-                'Chuyển đoàn' 
-                ]); 
+                'Chuyển đoàn'
+                ]);
             }
         }
 
@@ -1732,7 +1732,7 @@ class StatisticController extends Zend_Controller_Action
             "data"            => $results
         );
         //$cattraining = new Default_Model_CategoryTraining();
-        
+
         echo json_encode($json_data);
         exit;
     }
@@ -1763,7 +1763,7 @@ class StatisticController extends Zend_Controller_Action
 
             //Xét in đậm cho khoảng cột
         $excel->getActiveSheet()->getStyle('A1:I1')->getFont()->setBold(true);
-        
+
         //Tạo tiêu đề cho từng cột
         //Vị trí có dạng như sau:
         /**
@@ -1782,7 +1782,7 @@ class StatisticController extends Zend_Controller_Action
         $excel->getActiveSheet()->setCellValue('H1', 'Loại luật sư');
         $excel->getActiveSheet()->setCellValue('I1', 'Tình trạng luật sư');
 
-        
+
 
         // thực hiện thêm dữ liệu vào từng ô bằng vòng lặp
         // dòng bắt đầu = 2
@@ -1790,11 +1790,11 @@ class StatisticController extends Zend_Controller_Action
         foreach($data as $row){
             $excel->getActiveSheet()->setCellValue('A'.$numRow, $row['cus_firstname'].' '.$row['cus_lastname']);
             // if($row['cus_sex'] == 'nam'){
-            //     $excel->getActiveSheet()->setCellValue('B'.$numRow, 'Nam');    
+            //     $excel->getActiveSheet()->setCellValue('B'.$numRow, 'Nam');
             // }else{
-            //     $excel->getActiveSheet()->setCellValue('B'.$numRow, 'Nữ');    
+            //     $excel->getActiveSheet()->setCellValue('B'.$numRow, 'Nữ');
             // }
-            $excel->getActiveSheet()->setCellValue('B'.$numRow, $row['cus_sex']);    
+            $excel->getActiveSheet()->setCellValue('B'.$numRow, $row['cus_sex']);
             $excel->getActiveSheet()->setCellValue('C'.$numRow, $row['cus_identity_card']);
             $excel->getActiveSheet()->setCellValue('D'.$numRow, $row['cus_cellphone']);
             $excel->getActiveSheet()->setCellValue('E'.$numRow, $row['cus_lawyer_number']);
@@ -1828,32 +1828,32 @@ class StatisticController extends Zend_Controller_Action
         $lawyer = new Default_Model_Lawyer();
         $dataactivelawyer = $lawyer->loadLawyerActiveByFilter($search,$start,$length,$startdate,$enddate,'4');
 
-        $results = array(            
+        $results = array(
         );
         $dateEmpty = '1900-01-01 00:00:00';
         if($dataactivelawyer != null && sizeof($dataactivelawyer)){
-            foreach($dataactivelawyer as $law){ 
+            foreach($dataactivelawyer as $law){
                 // if($law['cus_sex'] == 'nam'){
                 //     $text = 'Nam';
                 //     }else{
-                //     $text = 'Nữ';  
-                //     }                   
+                //     $text = 'Nữ';
+                //     }
                 array_push($results,[$law['cus_firstname'].' '.$law['cus_lastname'],
                 $law['cus_sex'],
                 $law['cus_identity_card'],
                 $law['cus_cellphone'],
                 $law['cus_lawyer_number'],
-                ($law['cus_date_lawyer_number'] != null && $law['cus_date_lawyer_number'] != '' && 
+                ($law['cus_date_lawyer_number'] != null && $law['cus_date_lawyer_number'] != '' &&
                 $law['cus_date_lawyer_number'] != $dateEmpty) ? date('d/m/Y', strtotime($law['cus_date_lawyer_number'])) : '',
                 $law['law_certfication_no'],
-                ($law['law_certification_createdate'] != null && $law['law_certification_createdate'] != '' && 
+                ($law['law_certification_createdate'] != null && $law['law_certification_createdate'] != '' &&
                 $law['law_certification_createdate'] != $dateEmpty) ? date('d/m/Y', strtotime($law['law_certification_createdate'])) : '',
                 $law['cus_address_resident'],
                 $law['cus_address_resident_now'],
                 $law['organ_name'],
                 $law['law_type'],
-                'Rút tên' 
-                ]); 
+                'Rút tên'
+                ]);
             }
         }
 
@@ -1867,7 +1867,7 @@ class StatisticController extends Zend_Controller_Action
             "data"            => $results
         );
         //$cattraining = new Default_Model_CategoryTraining();
-        
+
         echo json_encode($json_data);
         exit;
         }
@@ -1898,7 +1898,7 @@ class StatisticController extends Zend_Controller_Action
 
             //Xét in đậm cho khoảng cột
         $excel->getActiveSheet()->getStyle('A1:I1')->getFont()->setBold(true);
-        
+
         //Tạo tiêu đề cho từng cột
         //Vị trí có dạng như sau:
         /**
@@ -1917,7 +1917,7 @@ class StatisticController extends Zend_Controller_Action
         $excel->getActiveSheet()->setCellValue('H1', 'Loại luật sư');
         $excel->getActiveSheet()->setCellValue('I1', 'Tình trạng luật sư');
 
-        
+
 
         // thực hiện thêm dữ liệu vào từng ô bằng vòng lặp
         // dòng bắt đầu = 2
@@ -1925,11 +1925,11 @@ class StatisticController extends Zend_Controller_Action
         foreach($data as $row){
             $excel->getActiveSheet()->setCellValue('A'.$numRow, $row['cus_firstname'].' '.$row['cus_lastname']);
             // if($row['cus_sex'] == 'nam'){
-            //     $excel->getActiveSheet()->setCellValue('B'.$numRow, 'Nam');    
+            //     $excel->getActiveSheet()->setCellValue('B'.$numRow, 'Nam');
             // }else{
-            //     $excel->getActiveSheet()->setCellValue('B'.$numRow, 'Nữ');    
+            //     $excel->getActiveSheet()->setCellValue('B'.$numRow, 'Nữ');
             // }
-            $excel->getActiveSheet()->setCellValue('B'.$numRow, $row['cus_sex']);    
+            $excel->getActiveSheet()->setCellValue('B'.$numRow, $row['cus_sex']);
             $excel->getActiveSheet()->setCellValue('C'.$numRow, $row['cus_identity_card']);
             $excel->getActiveSheet()->setCellValue('D'.$numRow, $row['cus_cellphone']);
             $excel->getActiveSheet()->setCellValue('E'.$numRow, $row['cus_lawyer_numbers']);
@@ -1953,7 +1953,7 @@ class StatisticController extends Zend_Controller_Action
         // $this->view->dataactivelawyer = $dataactivelawyer;
      }
 
-     
+
     /*load dữ liệu cho table trong page listdielawyer lawyer*/
     public function listdielawyerdatatableAction(){
 
@@ -1966,32 +1966,32 @@ class StatisticController extends Zend_Controller_Action
         $lawyer = new Default_Model_Lawyer();
         $dataactivelawyer = $lawyer->loadLawyerActiveByFilter($search,$start,$length,$startdate,$enddate,'2');
 
-        $results = array(            
+        $results = array(
         );
         $dateEmpty = '1900-01-01 00:00:00';
         if($dataactivelawyer != null && sizeof($dataactivelawyer)){
-            foreach($dataactivelawyer as $law){ 
+            foreach($dataactivelawyer as $law){
                 // if($law['cus_sex'] == 'nam'){
                 //     $text = 'Nam';
                 //     }else{
-                //     $text = 'Nữ';  
-                //     }                   
+                //     $text = 'Nữ';
+                //     }
                 array_push($results,[$law['cus_firstname'].' '.$law['cus_lastname'],
                 $law['cus_sex'],
                 $law['cus_identity_card'],
                 $law['cus_cellphone'],
                 $law['cus_lawyer_number'],
-                ($law['cus_date_lawyer_number'] != null && $law['cus_date_lawyer_number'] != '' && 
+                ($law['cus_date_lawyer_number'] != null && $law['cus_date_lawyer_number'] != '' &&
                 $law['cus_date_lawyer_number'] != $dateEmpty) ? date('d/m/Y', strtotime($law['cus_date_lawyer_number'])) : '',
                 $law['law_certfication_no'],
-                ($law['law_certification_createdate'] != null && $law['law_certification_createdate'] != '' && 
+                ($law['law_certification_createdate'] != null && $law['law_certification_createdate'] != '' &&
                 $law['law_certification_createdate'] != $dateEmpty) ? date('d/m/Y', strtotime($law['law_certification_createdate'])) : '',
                 $law['cus_address_resident'],
                 $law['cus_address_resident_now'],
                 $law['organ_name'],
                 $law['law_type'],
-                'Đã chết' 
-                ]); 
+                'Đã chết'
+                ]);
             }
         }
 
@@ -2005,7 +2005,7 @@ class StatisticController extends Zend_Controller_Action
             "data"            => $results
         );
         //$cattraining = new Default_Model_CategoryTraining();
-        
+
         echo json_encode($json_data);
         exit;
      }
@@ -2030,7 +2030,7 @@ class StatisticController extends Zend_Controller_Action
 
             //Xét in đậm cho khoảng cột
         $excel->getActiveSheet()->getStyle('A1:I1')->getFont()->setBold(true);
-        
+
         //Tạo tiêu đề cho từng cột
         //Vị trí có dạng như sau:
         /**
@@ -2049,7 +2049,7 @@ class StatisticController extends Zend_Controller_Action
         $excel->getActiveSheet()->setCellValue('H1', 'Loại luật sư');
         $excel->getActiveSheet()->setCellValue('I1', 'Tình trạng luật sư');
 
-        
+
 
         // thực hiện thêm dữ liệu vào từng ô bằng vòng lặp
         // dòng bắt đầu = 2
@@ -2057,11 +2057,11 @@ class StatisticController extends Zend_Controller_Action
         foreach($data as $row){
             $excel->getActiveSheet()->setCellValue('A'.$numRow, $row['cus_firstname'].' '.$row['cus_lastname']);
             // if($row['cus_sex'] == 'nam'){
-            //     $excel->getActiveSheet()->setCellValue('B'.$numRow, 'Nam');    
+            //     $excel->getActiveSheet()->setCellValue('B'.$numRow, 'Nam');
             // }else{
-            //     $excel->getActiveSheet()->setCellValue('B'.$numRow, 'Nữ');    
+            //     $excel->getActiveSheet()->setCellValue('B'.$numRow, 'Nữ');
             // }
-            $excel->getActiveSheet()->setCellValue('B'.$numRow, $row['cus_sex']);       
+            $excel->getActiveSheet()->setCellValue('B'.$numRow, $row['cus_sex']);
             $excel->getActiveSheet()->setCellValue('C'.$numRow, $row['cus_identity_card']);
             $excel->getActiveSheet()->setCellValue('D'.$numRow, $row['cus_cellphone']);
             $excel->getActiveSheet()->setCellValue('E'.$numRow, $row['law_code']);
@@ -2076,7 +2076,7 @@ class StatisticController extends Zend_Controller_Action
         header('Content-type: application/vnd.ms-excel');
         header('Content-Disposition: attachment; filename="DS_LuatSu_DaChet.xlsx"');
         PHPExcel_IOFactory::createWriter($excel, 'Excel2007')->save('php://output');
-        return;   
+        return;
      }
 
      public function disciplineAction(){
@@ -2103,16 +2103,16 @@ class StatisticController extends Zend_Controller_Action
         $intership = new Default_Model_Intership();
         $dataactivelawyer = $intership->loadIntershipByFilter($search,$intershipnumberid,$start,$length,$startdate,$enddate);
 
-        $results = array(            
+        $results = array(
         );
 
         if($dataactivelawyer != null && sizeof($dataactivelawyer)){
-            foreach($dataactivelawyer as $law){ 
+            foreach($dataactivelawyer as $law){
                 // if($law['cus_sex'] == 'nam'){
                 //     $text = 'Nam';
                 //     }else{
-                //     $text = 'Nữ';  
-                //     }                   
+                //     $text = 'Nữ';
+                //     }
                 array_push($results,[$law['cus_firstname'].' '.$law['cus_lastname'],
                 $law['cus_sex'],
                 $law['cus_identity_card'],
@@ -2124,8 +2124,8 @@ class StatisticController extends Zend_Controller_Action
                 // $law['law_certfication_no'],
                 // $law['organ_name'],
                 // $law['law_type'],
-                // 'Không xét' 
-                ]); 
+                // 'Không xét'
+                ]);
             }
         }
 
@@ -2139,7 +2139,7 @@ class StatisticController extends Zend_Controller_Action
             "data"            => $results
         );
         //$cattraining = new Default_Model_CategoryTraining();
-        
+
         echo json_encode($json_data);
         exit;
     }
@@ -2156,16 +2156,16 @@ class StatisticController extends Zend_Controller_Action
         $intership = new Default_Model_PaymentIntershipOffline();
         $dataactivelawyer = $intership->loadPaymentIntershipOfflineFilter($start,$length,$type,$startdate,$enddate);
 
-        $results = array(            
+        $results = array(
         );
 
         $dateEmpty = '1900-01-01 00:00:00';
         if($dataactivelawyer != null && sizeof($dataactivelawyer)){
             $index = 0;
-            foreach($dataactivelawyer as $law){    
-                $index += 1;            
+            foreach($dataactivelawyer as $law){
+                $index += 1;
                 $dateToShow = ($law['payment_inter_off_created_date'] != null && $law['payment_inter_off_created_date'] != ''
-                && $law['payment_inter_off_created_date'] != $dateEmpty) ? date('d/m/Y',strtotime($law['payment_inter_off_created_date'])) : '';           
+                && $law['payment_inter_off_created_date'] != $dateEmpty) ? date('d/m/Y',strtotime($law['payment_inter_off_created_date'])) : '';
                 array_push($results,[
                     $index,
                 $law['cus_firstname'].' '.$law['cus_lastname'],
@@ -2174,9 +2174,9 @@ class StatisticController extends Zend_Controller_Action
                 $law['payment_inter_off_code'],
                 $law['inter_number_name'],
                 $dateToShow,
-                number_format($law['amount']),              
+                number_format($law['amount']),
                 $law['payment_type'] == 'offline' ? 'Đóng tại đoàn' : 'Đóng qua mạng'
-                ]);           
+                ]);
             }
         }
 
@@ -2190,11 +2190,11 @@ class StatisticController extends Zend_Controller_Action
             "data"            => $results
         );
         //$cattraining = new Default_Model_CategoryTraining();
-        
+
         echo json_encode($json_data);
         exit;
     }
-     
+
 
     public function intershipAction(){
 
@@ -2223,7 +2223,7 @@ class StatisticController extends Zend_Controller_Action
 
             //Xét in đậm cho khoảng cột
         $excel->getActiveSheet()->getStyle('A1:E1')->getFont()->setBold(true);
-        
+
         //Tạo tiêu đề cho từng cột
         //Vị trí có dạng như sau:
         /**
@@ -2237,9 +2237,9 @@ class StatisticController extends Zend_Controller_Action
         $excel->getActiveSheet()->setCellValue('C1', 'CMND');
         $excel->getActiveSheet()->setCellValue('D1', 'Số Điện Thoại');
         $excel->getActiveSheet()->setCellValue('E1', 'Đợt tập sự');
-        
 
-        
+
+
 
         // thực hiện thêm dữ liệu vào từng ô bằng vòng lặp
         // dòng bắt đầu = 2
@@ -2247,9 +2247,9 @@ class StatisticController extends Zend_Controller_Action
         foreach($data as $row){
             $excel->getActiveSheet()->setCellValue('A'.$numRow, $row['cus_firstname'].' '.$row['cus_lastname']);
             // if($row['cus_sex'] == 'nam'){
-            //     $excel->getActiveSheet()->setCellValue('B'.$numRow, 'Nam');    
+            //     $excel->getActiveSheet()->setCellValue('B'.$numRow, 'Nam');
             // }else{
-            //     $excel->getActiveSheet()->setCellValue('B'.$numRow, 'Nữ');    
+            //     $excel->getActiveSheet()->setCellValue('B'.$numRow, 'Nữ');
             // }
             $excel->getActiveSheet()->setCellValue('B'.$numRow, $row['cus_sex']);
             $excel->getActiveSheet()->setCellValue('C'.$numRow, $row['cus_identity_card']);
@@ -2263,7 +2263,7 @@ class StatisticController extends Zend_Controller_Action
         header('Content-type: application/vnd.ms-excel');
         header('Content-Disposition: attachment; filename="DS_LuatSu_TapSu.xlsx"');
         PHPExcel_IOFactory::createWriter($excel, 'Excel2007')->save('php://output');
-        return;   
+        return;
     }
 
     public function listnotchecklawyerAction(){
@@ -2281,32 +2281,32 @@ class StatisticController extends Zend_Controller_Action
         $lawyer = new Default_Model_Lawyer();
         $dataactivelawyer = $lawyer->loadLawyerActiveByFilter($search,$start,$length,$startdate,$enddate,'6');
 
-        $results = array(            
+        $results = array(
         );
         $dateEmpty = '1900-01-01 00:00:00';
         if($dataactivelawyer != null && sizeof($dataactivelawyer)){
-            foreach($dataactivelawyer as $law){ 
+            foreach($dataactivelawyer as $law){
                 // if($law['cus_sex'] == 'nam'){
                 //     $text = 'Nam';
                 //     }else{
-                //     $text = 'Nữ';  
-                //     }                   
+                //     $text = 'Nữ';
+                //     }
                 array_push($results,[$law['cus_firstname'].' '.$law['cus_lastname'],
                 $law['cus_sex'],
                 $law['cus_identity_card'],
                 $law['cus_cellphone'],
                 $law['cus_lawyer_number'],
-                ($law['cus_date_lawyer_number'] != null && $law['cus_date_lawyer_number'] != '' && 
+                ($law['cus_date_lawyer_number'] != null && $law['cus_date_lawyer_number'] != '' &&
                 $law['cus_date_lawyer_number'] != $dateEmpty) ? date('d/m/Y', strtotime($law['cus_date_lawyer_number'])) : '',
                 $law['law_certfication_no'],
-                ($law['law_certification_createdate'] != null && $law['law_certification_createdate'] != '' && 
+                ($law['law_certification_createdate'] != null && $law['law_certification_createdate'] != '' &&
                 $law['law_certification_createdate'] != $dateEmpty) ? date('d/m/Y', strtotime($law['law_certification_createdate'])) : '',
                 $law['cus_address_resident'],
                 $law['cus_address_resident_now'],
                 $law['organ_name'],
                 $law['law_type'],
-                'Không xét' 
-                ]); 
+                'Không xét'
+                ]);
             }
         }
 
@@ -2320,19 +2320,19 @@ class StatisticController extends Zend_Controller_Action
             "data"            => $results
         );
         //$cattraining = new Default_Model_CategoryTraining();
-        
+
         echo json_encode($json_data);
         exit;
      }
 
      public function notchecklawyerAction(){
-        
+
         $start = $this->getRequest()->getParam('start');
         $length = $this->getRequest()->getParam('length');
         $search = $this->getRequest()->getParam('search');
         $startdate = $this->getRequest()->getParam('startdate');
         $enddate = $this->getRequest()->getParam('enddate');
-        
+
         $this->_helper->layout('layout')->disableLayout();
         date_default_timezone_set('Asia/Ho_Chi_Minh');
         $lawyer = new Default_Model_Lawyer();
@@ -2351,7 +2351,7 @@ class StatisticController extends Zend_Controller_Action
 
             //Xét in đậm cho khoảng cột
         $excel->getActiveSheet()->getStyle('A1:I1')->getFont()->setBold(true);
-        
+
         //Tạo tiêu đề cho từng cột
         //Vị trí có dạng như sau:
         /**
@@ -2370,7 +2370,7 @@ class StatisticController extends Zend_Controller_Action
         $excel->getActiveSheet()->setCellValue('H1', 'Loại luật sư');
         $excel->getActiveSheet()->setCellValue('I1', 'Tình trạng luật sư');
 
-        
+
 
         // thực hiện thêm dữ liệu vào từng ô bằng vòng lặp
         // dòng bắt đầu = 2
@@ -2378,12 +2378,12 @@ class StatisticController extends Zend_Controller_Action
         foreach($data as $row){
             $excel->getActiveSheet()->setCellValue('A'.$numRow, $row['cus_firstname'].' '.$row['cus_lastname']);
             // if($row['cus_sex'] == 'nam'){
-            //     $excel->getActiveSheet()->setCellValue('B'.$numRow, 'Nam');    
+            //     $excel->getActiveSheet()->setCellValue('B'.$numRow, 'Nam');
             // }else{
-            //     $excel->getActiveSheet()->setCellValue('B'.$numRow, 'Nữ');    
+            //     $excel->getActiveSheet()->setCellValue('B'.$numRow, 'Nữ');
             // }
-                
-            $excel->getActiveSheet()->setCellValue('B'.$numRow, $row['cus_sex']); 
+
+            $excel->getActiveSheet()->setCellValue('B'.$numRow, $row['cus_sex']);
             $excel->getActiveSheet()->setCellValue('C'.$numRow, $row['cus_identity_card']);
             $excel->getActiveSheet()->setCellValue('D'.$numRow, $row['cus_cellphone']);
             $excel->getActiveSheet()->setCellValue('E'.$numRow, $row['cus_lawyer_number']);
@@ -2398,16 +2398,16 @@ class StatisticController extends Zend_Controller_Action
         header('Content-type: application/vnd.ms-excel');
         header('Content-Disposition: attachment; filename="DS_LuatSu_KhongXet.xlsx"');
         PHPExcel_IOFactory::createWriter($excel, 'Excel2007')->save('php://output');
-        return;   
+        return;
      }
 
      public function exportallAction() {
         // $this->_helper->layout('layout')->disableLayout();
         // date_default_timezone_set('Asia/Ho_Chi_Minh');
         // $data = [
-        // ['Nguyễn Khánh Linh', 'Nữ', '500k'], 
-        // ['Ngọc Trinh', 'Nữ', '700k'], 
-        // ['Tùng Sơn', 'Không xác định', 'Miễn phí'], 
+        // ['Nguyễn Khánh Linh', 'Nữ', '500k'],
+        // ['Ngọc Trinh', 'Nữ', '700k'],
+        // ['Tùng Sơn', 'Không xác định', 'Miễn phí'],
         // ['Kenny Sang', 'Không xác định', 'Miễn phí']
         // ];
         //     //Khởi tạo đối tượng
@@ -2450,6 +2450,6 @@ class StatisticController extends Zend_Controller_Action
         // header('Content-Disposition: attachment; filename="data.xlsx"');
         // PHPExcel_IOFactory::createWriter($excel, 'Excel2007')->save('php://output');
         // return;
-	
+
 	}
 }

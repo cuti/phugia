@@ -7,16 +7,16 @@ class ReportController extends Zend_Controller_Action
     }
 
     public function  preDispatch(){
- 	
+
         $this->auth = Zend_Auth::getInstance();
         $this->identity = $this->auth->getIdentity();
- 
+
         $username= $this->identity->user_username;
         $password= $this->identity->user_password;
- 
-        $users2 = new Default_Model_UserAdmin();  
-        if ($users2->num($username, $password)>0) {                     
-        
+
+        $users2 = new Default_Model_UserAdmin();
+        if ($users2->num($username, $password)>0) {
+
         }else{
               $this->_redirect('/default/login');exit;
         }
@@ -36,7 +36,7 @@ class ReportController extends Zend_Controller_Action
         $city = new Default_Model_City();
         $data = $city->loadCity();
         $this->view->cities =  $data;
-        
+
     }
 
     /**
@@ -45,7 +45,7 @@ class ReportController extends Zend_Controller_Action
     public function searchcustomerexportexcelAction(){
         $enddate = $this->getRequest()->getParam('enddate');
         $startdate = $this->getRequest()->getParam('startdate');
-        $hovalot = $this->getRequest()->getParam('hovalot');        
+        $hovalot = $this->getRequest()->getParam('hovalot');
         $ten = $this->getRequest()->getParam('ten');
         $cmnd = $this->getRequest()->getParam('cmnd');
         $thanhvien = $this->getRequest()->getParam('thanhvien');
@@ -73,26 +73,26 @@ class ReportController extends Zend_Controller_Action
 
         date_default_timezone_set('Asia/Ho_Chi_Minh');
 
-        $model = new Default_Model_Customers();
+        $model = new Default_Model_Customer();
         $data = $model->searchCustomersFilter($enddate,$startdate,$hovalot,$ten,$cmnd,$thanhvien,$trinhdohv,
         $diachilienhe,$thuongtru,$lamviec,$gioitinh,$socchn,$dotgianhap,$diachi,$tinhtrang,
         $dangvien,$phanloai,$sapxep,$ngoaingu,$start,$length,$sothels,$noisinh,$dottapsu,$xoaten);
-        
-        $index = 0;       
-        
-        $modelCustomer = new Default_Model_Customers();
-        $results = array(            
+
+        $index = 0;
+
+        $modelCustomer = new Default_Model_Customer();
+        $results = array(
         );
 
         //$dateEmpty = '1900-01-01 00:00:00';
         //$currentDate = new Zend_Date();
-        if($data != null && sizeof($data) > 0){            
-            foreach($data as $cus){ 
-                $index += 1;              
+        if($data != null && sizeof($data) > 0){
+            foreach($data as $cus){
+                $index += 1;
                 $endmonth = $modelCustomer->getEndMonthByCusId($cus['cus_id']);
                 array_push($results,[
                     $index,
-                    $cus['cus_firstname'].' '.$cus['cus_lastname'],                
+                    $cus['cus_firstname'].' '.$cus['cus_lastname'],
                     ($cus['cus_birthday'] != null && $cus['cus_birthday'] != '' && $cus['cus_birthday'] != '1900-01-01 00:00:00') ? date("d/m/Y", strtotime($cus['cus_birthday'])) : '',
                     $cus['cus_email'] != null ? $cus['cus_email'] : '' ,
                     $cus['cus_identity_card'] != null ? $cus['cus_identity_card'] : '',
@@ -102,12 +102,12 @@ class ReportController extends Zend_Controller_Action
                     $cus['law_certfication_no'] != null ? $cus['law_certfication_no'] : '',
                     ($cus['law_certification_createdate'] != null && $cus['law_certification_createdate'] != '' && $cus['law_certification_createdate'] != '1900-01-01 00:00:00') ? date("d/m/Y", strtotime($cus['law_certification_createdate'])) : '',
                     $cus['law_joining_number'] != null ? $cus['law_joining_number'] : '',
-                    $cus['cus_address_resident'] != null ? $cus['cus_address_resident'] : '', 
+                    $cus['cus_address_resident'] != null ? $cus['cus_address_resident'] : '',
                     $cus['cus_address_resident_now'] != null ? $cus['cus_address_resident_now'] : '',
-                    $endmonth != null && $endmonth != '' ? $endmonth : ''                     
-                ]);                 
+                    $endmonth != null && $endmonth != '' ? $endmonth : ''
+                ]);
             }
-        }     
+        }
             //Khởi tạo đối tượng
         $excel = new Default_Model_Excel();
             //Chọn trang cần ghi (là số từ 0->n)
@@ -130,8 +130,8 @@ class ReportController extends Zend_Controller_Action
                     'color' => array('argb' => '#000000'),
                 ),
             ),
-        );        
-        
+        );
+
         //Tạo tiêu đề cho từng cột
         //Vị trí có dạng như sau:
         /**
@@ -155,12 +155,12 @@ class ReportController extends Zend_Controller_Action
         $excel->getActiveSheet()->setCellValue('M1', 'Nơi ở hiện tại');
         $excel->getActiveSheet()->setCellValue('N1', 'Đoàn phí');
         $excel->getActiveSheet()->getStyle('A1:N1')->applyFromArray($styleArray);
-              
+
 
         // thực hiện thêm dữ liệu vào từng ô bằng vòng lặp
         // dòng bắt đầu = 2
         $numRow = 2;
-        if($results != null && sizeof($results) >0 ){   
+        if($results != null && sizeof($results) >0 ){
             foreach($results as $row){
                 $excel->getActiveSheet()->setCellValue('A'.$numRow, $row[0]);
                 $excel->getActiveSheet()->setCellValue('B'.$numRow, $row[1]);
@@ -177,14 +177,14 @@ class ReportController extends Zend_Controller_Action
                 $excel->getActiveSheet()->setCellValue('M'.$numRow, $row[12]);
                 $excel->getActiveSheet()->setCellValue('N'.$numRow, $row[13]);
                 $numRow++;
-            }     
-        }   
+            }
+        }
         // Khởi tạo đối tượng PHPExcel_IOFactory để thực hiện ghi file
         // ở đây mình lưu file dưới dạng excel2007 và cho người dùng download luôn
         header('Content-type: application/vnd.ms-excel');
         header('Content-Disposition: attachment; filename="DS_KQ_TimKiemLuatSu.xlsx"');
         PHPExcel_IOFactory::createWriter($excel, 'Excel2007')->save('php://output');
-        return;  
+        return;
     }
     /***
      * datatable search
@@ -192,7 +192,7 @@ class ReportController extends Zend_Controller_Action
     public function listcustomerdatatableAction(){
         $enddate = $this->getRequest()->getParam('enddate');
         $startdate = $this->getRequest()->getParam('startdate');
-        $hovalot = $this->getRequest()->getParam('hovalot');        
+        $hovalot = $this->getRequest()->getParam('hovalot');
         $ten = $this->getRequest()->getParam('ten');
         $cmnd = $this->getRequest()->getParam('cmnd');
         $thanhvien = $this->getRequest()->getParam('thanhvien');
@@ -215,26 +215,26 @@ class ReportController extends Zend_Controller_Action
         $sothels = $this->getRequest()->getParam('sothels');
         $noisinh = $this->getRequest()->getParam('noisinh');
         $xoaten = $this->getRequest()->getParam('xoaten');
-        $results = array(            
+        $results = array(
         );
 
         //$model
         //offline
-        $model = new Default_Model_Customers();
+        $model = new Default_Model_Customer();
         $data = $model->searchCustomersFilter($enddate,$startdate,$hovalot,$ten,$cmnd,$thanhvien,$trinhdohv,
         $diachilienhe,$thuongtru,$lamviec,$gioitinh,$socchn,$dotgianhap,$diachi,$tinhtrang,
         $dangvien,$phanloai,$sapxep,$ngoaingu,$start,$length,$sothels,$noisinh,$dottapsu,$xoaten);
-        
-        $index = 0;       
-        
-        $modelCustomer = new Default_Model_Customers();
-        
-        if($data != null && sizeof($data) > 0){            
-            foreach($data as $cus){ 
+
+        $index = 0;
+
+        $modelCustomer = new Default_Model_Customer();
+
+        if($data != null && sizeof($data) > 0){
+            foreach($data as $cus){
                 $index += 1;
                 // $time=strtotime($cus['payment_lawyer_off_created_date']);
                 // $month=date("m/Y",$time);
-                
+
                 // $duration = $cus['month'];
                 // $text = "+".$cus['month']." months";
                 // $effectiveMonth = date('m/Y', strtotime($text, strtotime($cus['payment_lawyer_off_created_date'])));
@@ -243,16 +243,16 @@ class ReportController extends Zend_Controller_Action
                 $intershipInfo = $modelCustomer->getLastPaymentIntershipByCusId($cus['cus_id']);
                 array_push($results,[
                     $cus['cus_id'],
-                    $cus['cus_firstname'].' '.$cus['cus_lastname'],                
+                    $cus['cus_firstname'].' '.$cus['cus_lastname'],
                     ($cus['cus_birthday'] != null && $cus['cus_birthday'] != '' && $cus['cus_birthday'] != '1900-01-01 00:00:00') ? date("d/m/Y", strtotime($cus['cus_birthday'])) : '',
                     $cus['cus_identity_card'],
                     $cus['inter_number_name'],
-                    $cus['law_joining_number'],                   
+                    $cus['law_joining_number'],
                     $cus['cus_lawyer_number'],
                     ($cus['cus_date_lawyer_number'] != null && $cus['cus_date_lawyer_number'] != '' && $cus['cus_date_lawyer_number'] != '1900-01-01 00:00:00') ? date("d/m/Y", strtotime($cus['cus_date_lawyer_number'])) : '',
                     $cus['law_certfication_no'],
                     ($cus['law_certification_createdate'] != null && $cus['law_certification_createdate'] != '' && $cus['law_certification_createdate'] != '1900-01-01 00:00:00') ? date("d/m/Y", strtotime($cus['law_certification_createdate'])) : '',
-                    $cus['cus_address_resident'], 
+                    $cus['cus_address_resident'],
                     $cus['cus_address_resident_now'],
                     $cus['cus_cellphone'],
                     $cus['cus_email'],
@@ -260,14 +260,14 @@ class ReportController extends Zend_Controller_Action
                     $joiningInfo,
                     $endmonth != null && $endmonth != '' ? $endmonth : ''
 
-                    
-                ]);                 
+
+                ]);
             }
-        }       
+        }
 
         $totalrecords = $model->searchCustomersFilter($enddate,$startdate,$hovalot,$ten,$cmnd,$thanhvien,$trinhdohv,
             $diachilienhe,$thuongtru,$lamviec,$gioitinh,$socchn,$dotgianhap,$diachi,$tinhtrang,
-            $dangvien,$phanloai,$sapxep,$ngoaingu,'','',$sothels,$noisinh,$dottapsu,$xoaten);        
+            $dangvien,$phanloai,$sapxep,$ngoaingu,'','',$sothels,$noisinh,$dottapsu,$xoaten);
         $json_data = array(
             "draw"            => intval( $_REQUEST['draw'] ),
             "recordsTotal"    => intval(count($totalrecords)),
@@ -275,7 +275,7 @@ class ReportController extends Zend_Controller_Action
             "data"            => $results
         );
        //$cattraining = new Default_Model_CategoryTraining();
-     
+
         echo json_encode($json_data);
         exit;
     }
@@ -284,12 +284,12 @@ class ReportController extends Zend_Controller_Action
      * Báo cáo tổng hơp văn phòng LS
      */
     public function finalexportexcelAction(){
-        
+
         $this->_helper->layout('layout')->disableLayout();
 
         //$search = $this->getRequest()->getParam('search');
-        
-        
+
+
         date_default_timezone_set('Asia/Ho_Chi_Minh');
         $lawyer = new Default_Model_OrganizationLawDetails();
         $data = $lawyer->loadOrganzations();
@@ -488,8 +488,8 @@ class ReportController extends Zend_Controller_Action
         $excel->getActiveSheet()
         ->getCell('A8')
         ->setValue('Báo cáo năm chính thức : ngày 15 tháng 02 năm sau');
-    
-        
+
+
         $excel->getActiveSheet()->mergeCells('A11:C11');
         $excel->getActiveSheet()
         ->getCell('A11')
@@ -601,25 +601,25 @@ class ReportController extends Zend_Controller_Action
         );
 
         $excel->getActiveSheet()->mergeCells('H13:I14');
-        
+
         $excel->getActiveSheet()
         ->getCell('H13')
         ->setValue('Số việc tư vấn pháp luật và dịch vụ pháp lý khác');
 
         $excel->getActiveSheet()->mergeCells('J13:K14');
-        
+
         $excel->getActiveSheet()
         ->getCell('J13')
         ->setValue('Trợ giúp pháp lý');
 
         $excel->getActiveSheet()->mergeCells('L12:M14');
-        
+
         $excel->getActiveSheet()
         ->getCell('L12')
         ->setValue('Tổng số́');
 
         $excel->getActiveSheet()->mergeCells('N12:O14');
-        
+
         $excel->getActiveSheet()
         ->getCell('N12')
         ->setValue('Nộp thuế́́');
@@ -641,7 +641,7 @@ class ReportController extends Zend_Controller_Action
         // $excel->getActiveSheet()->setCellValue('G13', 'Số tiền');
         // $excel->getActiveSheet()->setCellValue('H13', 'Từ');
         // $excel->getActiveSheet()->setCellValue('I13', 'Đến');
-    
+
         // thực hiện thêm dữ liệu vào từng ô bằng vòng lặp
         // dòng bắt đầu = 2
         // $numRow = 14;
@@ -651,11 +651,11 @@ class ReportController extends Zend_Controller_Action
         //     $index += 1;
         //     $time=strtotime($row['payment_lawyer_off_created_date']);
         //     $month=date("m/Y",$time);
-            
+
         //     $duration = $row['month'];
         //     $text = "+".$row['month']." months";
         //     $effectiveMonth = date('m/Y', strtotime($text, strtotime($row['payment_lawyer_off_created_date'])));
-            
+
             $total_law_native = 0;
             $total_law_foreign = 0;
             $total_procedure = 0;
@@ -706,7 +706,7 @@ class ReportController extends Zend_Controller_Action
             $excel->getActiveSheet()->mergeCells('J24:M24');
             $excel->getActiveSheet()->setCellValue('J24',"THỦ TRƯỞNG ĐƠN VỊ");
 
-            
+
             //     $numRow++;
         // }
         // Khởi tạo đối tượng PHPExcel_IOFactory để thực hiện ghi file
@@ -715,7 +715,7 @@ class ReportController extends Zend_Controller_Action
         header('Content-Disposition: attachment; filename="Baocao_VPLS.xlsx"');
         PHPExcel_IOFactory::createWriter($excel, 'Excel2007')->save('php://output');
         return;
-        
+
     }
 
 
@@ -724,10 +724,10 @@ class ReportController extends Zend_Controller_Action
      */
 
     public function reportfinalexcelAction(){
-        
+
         $this->_helper->layout('layout')->disableLayout();
 
-        $year = $this->getRequest()->getParam('year');   
+        $year = $this->getRequest()->getParam('year');
 
         // $modelOnline = new Default_Model_PaymentLawyerOnline();
         // $modelOffline = new Default_Model_PaymentLawyerOffline();
@@ -736,10 +736,10 @@ class ReportController extends Zend_Controller_Action
         $modelPaymentOffline = new Default_Model_PaymentOffline();
         $modelPaymentIntershipOffline = new Default_Model_PaymentIntershipOffline();
 
-        
-        
+
+
         date_default_timezone_set('Asia/Ho_Chi_Minh');
-        
+
         //Khởi tạo đối tượng
         $excel = new Default_Model_Excel();
             //Chọn trang cần ghi (là số từ 0->n)
@@ -806,7 +806,7 @@ class ReportController extends Zend_Controller_Action
         $excel->getActiveSheet()->getStyle('E1')->getAlignment()->applyFromArray(
             array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,)
         );
-        
+
         $excel->getActiveSheet()->mergeCells('F2:J2');
         $excel->getActiveSheet()
         ->getCell('F2')
@@ -842,7 +842,7 @@ class ReportController extends Zend_Controller_Action
         $excel->getActiveSheet()->getStyle('B8')->getAlignment()->applyFromArray(
             array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,)
         );
-        
+
         $excel->getActiveSheet()->mergeCells('C9:F9');
         $excel->getActiveSheet()
         ->getCell('C9')
@@ -944,14 +944,14 @@ class ReportController extends Zend_Controller_Action
 
         $excel->getActiveSheet()
         ->getCell('G25')
-        ->setValue('CHỦ NHIỆM');       
+        ->setValue('CHỦ NHIỆM');
         $excel->getActiveSheet()
         ->getCell('B29')
         ->setValue('LS. Nguyễn Văn Trung');
 
-        
+
         $modelPaymentOffline = new Default_Model_PaymentOffline();
-        
+
 
         $moonetIntership = $modelPaymentIntershipOffline->countMooneyInYear($year);
         $mooneyLaywer = $modelPaymentLayerOffline->countMooneyInYear($year);
@@ -971,7 +971,7 @@ class ReportController extends Zend_Controller_Action
                 ),
             ),
         );
-            
+
         $excel->getActiveSheet()->getStyle('A11:E15')->applyFromArray($styleArray);
         //$excel->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
         $excel->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
@@ -982,14 +982,14 @@ class ReportController extends Zend_Controller_Action
         // $excel->getActiveSheet()->setCellValue('G13', 'Số tiền');
         // $excel->getActiveSheet()->setCellValue('H13', 'Từ');
         // $excel->getActiveSheet()->setCellValue('I13', 'Đến');
-    
+
         // Khởi tạo đối tượng PHPExcel_IOFactory để thực hiện ghi file
         // ở đây mình lưu file dưới dạng excel2007 và cho người dùng download luôn
         header('Content-type: application/vnd.ms-excel');
         header('Content-Disposition: attachment; filename="DoanLSHCM_BaoCaoNam.xlsx"');
         PHPExcel_IOFactory::createWriter($excel, 'Excel2007')->save('php://output');
         return;
-        
+
     }
 
     /**
@@ -997,7 +997,7 @@ class ReportController extends Zend_Controller_Action
      */
 
     public function reportfinalAction(){
-        
+
     }
 
     /**
@@ -1007,7 +1007,7 @@ class ReportController extends Zend_Controller_Action
          $model = new Default_Model_OrganizationLawDetails();
          $data = $model->loadOrganzationsLaw();
          $this->view->organizations = $data;
-    }  
+    }
 
     /**
      * Export excel file with office
@@ -1016,8 +1016,8 @@ class ReportController extends Zend_Controller_Action
         $this->_helper->layout('layout')->disableLayout();
 
         $search = $this->getRequest()->getParam('search');
-      
-        
+
+
         date_default_timezone_set('Asia/Ho_Chi_Minh');
         $lawyer = new Default_Model_OrganizationLawDetails();
         $data = $lawyer->loadOrganzationsLawById($search);
@@ -1216,8 +1216,8 @@ class ReportController extends Zend_Controller_Action
         $excel->getActiveSheet()
         ->getCell('A8')
         ->setValue('Báo cáo năm chính thức : ngày 15 tháng 02 năm sau');
-    
-        
+
+
         $excel->getActiveSheet()->mergeCells('A11:C11');
         $excel->getActiveSheet()
         ->getCell('A11')
@@ -1329,25 +1329,25 @@ class ReportController extends Zend_Controller_Action
         );
 
         $excel->getActiveSheet()->mergeCells('H13:I14');
-        
+
         $excel->getActiveSheet()
         ->getCell('H13')
         ->setValue('Số việc tư vấn pháp luật và dịch vụ pháp lý khác');
 
         $excel->getActiveSheet()->mergeCells('J13:K14');
-        
+
         $excel->getActiveSheet()
         ->getCell('J13')
         ->setValue('Trợ giúp pháp lý');
 
         $excel->getActiveSheet()->mergeCells('L12:M14');
-        
+
         $excel->getActiveSheet()
         ->getCell('L12')
         ->setValue('Tổng số́');
 
         $excel->getActiveSheet()->mergeCells('N12:O14');
-        
+
         $excel->getActiveSheet()
         ->getCell('N12')
         ->setValue('Nộp thuế́́');
@@ -1369,7 +1369,7 @@ class ReportController extends Zend_Controller_Action
         // $excel->getActiveSheet()->setCellValue('G13', 'Số tiền');
         // $excel->getActiveSheet()->setCellValue('H13', 'Từ');
         // $excel->getActiveSheet()->setCellValue('I13', 'Đến');
-  
+
         // thực hiện thêm dữ liệu vào từng ô bằng vòng lặp
         // dòng bắt đầu = 2
         // $numRow = 14;
@@ -1379,11 +1379,11 @@ class ReportController extends Zend_Controller_Action
         //     $index += 1;
         //     $time=strtotime($row['payment_lawyer_off_created_date']);
         //     $month=date("m/Y",$time);
-           
+
         //     $duration = $row['month'];
         //     $text = "+".$row['month']." months";
         //     $effectiveMonth = date('m/Y', strtotime($text, strtotime($row['payment_lawyer_off_created_date'])));
-            
+
             $excel->getActiveSheet()->setCellValue('A16', $data['total_law_native']+$data['total_law_foreign']);
             $excel->getActiveSheet()->setCellValue('B16',$data['total_law_native']);
             $excel->getActiveSheet()->setCellValue('C16', $data['total_law_foreign']);
@@ -1415,7 +1415,7 @@ class ReportController extends Zend_Controller_Action
             $excel->getActiveSheet()->mergeCells('J24:M24');
             $excel->getActiveSheet()->setCellValue('J24',"THỦ TRƯỞNG ĐƠN VỊ");
 
-            
+
          //     $numRow++;
         // }
         // Khởi tạo đối tượng PHPExcel_IOFactory để thực hiện ghi file
@@ -1427,37 +1427,37 @@ class ReportController extends Zend_Controller_Action
     }
 
     /**
-     * datatable office 
+     * datatable office
      */
     public function officedatatableAction(){
 
         // $start = $this->getRequest()->getParam('start');
         // $length = $this->getRequest()->getParam('length');
-        $search = $this->getRequest()->getParam('search');  
-        // $quarter = $this->getRequest()->getParam('quarter');     
+        $search = $this->getRequest()->getParam('search');
+        // $quarter = $this->getRequest()->getParam('quarter');
         // $year = $this->getRequest()->getParam('year');
 
         $model = new Default_Model_OrganizationLawDetails();
         $data = $model->loadOrganzationsLawById($search);
 
-        $results = array(            
+        $results = array(
         );
 
-        if($data != null){     
-        
+        if($data != null){
+
             array_push($results,[
             $data['organ_name'],
-            $data['total_law_native'],                
+            $data['total_law_native'],
             $data['total_law_foreign'],
             $data['total_criminal'],
             $data['total_support_service'],
             $data['total_support'],
             number_format($data['amount']),
             number_format($data['amount_charge'])
-            ]);                     
+            ]);
         }
-        
-   
+
+
 
 
         //$totalrecords = $model->countPaymentLawyerByFilter($start,$length,$search,$year);
@@ -1469,10 +1469,10 @@ class ReportController extends Zend_Controller_Action
             "data"            => $results
         );
        //$cattraining = new Default_Model_CategoryTraining();
-     
+
         echo json_encode($json_data);
         exit;
-        
+
     }
 
     public function indexAction(){
@@ -1491,17 +1491,17 @@ class ReportController extends Zend_Controller_Action
 
         //$modelOnline = new Default_Model_PaymentLawyerOnline();
         $modelOffline = new Default_Model_PaymentLawyerOffline();
-        
-        
+
+
         date_default_timezone_set('Asia/Ho_Chi_Minh');
-       
+
         $excel = new Default_Model_Excel();
-            
+
         $excel->setActiveSheetIndex(0);
-           
+
         $excel->getActiveSheet()->setTitle('Luật sư đóng phí thành viên');
 
-            
+
         $excel->getActiveSheet()->getColumnDimension('A')->setWidth(20);
         $excel->getActiveSheet()->getColumnDimension('B')->setWidth(20);
         $excel->getActiveSheet()->getColumnDimension('C')->setWidth(30);
@@ -1552,7 +1552,7 @@ class ReportController extends Zend_Controller_Action
         $excel->getActiveSheet()->getStyle('E1')->getAlignment()->applyFromArray(
             array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,)
         );
-        
+
         $excel->getActiveSheet()->mergeCells('F2:J2');
         $excel->getActiveSheet()
         ->getCell('F2')
@@ -1588,7 +1588,7 @@ class ReportController extends Zend_Controller_Action
         $excel->getActiveSheet()->getStyle('B8')->getAlignment()->applyFromArray(
             array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,)
         );
-        
+
         $excel->getActiveSheet()->mergeCells('D9:F9');
         $excel->getActiveSheet()
         ->getCell('D9')
@@ -1614,7 +1614,7 @@ class ReportController extends Zend_Controller_Action
 
         $excel->getActiveSheet()->getStyle('B11')->getAlignment()->applyFromArray(
             array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,)
-        );        
+        );
 
         $excel->getActiveSheet()->setCellValue('A13', 'STT');
         $excel->getActiveSheet()->setCellValue('B13', 'Họ Tên');
@@ -1625,36 +1625,36 @@ class ReportController extends Zend_Controller_Action
         $excel->getActiveSheet()->setCellValue('G13', 'Số tiền');
         $excel->getActiveSheet()->setCellValue('H13', 'Từ');
         $excel->getActiveSheet()->setCellValue('I13', 'Đến');
-  
+
         // thực hiện thêm dữ liệu vào từng ô bằng vòng lặp
         // dòng bắt đầu = 2
         $numRow = 14;
         $index = 0;
 
-        $results = array(            
+        $results = array(
         );
 
-        // if($type == 'online'){            
+        // if($type == 'online'){
         $data = $modelOffline->loadPaymentLawyerByFilter('','',$search,$year,$type);
         if($data != null && sizeof($data)){
             //$index = 0;
-            foreach($data as $pay){ 
+            foreach($data as $pay){
                 $index += 1;
                 // $time=strtotime($pay['payment_lawyer_off_created_date']);
                 // $month=date("m/Y",$time);
-                
+
                 // $duration = $pay['month'];
                 // $text = "+".$pay['month']." months";
                 // $effectiveMonth = date('m/Y', strtotime($text, strtotime($pay['payment_lawyer_off_created_date'])));
-                
+
                 $typeShow = 'Đóng trực tuyến';
                 if($pay["payment_type"] == "offline"){
                     $typeShow = "Đóng tại đoàn";
-                }   
+                }
 
                 array_push($results,[
                     $index,
-                    $pay['cus_firstname'].' '.$pay['cus_lastname'],                
+                    $pay['cus_firstname'].' '.$pay['cus_lastname'],
                     date("d/m/Y", strtotime($pay['cus_birthday'])),
                     $pay['cus_lawyer_number'],
                     $pay['month'],
@@ -1662,13 +1662,13 @@ class ReportController extends Zend_Controller_Action
                     number_format($pay['amount']),
                     $pay['startedmonth'] != null ? $pay['startedmonth'] : '',
                     $pay['endmonth'] != null ? $pay['endmonth'] : '',
-                    $typeShow      
-                ]);                 
+                    $typeShow
+                ]);
             }
         }
 
-       
-        foreach($results as $row){ 
+
+        foreach($results as $row){
             $excel->getActiveSheet()->setCellValue('A'.$numRow, $row[0]);
             $excel->getActiveSheet()->setCellValue('B'.$numRow, $row[1]);
             $excel->getActiveSheet()->setCellValue('C'.$numRow, $row[2]);
@@ -1689,10 +1689,10 @@ class ReportController extends Zend_Controller_Action
                 ),
             ),
         );
-        
+
         $excel->getActiveSheet()->getStyle('A13:I'.$numRow)->applyFromArray($styleArray);
         $excel->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
-       
+
         header('Content-type: application/vnd.ms-excel');
         header('Content-Disposition: attachment; filename="DS_LuatSu_DongPhiThanhVien.xls"');
         PHPExcel_IOFactory::createWriter($excel, 'Excel2007')->save('php://output');
@@ -1711,17 +1711,17 @@ class ReportController extends Zend_Controller_Action
 
         //$modelOnline = new Default_Model_PaymentLawyerOnline();
         $modelOffline = new Default_Model_PaymentLawyerOffline();
-        
-        
+
+
         date_default_timezone_set('Asia/Ho_Chi_Minh');
-       
+
         $excel = new Default_Model_Excel();
-            
+
         $excel->setActiveSheetIndex(0);
-           
+
         $excel->getActiveSheet()->setTitle('Luật sư đóng phí liên đoàn');
 
-            
+
         $excel->getActiveSheet()->getColumnDimension('A')->setWidth(20);
         $excel->getActiveSheet()->getColumnDimension('B')->setWidth(20);
         $excel->getActiveSheet()->getColumnDimension('C')->setWidth(30);
@@ -1737,7 +1737,7 @@ class ReportController extends Zend_Controller_Action
         // $excel->getActiveSheet()->getStyle('A11:I11')->getFont()->setBold(true);
         // $excel->getActiveSheet()->getStyle('A13:I13')->getFont()->setBold(true);
 
-    
+
 
         $excel->getActiveSheet()->setCellValue('A1', 'STT');
         $excel->getActiveSheet()->setCellValue('B1', 'Họ Tên');
@@ -1748,35 +1748,35 @@ class ReportController extends Zend_Controller_Action
         $excel->getActiveSheet()->setCellValue('G1', 'Số tiền');
         $excel->getActiveSheet()->setCellValue('H1', 'Từ');
         $excel->getActiveSheet()->setCellValue('I1', 'Đến');
-  
+
 
         $numRow = 2;
         $index = 0;
 
-        $results = array(            
+        $results = array(
         );
 
-        // if($type == 'online'){            
+        // if($type == 'online'){
         $data = $modelOffline->loadPaymentLawyerByFilter('','',$search,$year,$type);
         if($data != null && sizeof($data)){
             //$index = 0;
-            foreach($data as $pay){ 
+            foreach($data as $pay){
                 $index += 1;
                 $time=strtotime($pay['payment_lawyer_off_created_date']);
                 $month=date("m/Y",$time);
-                
+
                 $duration = $pay['month'];
                 $text = "+".$pay['month']." months";
                 $effectiveMonth = date('m/Y', strtotime($text, strtotime($pay['payment_lawyer_off_created_date'])));
-                
+
                 $typeShow = 'Đóng trực tuyến';
                 if($pay["payment_type"] == "offline"){
                     $typeShow = "Đóng tại đoàn";
-                }   
+                }
 
                 array_push($results,[
                     $index,
-                    $pay['cus_firstname'].' '.$pay['cus_lastname'],                
+                    $pay['cus_firstname'].' '.$pay['cus_lastname'],
                     date("d/m/Y", strtotime($pay['cus_birthday'])),
                     $pay['cus_lawyer_number'],
                     $pay['month'],
@@ -1784,12 +1784,12 @@ class ReportController extends Zend_Controller_Action
                     number_format($pay['amount']),
                     $month,
                     $effectiveMonth,
-                    $typeShow      
-                ]);                 
+                    $typeShow
+                ]);
             }
         }
-       
-        foreach($results as $row){ 
+
+        foreach($results as $row){
             $excel->getActiveSheet()->setCellValue('A'.$numRow, $row[0]);
             $excel->getActiveSheet()->setCellValue('B'.$numRow, $row[1]);
             $excel->getActiveSheet()->setCellValue('C'.$numRow, $row[2]);
@@ -1810,10 +1810,10 @@ class ReportController extends Zend_Controller_Action
                 ),
             ),
         );
-        
+
         $excel->getActiveSheet()->getStyle('A1:I'.$numRow)->applyFromArray($styleArray);
         $excel->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
-       
+
         header('Content-type: application/vnd.ms-excel');
         header('Content-Disposition: attachment; filename="DS_LuatSu_DongPhiLienDoan.xls"');
         PHPExcel_IOFactory::createWriter($excel, 'Excel2007')->save('php://output');
@@ -1824,31 +1824,31 @@ class ReportController extends Zend_Controller_Action
     public function reportlawyerfeedatatableAction(){
         $start = $this->getRequest()->getParam('start');
         $length = $this->getRequest()->getParam('length');
-        $search = $this->getRequest()->getParam('search');        
+        $search = $this->getRequest()->getParam('search');
         $year = $this->getRequest()->getParam('year');
         $type = $this->getRequest()->getParam('type');
 
-        $results = array(            
+        $results = array(
         );
 
         //offline
         $model = new Default_Model_PaymentLawyerOffline();
         $index = 0;
-        if($type == 'offline'){           
+        if($type == 'offline'){
             $data = $model->loadPaymentLawyerByFilter( $start,$length,$search,$year,$type);
-            if($data != null && sizeof($data)){            
-                foreach($data as $pay){ 
+            if($data != null && sizeof($data)){
+                foreach($data as $pay){
                     $index += 1;
                     // $time=strtotime($pay['payment_lawyer_off_created_date']);
                     // $month=date("m/Y",$time);
-                   
+
                     // $duration = $pay['month'];
                     // $text = "+".$pay['month']." months";
                     // $effectiveMonth = date('m/Y', strtotime($text, strtotime($pay['payment_lawyer_off_created_date'])));
-                    
+
                     array_push($results,[
                         $index,
-                        $pay['cus_firstname'].' '.$pay['cus_lastname'],                
+                        $pay['cus_firstname'].' '.$pay['cus_lastname'],
                         date("d/m/Y", strtotime($pay['cus_birthday'])),
                         $pay['cus_lawyer_number'],
                         $pay['month'],
@@ -1856,8 +1856,8 @@ class ReportController extends Zend_Controller_Action
                         number_format($pay['amount']),
                         $pay['startedmonth'] != null ? $pay['startedmonth'] : '',
                         $pay['endmonth'] != null ? $pay['endmonth'] : '',
-                        'Đóng tại đoàn'     
-                    ]);                 
+                        'Đóng tại đoàn'
+                    ]);
                 }
             }
         }
@@ -1867,19 +1867,19 @@ class ReportController extends Zend_Controller_Action
         if($type == 'online'){
             //$model = new Default_Model_PaymentLawyerOffline();
             $data = $model->loadPaymentLawyerByFilter($start,$length,$search,$year,$type);
-            if($data != null && sizeof($data)){            
-                foreach($data as $pay){ 
+            if($data != null && sizeof($data)){
+                foreach($data as $pay){
                     $index += 1;
                     // $time=strtotime($pay['payment_lawyer_off_created_date']);
                     // $month=date("m/Y",$time);
-                   
+
                     // $duration = $pay['month'];
                     // $text = "+".$pay['month']." months";
                     // $effectiveMonth = date('m/Y', strtotime($text, strtotime($pay['payment_lawyer_off_created_date'])));
-                    
+
                     array_push($results,[
                         $index,
-                        $pay['cus_firstname'].' '.$pay['cus_lastname'],                
+                        $pay['cus_firstname'].' '.$pay['cus_lastname'],
                         date("d/m/Y", strtotime($pay['cus_birthday'])),
                         $pay['cus_lawyer_number'],
                         $pay['month'],
@@ -1887,8 +1887,8 @@ class ReportController extends Zend_Controller_Action
                         number_format($pay['amount']),
                         $pay['startedmonth'] != null ? $pay['startedmonth'] : '',
                         $pay['endmonth'] != null ? $pay['endmonth'] : '',
-                        'Đóng qua mạng'     
-                    ]);                 
+                        'Đóng qua mạng'
+                    ]);
                 }
             }
         }
@@ -1898,16 +1898,16 @@ class ReportController extends Zend_Controller_Action
             //offline
             $model = new Default_Model_PaymentLawyerOffline();
             $data = $model->loadPaymentLawyerByFilter($start,$length,$search,$year,$type);
-            if($data != null && sizeof($data)){            
-                foreach($data as $pay){ 
+            if($data != null && sizeof($data)){
+                foreach($data as $pay){
                     $index += 1;
                     // $time=strtotime($pay['payment_lawyer_off_created_date']);
                     // $month=date("m/Y",$time);
-                   
+
                     // $duration = $pay['month'];
                     // $text = "+".$pay['month']." months";
                     // $effectiveMonth = date('m/Y', strtotime($text, strtotime($pay['payment_lawyer_off_created_date'])));
-                    
+
                     $text = '';
                     if($pay['payment_type'] == 'online'){
                         $text = 'Đóng qua mạng';
@@ -1916,7 +1916,7 @@ class ReportController extends Zend_Controller_Action
                     }
                     array_push($results,[
                         $index,
-                        $pay['cus_firstname'].' '.$pay['cus_lastname'],                
+                        $pay['cus_firstname'].' '.$pay['cus_lastname'],
                         date("d/m/Y", strtotime($pay['cus_birthday'])),
                         $pay['cus_lawyer_number'],
                         $pay['month'],
@@ -1924,8 +1924,8 @@ class ReportController extends Zend_Controller_Action
                         number_format($pay['amount']),
                         $pay['startedmonth'] != null ? $pay['startedmonth'] : '',
                         $pay['endmonth'] != null ? $pay['endmonth'] : '',
-                        $text     
-                    ]);                 
+                        $text
+                    ]);
                 }
             }
         }
@@ -1938,7 +1938,7 @@ class ReportController extends Zend_Controller_Action
             "data"            => $results
         );
        //$cattraining = new Default_Model_CategoryTraining();
-     
+
         echo json_encode($json_data);
         exit;
     }
@@ -1950,14 +1950,14 @@ class ReportController extends Zend_Controller_Action
 
         $start = $this->getRequest()->getParam('start');
         $length = $this->getRequest()->getParam('length');
-        $search = $this->getRequest()->getParam('search');        
+        $search = $this->getRequest()->getParam('search');
         $year = $this->getRequest()->getParam('year');
 
         $model = new Default_Model_PaymentTrainingOffline();
 
-        $dataIds = $model->loadListLawyerIdTrained($year); 
+        $dataIds = $model->loadListLawyerIdTrained($year);
 
-        $results = array(            
+        $results = array(
         );
         if($dataIds != null && sizeof($dataIds)>0){
             foreach($dataIds as $data){
@@ -1967,30 +1967,30 @@ class ReportController extends Zend_Controller_Action
 
         $data = $model->loadLawyerWithoutTrainingByFilter($start,$length,$results);
 
-        $resultsFinal = array(            
+        $resultsFinal = array(
         );
 
         $dateEmpty = '1900-01-01 00:00:00';
         if($data != null && sizeof($data)){
             $index = 0;
             foreach($data as $pay){
-                $index += 1;              
+                $index += 1;
                 array_push($resultsFinal,[
                 $index,
-                $pay['cus_firstname'].' '.$pay['cus_lastname'],                
+                $pay['cus_firstname'].' '.$pay['cus_lastname'],
                 ($pay['cus_birthday'] != null && $pay['cus_birthday'] != '' && $pay['cus_birthday'] != $dateEmpty) ? date("d/m/Y", strtotime($pay['cus_birthday'])) : '',
-                $pay['cus_identity_card'],       
-                $pay['law_joining_number'],           
+                $pay['cus_identity_card'],
+                $pay['law_joining_number'],
                 ($pay['createddate'] != null && $pay['createddate'] != '' && $pay['createddate'] != $dateEmpty) ? date("d/m/Y", strtotime($pay['createddate'])) : '',
-                $pay['cus_cellphone'],      
-                $pay['law_certfication_no'],         
+                $pay['cus_cellphone'],
+                $pay['law_certfication_no'],
                 ($pay['law_certification_createdate'] != null && $pay['law_certification_createdate'] != '' && $pay['law_certification_createdate'] != $dateEmpty) ? date("d/m/Y", strtotime($pay['law_certification_createdate'])) : '',
-                $pay['cus_lawyer_number'],                             
-                ($pay['cus_date_lawyer_number'] != null && $pay['cus_date_lawyer_number'] != '' && $pay['cus_date_lawyer_number'] != $dateEmpty) ? date("d/m/Y", strtotime($pay['cus_date_lawyer_number'])) : ''  
-                ]);              
+                $pay['cus_lawyer_number'],
+                ($pay['cus_date_lawyer_number'] != null && $pay['cus_date_lawyer_number'] != '' && $pay['cus_date_lawyer_number'] != $dateEmpty) ? date("d/m/Y", strtotime($pay['cus_date_lawyer_number'])) : ''
+                ]);
             }
         }
-        
+
         $totalrecords = $model->loadLawyerWithoutTrainingByFilterTotals($results);
 
         $json_data = array(
@@ -1999,21 +1999,21 @@ class ReportController extends Zend_Controller_Action
             "recordsFiltered" => intval($totalrecords),
             "data"            => $resultsFinal
         );
-     
+
         echo json_encode($json_data);
         exit;
     }
 
     public function reportlawyerwithouttrainingexcelAction(){
         $this->_helper->layout('layout')->disableLayout();
-          
+
         $year = $this->getRequest()->getParam('year');
 
         $model = new Default_Model_PaymentTrainingOffline();
 
-        $dataIds = $model->loadListLawyerIdTrained($year); 
+        $dataIds = $model->loadListLawyerIdTrained($year);
 
-        $results = array(            
+        $results = array(
         );
         if($dataIds != null && sizeof($dataIds)>0){
             foreach($dataIds as $data){
@@ -2023,42 +2023,42 @@ class ReportController extends Zend_Controller_Action
 
         $data = $model->loadLawyerWithoutTrainingByFilter('','',$results);
 
-        $resultsFinal = array(            
+        $resultsFinal = array(
         );
         if($data != null && sizeof($data)){
             $index = 0;
-            foreach($data as $pay){ 
-                $index += 1;                           
+            foreach($data as $pay){
+                $index += 1;
                 array_push($resultsFinal,[
                 $index,
-                $pay['cus_firstname'].' '.$pay['cus_lastname'],                
+                $pay['cus_firstname'].' '.$pay['cus_lastname'],
                 date("d/m/Y", strtotime($pay['cus_birthday'])),
-                $pay['cus_identity_card'],       
-                $pay['law_joining_number'],           
+                $pay['cus_identity_card'],
+                $pay['law_joining_number'],
                 date("d/m/Y", strtotime($pay['createddate'])),
-                $pay['cus_cellphone'],      
-                $pay['law_certfication_no'],         
+                $pay['cus_cellphone'],
+                $pay['law_certfication_no'],
                 date("d/m/Y", strtotime($pay['law_certification_createdate'])),
-                $pay['cus_lawyer_number'],                             
-                date("d/m/Y", strtotime($pay['law_code_createdate']))  
-                ]);                 
+                $pay['cus_lawyer_number'],
+                date("d/m/Y", strtotime($pay['law_code_createdate']))
+                ]);
             }
         }
 
         date_default_timezone_set('Asia/Ho_Chi_Minh');
-       
+
         $excel = new Default_Model_Excel();
-            
+
         $excel->setActiveSheetIndex(0);
-           
+
         $excel->getActiveSheet()->setTitle('LS không tham gia ĐTBD');
 
-            
+
         $excel->getActiveSheet()->getColumnDimension('A')->setWidth(20);
         $excel->getActiveSheet()->getColumnDimension('B')->setWidth(20);
         $excel->getActiveSheet()->getColumnDimension('C')->setWidth(30);
-       
-        $excel->getActiveSheet()->getStyle('A1:K1')->getFont()->setBold(true);    
+
+        $excel->getActiveSheet()->getStyle('A1:K1')->getFont()->setBold(true);
 
         $excel->getActiveSheet()->setCellValue('A1', 'STT');
         $excel->getActiveSheet()->setCellValue('B1', 'Họ Tên');
@@ -2074,7 +2074,7 @@ class ReportController extends Zend_Controller_Action
 
 
         $numRow = 2;
-        foreach($resultsFinal as $row){ 
+        foreach($resultsFinal as $row){
             $excel->getActiveSheet()->setCellValue('A'.$numRow, $row[0]);
             $excel->getActiveSheet()->setCellValue('B'.$numRow, $row[1]);
             $excel->getActiveSheet()->setCellValue('C'.$numRow, $row[2]);
@@ -2097,15 +2097,15 @@ class ReportController extends Zend_Controller_Action
                 ),
             ),
         );
-        
+
         $excel->getActiveSheet()->getStyle('A1:K'.$numRow)->applyFromArray($styleArray);
         foreach(range('A','K') as $columnID) {
             $excel->getActiveSheet()->getColumnDimension($columnID)
                 ->setAutoSize(true);
         }
-        
+
         //$excel->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
-       
+
         header('Content-type: application/vnd.ms-excel');
         header('Content-Disposition: attachment; filename="DS_LuatSu_KhongThamGiaDaoTao.xls"');
         PHPExcel_IOFactory::createWriter($excel, 'Excel2007')->save('php://output');
@@ -2115,28 +2115,28 @@ class ReportController extends Zend_Controller_Action
     // function load danh sách luật sư khen thưởng kỷ luật
     public function reportcustomersrewardtableAction(){
         $start = $this->getRequest()->getParam('start');
-        $length = $this->getRequest()->getParam('length');      
+        $length = $this->getRequest()->getParam('length');
         $year = $this->getRequest()->getParam('year');
 
         $model = new Default_Model_CustomersRewardDiscipline();
         $data = $model->loadCustomersRewardByFilter($start,$length,$year);
 
-        $results = array(            
+        $results = array(
         );
 
         if($data != null && sizeof($data)){
             $index = 0;
-            foreach($data as $pay){ 
+            foreach($data as $pay){
                 $index += 1;
-                
+
                 array_push($results,[
-                $index,    
-                $pay['people_problem'] != null ? $pay['people_problem'] : '' ,                    
+                $index,
+                $pay['people_problem'] != null ? $pay['people_problem'] : '' ,
                 ($pay['discipline_date'] != null && $pay['discipline_date'] != '' && $pay['discipline_date'] != '1900-01-01 00:00:00' ) ? date("d/m/Y", strtotime($pay['discipline_date'])) : '',
                 $pay['cus_firstname'].' '.$pay['cus_lastname'],
                 $pay['discipline_reason'] != null ? $pay['discipline_reason'] : '' ,
-                $pay['law_help'] != null ? $pay['law_help'] : ''   
-                ]);                 
+                $pay['law_help'] != null ? $pay['law_help'] : ''
+                ]);
             }
         }
 
@@ -2149,7 +2149,7 @@ class ReportController extends Zend_Controller_Action
             "recordsFiltered" => intval(count($totalrecords)),
             "data"            => $results
         );
-            
+
         echo json_encode($json_data);
         exit;
     }
@@ -2158,35 +2158,35 @@ class ReportController extends Zend_Controller_Action
 
     public function reportlawyerdebtAction(){
         $start = $this->getRequest()->getParam('start');
-        $length = $this->getRequest()->getParam('length');      
+        $length = $this->getRequest()->getParam('length');
         $year = $this->getRequest()->getParam('year');
 
         $model = new Default_Model_Lawyer();
-        $modelCustomer = new Default_Model_Customers();
+        $modelCustomer = new Default_Model_Customer();
         $data = $model->loadLawyerDebt($start,$length);
 
-        $results = array(            
+        $results = array(
         );
 
         $index = 0;
-        if($data != null && sizeof($data)){            
-            foreach($data as $pay){ 
+        if($data != null && sizeof($data)){
+            foreach($data as $pay){
                if($pay['cus_id'] != null){
                     $endmonth = $modelCustomer->getEndMonthByCusId($pay['cus_id']);
 
-                    if($endmonth != null && $endmonth != ''){                      
+                    if($endmonth != null && $endmonth != ''){
                         $index += 1;
                         array_push($results,[
-                            $pay['law_id'],    
+                            $pay['law_id'],
                             $pay['cus_firstname'].' '.$pay['cus_lastname'],
                             $pay['cus_lawyer_number'] != null ? $pay['cus_lawyer_number'] : '' ,
                             $pay['law_certfication_no'] != null ? $pay['law_certfication_no'] : '' ,
                             ($pay['law_certification_createdate'] != null && $pay['law_certification_createdate'] != '' && $pay['law_certification_createdate'] != '1900-01-01 00:00:00' ) ?
                             date("d/m/Y", strtotime($pay['law_certification_createdate'])) : '',
-                            $endmonth                 
-                        ]);                                       
+                            $endmonth
+                        ]);
                     }
-               }       
+               }
             }
         }
 
@@ -2199,7 +2199,7 @@ class ReportController extends Zend_Controller_Action
             "recordsFiltered" => intval(count($totalrecords)),
             "data"            => $results
         );
-            
+
         echo json_encode($json_data);
         exit;
     }
