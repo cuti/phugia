@@ -104,11 +104,6 @@ class Default_Model_Customer extends Zend_Db_Table_Abstract
         }
     }
 
-    function extractCustomerTypeName($customerType)
-    {
-        return $customerType['customer_type_name'];
-    }
-
     //**********************************************************************************************************************
 
     public function loadCustomersByIds($ids)

@@ -32,6 +32,14 @@
   margin-top: 42px;
 }
 
-.table th {
-  font-size: 11px;
+.dataTables_wrapper * {
+  font-size: 11px !important;
+}
+
+.dataTables_wrapper .dataTables_length select {
+  width: initial;
+}
+
+.dataTables_wrapper .dataTables_scroll {
+  overflow: auto;
 }

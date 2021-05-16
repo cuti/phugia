@@ -46,7 +46,7 @@ class CustomerController extends Zend_Controller_Action
             $data = array();
         }
 
-        echo json_encode(array('aaData' => $data));
+        echo json_encode(array('data' => $data));
         exit;
     }
 
