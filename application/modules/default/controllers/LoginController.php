@@ -35,7 +35,7 @@ class LoginController extends Zend_Controller_Action
                 $_SESSION['login'] = "good";
                 $_SESSION['config'] = $this->view->BaseUrl;
                 $_SESSION['username'] = $username;
-                $this->_redirect('index');
+                $this->_redirect('/index');
             } else {
                 $this->view->note = 'Username hoặc password không đúng.';
             }

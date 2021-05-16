@@ -1,0 +1,37 @@
+/* --------------------- Header --------------------- */
+
+#header {
+  z-index: unset;
+}
+
+#header .logo {
+  left: 17px;
+  height: 36px;
+  position: absolute;
+  top: 13px;
+  width: 36px;
+}
+
+#header .title {
+  color: #f5f5ec;
+  font-size: 24px;
+  left: 64px;
+  line-height: 62px;
+  position: absolute;
+}
+
+#sidebar>ul>li.active {
+  background-color: #139cbe;
+}
+
+#sidebar>ul>li a:active, #sidebar>ul>li a:focus, #sidebar>ul>li a:hover, #sidebar>ul>li a:visited {
+  text-decoration: none;
+}
+
+#content {
+  margin-top: 42px;
+}
+
+.table th {
+  font-size: 11px;
+}

@@ -20,28 +20,24 @@ class HeaderController extends Zend_Controller_Action
         $s = '';
 
         foreach ($data as $menu) {
-            $s .= '<li><a href="';
-
             if ($menu['menu_url'] != null) {
-                $s .= $rootUrl . '/' . $menu['menu_url'] . '" title="' . $menu['menu_name'];
-                $s .= '"><i class="icon icon-th-list"></i><span>' . $menu['menu_name'] . '</span></a>';
+                $s .= '<li><a href="' . $rootUrl . '/' . $menu['menu_url'] . '" title="' . $menu['menu_name'];
+                $s .= '"><i class="icon icon-th-list"></i> <span>' . $menu['menu_name'] . '</span></a></li>';
             } else {
                 $submenus = $menus->getSubMenuByUsernameAndParentId($username, $menu['menu_id']);
 
-                $s .= '#" title="' . $menu['menu_name'] . '"><i class="icon icon-th-list"></i><span>';
+                $s .= '<li class="submenu"> <a href="#" title="' . $menu['menu_name'] . '"><i class="icon icon-th-list"></i> <span>';
                 $s .= $menu['menu_name'] . '</span></a><ul>';
 
                 foreach ($submenus as $submenu) {
                     $s .= '<li><a class="' . count($submenus) . '" href="' . $rootUrl . '/' . $submenu['menu_url'] . '">';
-                    $s .= '<span>' . $submenu['menu_name'] . '</span></a></li>';
+                    $s .= $submenu['menu_name'] . '</a></li>';
                 }
 
-                $s .= '</ul>';
+                $s .= '</ul></li>';
 
                 unset($submenus);
             }
-
-            $s .= '</li>';
         }
 
         $this->view->menu = $data;

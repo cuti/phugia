@@ -2,11 +2,10 @@
 
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title><?php echo $this->escape($this->pageTitle); ?></title>
+    <title><?=$this->escape($this->pageTitle)?></title>
 
     <link rel="shortcut icon" href="<?=$this->BaseUrl?>/public/img/logo.png">
 
@@ -18,7 +17,8 @@
     <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/select2.css">
     <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/maruti-style.css" />
     <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/maruti-media.css" class="skin-color" />
-    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/maruti-override.css" />
+    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/jquery.dataTables_themeroller.css">
     <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/dataTables.checkboxes.css" />
     <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/bootstrap-4-polyfill.css" />
 
@@ -27,7 +27,6 @@
     <script src="<?=$this->BaseUrl?>/public/js/jquery.ui.custom.js"></script>
     <script src="<?=$this->BaseUrl?>/public/js/bootstrap.min.js"></script>
     <script src="<?=$this->BaseUrl?>/public/js/jquery.dataTables.min.js"></script>
-    <script src="<?=$this->BaseUrl?>/public/js/dataTables.checkboxes.min.js"></script>
 
     <style type="text/css">
         ::-webkit-scrollbar {
@@ -35,15 +34,16 @@
         }
 
         ::-webkit-scrollbar-track {
-            background: #f1f1f1;
+            background-color: #eee;
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #888;
+            background-color: #888;
+            border-radius: 4px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: #555;
+            background-color: #666;
         }
     </style>
 </head>
@@ -59,11 +59,21 @@
 
     <?=$this->action('index', 'header', $module)?>
 
-    <div id="content" class="bg-white p-2">
+    <div id="content">
         <?=$this->layout()->content?>
     </div>
 
     <?=$this->action('index', 'footer', $module)?>
+
+    <script>
+        const CONTENT_Y_PADDING = 26;
+        const headerHeight = $('#header').height();
+        const sideBarHeight = $(window).width() <= 970 ? 0 : $('#sidebar').height();
+        const footerHeight = $('#footer').outerHeight();
+
+        // Set content min height
+        $('#content').css('min-height', $(window).height() - headerHeight - sideBarHeight - CONTENT_Y_PADDING - footerHeight);
+    </script>
 
     <script src="<?=$this->BaseUrl?>/public/js/bootstrap-colorpicker.js"></script>
     <script src="<?=$this->BaseUrl?>/public/js/bootstrap-datepicker.js"></script>
@@ -71,7 +81,6 @@
     <script src="<?=$this->BaseUrl?>/public/js/select2.min.js"></script>
     <script src="<?=$this->BaseUrl?>/public/js/jquery.validate.js"></script>
     <script src="<?=$this->BaseUrl?>/public/js/maruti.js"></script>
-    <script src="<?=$this->BaseUrl?>/public/js/maruti.tables.js"></script>
 </body>
 
 </html>
