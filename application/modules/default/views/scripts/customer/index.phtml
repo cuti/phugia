@@ -1,12 +1,86 @@
-<div class="widget-box">
-  <div class="widget-title">
-    <span class="icon">
-      <i class="icon-th-list"></i>
-    </span>
-    <h5>Danh sách khách hàng</h5>
-  </div>
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="span12">
+      <div class="widget-box mt-0">
+        <div class="widget-title">
+          <span class="icon"><i class="icon-th-list"></i></span>
+          <h5>Danh sách khách hàng</h5>
+        </div>
 
-  <div class="widget-content">
-    abc
+        <div class="widget-content p-0">
+          <div class="table-toolbar p-2">
+            <a href="#createDlg" data-toggle="modal" class="btn btn-small btn-primary"><i class="icon-plus icon-white"></i> Thêm khách hàng</a>
+            <a href="#importDlg" data-toggle="modal" class="btn btn-small ml-1"><i class="icon-upload"></i> Import</a>
+          </div>
+
+          <table id="tblCustomer" class="table table-bordered table-striped data-table">
+            <thead>
+              <tr>
+                <th>Mã khách hàng</th>
+                <th>Tên khách hàng</th>
+                <th>Địa chỉ</th>
+                <th>Mã số thuế</th>
+                <th>Điện thoại</th>
+                <th>ĐT di động</th>
+                <!-- <th>Nhóm KH, NCC</th> -->
+                <th>Fax</th>
+                <th>Email</th>
+                <th>Website</th>
+                <th>Số CMND</th>
+                <th>Ngày cấp</th>
+                <th>Nơi cấp</th>
+                <th>Điều khoản TT</th>
+                <th>Số ngày được nợ</th>
+                <th>Số nợ tối đa</th>
+                <th>Nhân viên</th>
+                <th>Tên nhân viên</th>
+                <th>TK ngân hàng</th>
+                <th>Tên ngân hàng</th>
+                <th>Chi nhánh TK ngân hàng</th>
+                <th>Tỉnh/TP TK ngân hàng</th>
+                <th>Quốc gia</th>
+                <th>Tỉnh/TP</th>
+                <th>Quận/Huyện</th>
+                <th>Phường/Xã</th>
+                <th>Xưng hô</th>
+                <th>Người liên hệ</th>
+                <th>Chức danh</th>
+                <th>ĐT di động</th>
+                <th>ĐTDĐ khác</th>
+                <th>ĐT cố định</th>
+                <th>Email</th>
+                <th>Địa chỉ</th>
+                <th>Địa điểm giao hàng</th>
+                <th>Tổ chức/Cá nhân</th>
+                <th>Là nhà cung cấp</th>
+                <th>Ngừng theo dõi</th>
+                <th>Ngày tạo</th>
+                <th>Người tạo</th>
+                <th>Ngày sửa</th>
+                <th>Người sửa</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
+
+<!-- Import dialog -->
+<div id="importDlg" class="modal hide" aria-hidden="true" style="display: none;">
+  <div class="modal-header">
+    <button data-dismiss="modal" class="close" type="button">×</button>
+    <h3>Import Excel</h3>
+  </div>
+
+  <div class="modal-body">
+    <label class="control-label">Chọn file Excel</label>
+    <input type="file" name="importExcel" />
+  </div>
+</div>
+<!-- /Import dialog -->
+
+<script src="<?=$this->BaseUrl?>/public/js/customer.js"></script>

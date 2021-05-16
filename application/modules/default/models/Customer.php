@@ -5,7 +5,8 @@ class Default_Model_Customer extends Zend_Db_Table_Abstract
     protected $_name = 'customer';
     protected $_primary = 'cus_id';
 
-    public function loadCustomer() {
+    public function loadCustomer()
+    {
         $db = Zend_Db_Table::getDefaultAdapter();
         $select = new Zend_Db_Select($db);
         $customerFields = array(
@@ -50,7 +51,7 @@ class Default_Model_Customer extends Zend_Db_Table_Abstract
             'cus_created',
             'cus_created_by_user_id',
             'cus_last_updated',
-            'cus_last_updated_by_user_id'
+            'cus_last_updated_by_user_id',
         );
 
         $select->from(array('cus' => 'customer'), $customerFields)
@@ -64,7 +65,48 @@ class Default_Model_Customer extends Zend_Db_Table_Abstract
             ->joinLeft(array('um' => 'user'), 'cus.cus_last_updated_by_user_id = um.user_id', array('cus_last_updated_by_username' => 'user_username'))
             ->order('cus_code ASC');
 
-        return $db->fetchAll($select);
+        $customers = $db->fetchAll($select);
+
+        if (count($customers) > 0) {
+            $this->appendCustomerTypes($customers);
+        }
+
+        return $customers;
+    }
+
+    private function appendCustomerTypes(&$customers)
+    {
+        $db = Zend_Db_Table::getDefaultAdapter();
+        $customerCount = count($customers);
+
+        for ($i = 0; $i < $customerCount; $i++) {
+            $select = new Zend_Db_Select($db);
+            $select->from('customer__customer_type', array())
+                ->joinInner('customer_type', 'customer__customer_type.customer_type_id = customer_type.customer_type_id', array('customer_type_name'))
+                ->where('customer_id = ?', $customers[$i]['cus_id'])
+                ->order('customer_type_name ASC');
+
+            $customerTypes = $db->fetchAll($select);
+
+            if (count($customerTypes) > 0) {
+                $ct = array();
+
+                foreach ($customerTypes as $cusType) {
+                    array_push($ct, $cusType['customer_type_name']);
+                }
+
+                $ct = implode(', ', $ct);
+                $customers[$i]['cus_types'] = $ct;
+            }
+            else {
+                $customers[$i]['cus_types'] = '';
+            }
+        }
+    }
+
+    function extractCustomerTypeName($customerType)
+    {
+        return $customerType['customer_type_name'];
     }
 
     //**********************************************************************************************************************

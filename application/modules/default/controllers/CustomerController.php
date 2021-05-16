@@ -32,14 +32,21 @@ class CustomerController extends Zend_Controller_Action
 
     public function indexAction()
     {
-        $this->view->pageTitle = 'Khách Hàng';
+        $this->view->pageTitle = 'Quản Lý Khách Hàng';
     }
 
-    public function getAllAction() {
+    public function getAllAction()
+    {
         $this->_helper->layout()->disableLayout();
-        $customer = new Default_Model_Customer();
-        $data = $customer->loadCustomer();
-        echo json_encode($data);
+
+        if ($this->getRequest()->isGet()) {
+            $customer = new Default_Model_Customer();
+            $data = $customer->loadCustomer();
+        } else {
+            $data = array();
+        }
+
+        echo json_encode(array('aaData' => $data));
         exit;
     }
 
