@@ -20,6 +20,8 @@
   position: absolute;
 }
 
+/* --------------------- Sidebar --------------------- */
+
 #sidebar>ul>li.active {
   background-color: #139cbe;
 }
@@ -28,9 +30,13 @@
   text-decoration: none;
 }
 
+/* --------------------- Content --------------------- */
+
 #content {
   margin-top: 42px;
 }
+
+/* --------------------- DataTables --------------------- */
 
 .dataTables_wrapper * {
   font-size: 11px !important;
@@ -42,4 +48,34 @@
 
 .dataTables_wrapper .dataTables_scroll {
   overflow: auto;
+}
+
+/* --------------------- Modal --------------------- */
+
+.modal {
+  left: 20px;
+  margin-left: initial;
+  width: initial;
+}
+
+.modal.fade.in {
+  left: 20px;
+  top: 20px;
+}
+
+/* --------------------- TAGS --------------------- */
+
+body {
+  font-size: 12px;
+}
+
+input[type=text] {
+  box-sizing: border-box;
+  font-size: 12px;
+  height: initial;
+}
+
+label {
+  font-size: inherit;
+  font-weight: bold;
 }

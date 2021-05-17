@@ -33,6 +33,9 @@ class CustomerController extends Zend_Controller_Action
     public function indexAction()
     {
         $this->view->pageTitle = 'Quản Lý Khách Hàng';
+
+        $customerType = new Default_Model_CustomerType();
+        $this->view->customerTypes = $customerType->loadCustomerType();
     }
 
     public function getAllAction()

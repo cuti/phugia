@@ -9,7 +9,7 @@
 
         <div class="widget-content p-0">
           <div class="table-toolbar p-2">
-            <a href="#createDlg" data-toggle="modal" class="btn btn-small btn-primary"><i class="icon-plus icon-white"></i> Thêm khách hàng</a>
+            <a href="#detailDlg" data-toggle="modal" class="btn btn-small btn-primary"><i class="icon-plus icon-white"></i> Thêm khách hàng</a>
             <a href="#importDlg" data-toggle="modal" class="btn btn-small ml-1"><i class="icon-upload"></i> Import</a>
           </div>
 
@@ -65,8 +65,136 @@
   </div>
 </div>
 
+<!--------------------------------------------------------------------------------------->
+
+<!-- Detail dialog -->
+<div id="detailDlg" class="modal hide fade" aria-hidden="true" style="display: none;">
+  <div class="modal-header">
+    <button data-dismiss="modal" class="close" type="button">×</button>
+    <h3><i class="icon icon-th-list"></i> Thông Tin Chi Tiết Khách Hàng</h3>
+  </div>
+
+  <div class="modal-body p-0">
+    <div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span4">
+          <label>Mã khách hàng</label>
+          <input type="text" id="txtMaKH" class="w-100">
+        </div>
+        <div class="span4">
+          <label>Tên khách hàng</label>
+          <input type="text" id="txtTenKH" class="w-100">
+        </div>
+        <div class="span4">
+          <label>Địa chỉ</label>
+          <input type="text" id="txtDiaChi" class="w-100">
+        </div>
+      </div>
+      <div class="row-fluid">
+        <div class="span4">
+          <label>Mã số thuế</label>
+          <input type="text" id="txtMST" class="w-100">
+        </div>
+        <div class="span4">
+          <label>Điện thoại</label>
+          <input type="text" id="txtDienThoai" class="w-100">
+        </div>
+        <div class="span4">
+          <label>ĐT di động</label>
+          <input type="text" id="txtDiDong" class="w-100">
+        </div>
+      </div>
+      <div class="row-fluid">
+        <div class="span4">
+          <label>Nhóm KH, NCC</label>
+          <input type="text" autocomplete="off" class="select2-input" tabindex="0" style="width: 10px;">
+          <select multiple id="selNhomKH">
+            <?php
+              foreach ($this->customerTypes as $cusType) {
+                echo '<option value="' . $cusType['customer_type_name'] . '">' . $cusType['customer_type_name'] . '</option>';
+              }
+            ?>
+          </select>
+        </div>
+        <div class="span4">
+          <label></label>
+          <input type="text" id="txt" class="w-100">
+        </div>
+        <div class="span4">
+          <label></label>
+          <input type="text" id="txt" class="w-100">
+        </div>
+      </div>
+      <div class="row-fluid">
+        <div class="span4">
+          <label></label>
+          <input type="text" id="txt" class="w-100">
+        </div>
+        <div class="span4">
+          <label></label>
+          <input type="text" id="txt" class="w-100">
+        </div>
+        <div class="span4">
+          <label></label>
+          <input type="text" id="txt" class="w-100">
+        </div>
+      </div>
+      <div class="row-fluid">
+        <div class="span4">
+          <label></label>
+          <input type="text" id="txt" class="w-100">
+        </div>
+        <div class="span4">
+          <label></label>
+          <input type="text" id="txt" class="w-100">
+        </div>
+        <div class="span4">
+          <label></label>
+          <input type="text" id="txt" class="w-100">
+        </div>
+      </div>
+      <div class="row-fluid">
+        <div class="span4">
+          <label></label>
+          <input type="text" id="txt" class="w-100">
+        </div>
+        <div class="span4">
+          <label></label>
+          <input type="text" id="txt" class="w-100">
+        </div>
+        <div class="span4">
+          <label></label>
+          <input type="text" id="txt" class="w-100">
+        </div>
+      </div>
+      <div class="row-fluid">
+        <div class="span4">
+          <label></label>
+          <input type="text" id="txt" class="w-100">
+        </div>
+        <div class="span4">
+          <label></label>
+          <input type="text" id="txt" class="w-100">
+        </div>
+        <div class="span4">
+          <label></label>
+          <input type="text" id="txt" class="w-100">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer pr-4">
+    <a data-dismiss="modal" class="btn btn-small" href="#"><i class="icon-remove"></i> Đóng</a>
+    <a id="btnSaveCustomer" class="btn btn-small btn-primary" href="#"><i class="icon-ok icon-white"></i> Lưu</a>
+  </div>
+</div>
+<!-- /Detail dialog -->
+
+<!--------------------------------------------------------------------------------------->
+
 <!-- Import dialog -->
-<div id="importDlg" class="modal hide" aria-hidden="true" style="display: none;">
+<div id="importDlg" class="modal hide fade" aria-hidden="true" style="display: none;">
   <div class="modal-header">
     <button data-dismiss="modal" class="close" type="button">×</button>
     <h3>Import Excel</h3>

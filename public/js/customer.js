@@ -1,9 +1,13 @@
 (() => {
+  let customerList;
+
   function refreshDataTable() {
     $.ajax({
       url: 'customer/get-all',
       dataType: 'json',
       success: function (response) {
+        customerList = response.data;
+
         if (response.data.length > 0) {
           const d = response.data.map(c => ([
             c.cus_code,
@@ -57,14 +61,14 @@
   const tblCustomer = $('#tblCustomer').dataTable({
     'aoColumnDefs': [
       {
-        'aTargets': ['_all'], // [0, 21],
+        'aTargets': ['_all'],
         'bSortable': false,
         'sDefaultContent': '',
       },
-      {
-        'aTargets': [0, 21],
-        'bSearchable': false,
-      }
+      // {
+      //   'aTargets': [0, 21],
+      //   'bSearchable': false,
+      // }
     ],
 		'bJQueryUI': true,
 		'bRetrieve': true,
@@ -89,4 +93,8 @@
   });
 
   refreshDataTable();
+
+  $('#detailDlg').width($(window).width() - 40);
+
+  $('#selNhomKH').select2();
 })();
