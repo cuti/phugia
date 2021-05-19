@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 
 <html>
+
 <head>
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
@@ -9,78 +11,122 @@
 
     <link rel="shortcut icon" href="<?=$this->BaseUrl?>/public/img/logo.png">
 
-    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/bootstrap.min.css" />
-    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/bootstrap-responsive.min.css" />
-    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/fullcalendar.css" />
-    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/datepicker.css">
-    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/uniform.css">
-    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/select2.css">
-    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/maruti-style.css" />
-    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/maruti-media.css" class="skin-color" />
-    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/maruti-override.css" />
-    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/jquery.dataTables_themeroller.css">
-    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/dataTables.checkboxes.css" />
-    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/bootstrap-4-polyfill.css" />
+    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/nunito.css" />
+    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/sb-admin-2.min.css" />
+    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/sb-admin-2-override.css" />
+    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/vendor/data-tables/datatables.min.css" />
+    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/vendor/fontawesome-free/all.min.css" />
+    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/vendor/select2-4.0.13/select2.min.css" />
 
-    <script src="<?=$this->BaseUrl?>/library/ckeditor/ckeditor.js"></script>
-    <script src="<?=$this->BaseUrl?>/public/js/jquery.min.js"></script>
-    <script src="<?=$this->BaseUrl?>/public/js/jquery.ui.custom.js"></script>
-    <script src="<?=$this->BaseUrl?>/public/js/bootstrap.min.js"></script>
-    <script src="<?=$this->BaseUrl?>/public/js/jquery.dataTables.min.js"></script>
-    <script src="<?=$this->BaseUrl?>/public/js/select2.min.js"></script>
+    <script src="<?=$this->BaseUrl?>/public/vendor/jquery/jquery.min.js"></script>
+    <script src="<?=$this->BaseUrl?>/public/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="<?=$this->BaseUrl?>/public/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="<?=$this->BaseUrl?>/public/js/sb-admin-2.min.js"></script>
+    <script src="<?=$this->BaseUrl?>/public/vendor/data-tables/datatables.min.js"></script>
+    <script src="<?=$this->BaseUrl?>/public/vendor/select2-4.0.13/select2.min.js"></script>
 
-    <style type="text/css">
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background-color: #eee;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background-color: #888;
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background-color: #666;
-        }
-    </style>
 </head>
 
-<body>
+<body id="page-top">
+
     <?php
-        if (strpos($_SERVER['REQUEST_URI'], 'admin') > 0) {
+        if (strpos($_SERVER['REQUEST_URI'], $this->BaseUrl . '/admin') > 0) {
             $module = 'admin';
         } else {
             $module = 'default';
         }
     ?>
 
-    <?=$this->action('index', 'header', $module)?>
+    <!-- Page Wrapper -->
+    <div id="wrapper">
 
-    <div id="content">
-        <?=$this->layout()->content?>
+        <!-- Sidebar -->
+        <?=$this->action('index', 'sidebar', $module)?>
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav ml-auto">
+
+                        <div class="topbar-divider d-none d-sm-block"></div>
+
+                        <!-- Nav Item - User Information -->
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline"><?=$_SESSION['username']?></span>
+                                <i class="fas fa-user-circle"></i>
+                            </a>
+
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                    <i class="fas fa-sign-out-alt fa-fw mr-2"></i>
+                                    Thoát
+                                </a>
+                            </div>
+                        </li>
+
+                    </ul>
+
+                </nav>
+                <!-- End of Topbar -->
+
+                <!-- Page Content -->
+                <?=$this->layout()->content?>
+
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Developed by Sáng Tạo Company</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel">Bạn chắc chắn muốn thoát?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Không</button>
+                    <a class="btn btn-primary" href="<?=$this->BaseUrl?>/logout">Thoát</a>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <?=$this->action('index', 'footer', $module)?>
-
-    <script>
-        const CONTENT_Y_PADDING = 26;
-        const headerHeight = $('#header').height();
-        const sideBarHeight = $(window).width() <= 970 ? 0 : $('#sidebar').height();
-        const footerHeight = $('#footer').outerHeight();
-
-        // Set content min height
-        $('#content').css('min-height', $(window).height() - headerHeight - sideBarHeight - CONTENT_Y_PADDING - footerHeight);
-    </script>
-
-    <script src="<?=$this->BaseUrl?>/public/js/bootstrap-colorpicker.js"></script>
-    <script src="<?=$this->BaseUrl?>/public/js/bootstrap-datepicker.js"></script>
-    <script src="<?=$this->BaseUrl?>/public/js/jquery.uniform.js"></script>
-    <script src="<?=$this->BaseUrl?>/public/js/jquery.validate.js"></script>
-    <script src="<?=$this->BaseUrl?>/public/js/maruti.js"></script>
 </body>
 
 </html>
