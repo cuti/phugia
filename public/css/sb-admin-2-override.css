@@ -16,8 +16,23 @@ html {
 
 footer {
   box-shadow: 0 .15rem 1.75rem 0 rgba(58, 59, 69, .15)!important;
+  color: #6b6d7b;
+}
+
+footer.sticky-footer {
+  padding: 1rem 0;
 }
 
 footer.sticky-footer .copyright {
   font-size: 1rem;
+}
+
+@media (min-width: 768px) {
+  .sidebar .nav-item .nav-link span {
+    font-size: 0.9rem;
+  }
+
+  .sidebar.toggled .nav-item .nav-link span {
+    font-size: 0.85rem;
+  }
 }
