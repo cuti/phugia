@@ -94,7 +94,44 @@
 
   refreshDataTable();
 
-  $('#detailDlg').width($(window).width() - 40);
-
   $('#selNhomKH').select2();
+
+  $('#fileUpload').on('change', function () {
+    const file = this.files[0];
+
+    $('#importDlg-filename').text(file.name);
+    $('#importDlg').modal('show');
+  });
+
+  $('#importDlg').on('hidden.bs.modal', function () {
+    $('#fileUpload').val('');
+  });
+
+  $('#btnImportCustomer').click(() => {
+    const DELIMITER = 'base64,';
+    const file = $('#fileUpload').get(0).files[0];
+    const reader = new FileReader();
+
+    reader.onload = function () {
+      let result = reader.result;
+
+      result = result.substr(result.indexOf(DELIMITER) + DELIMITER.length);
+
+      $.ajax({
+        //contentType: 'application/json',
+        data: {
+          fileContent: result,
+          fileName: file.name,
+        },
+        url: 'customer/upload',
+        type: 'POST',
+        dataType: 'json',
+        success: function (res) {
+          console.log(res);
+        }
+      });
+    }
+
+    reader.readAsDataURL(file);
+  });
 })();

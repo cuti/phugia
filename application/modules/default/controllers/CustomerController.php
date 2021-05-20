@@ -53,6 +53,48 @@ class CustomerController extends Zend_Controller_Action
         exit;
     }
 
+    public function uploadAction()
+    {
+        $this->_helper->layout()->disableLayout();
+        $req = $this->getRequest();
+
+        if ($req->isXmlHttpRequest() && $req->isPost()) {
+            $content = base64_decode($req->getParam('fileContent'));
+            $fileNameWithExt = $req->getParam('fileName');
+            $fileName = substr($fileNameWithExt, 0, strrpos($fileNameWithExt, '.')) . rand(1000000000, 9999999999);
+            $fileExt = substr($fileNameWithExt, strrpos($fileNameWithExt, '.'));
+            $fileDir = ROOT_PATH . '/upload';
+
+            if (!is_dir($fileDir)) {
+                mkdir($fileDir);
+            }
+
+            $success = file_put_contents($fileDir . '/' . $fileName . $fileExt, $content);
+
+            if ($success) {
+
+    // IMPORT DATA HERE
+
+                $data = array(
+                    'status' => 1,
+                    'fileName' => $fileName . $fileExt,
+                );
+            }
+        } else {
+            $data = array('status' => 0);
+        }
+
+        echo json_encode(array('data' => $data));
+        exit;
+    }
+
+    private function currentUser()
+    {
+        $auth = Zend_Auth::getInstance();
+        $identity = $auth->getIdentity();
+        return $identity->user_username;
+    }
+
     //****************************************************************************************************** */
 
     public function updatecustomerssupportAction()

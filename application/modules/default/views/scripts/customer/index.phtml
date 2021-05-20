@@ -12,10 +12,12 @@
               <i class="fas fa-plus"></i>
               Thêm khách hàng
             </button>
-            <button type="button" data-target="#importDlg" data-toggle="modal" class="btn btn-light btn-outline-secondary ml-1">
+            <!-- <button type="button" data-target="#importDlg" data-toggle="modal" class="btn btn-light btn-outline-secondary ml-1"> -->
+            <label for="fileUpload" class="btn btn-light btn-outline-secondary ml-1 mb-0">
               <i class="fas fa-upload"></i>
-              Import
-            </button>
+              Import Excel
+              <input id="fileUpload" name="fileUpload" type="file" class="d-none" accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+            </label>
           </div>
 
           <table id="tblCustomer" class="table table-bordered table-striped data-table">
@@ -212,7 +214,7 @@
 
 <!-- Import dialog -->
 <div id="importDlg" class="modal" tabindex="-1">
-  <div class="modal-dialog modal-xl">
+  <div class="modal-dialog modal-sm">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Import Excel</h5>
@@ -222,8 +224,9 @@
       </div>
 
       <div class="modal-body">
-        <label class="control-label">Chọn file Excel</label>
-        <input type="file" name="importExcel" />
+        <p>Bạn đang import thông tin khách hàng từ tập tin <span id="importDlg-filename" class="font-weight-bold"></span>.</p>
+        <p>Hãy chắc chắn rằng nội dung tập tin được soạn đúng theo mẫu được cung cấp.</p>
+        <p>Tiếp tục import?</p>
       </div>
 
       <div class="modal-footer">
