@@ -8,11 +8,11 @@
 
         <div class="card-body">
           <div class="border-bottom mb-3 pb-3">
-            <button type="button" data-target="#detailDlg" data-toggle="modal" class="btn btn-primary">
+            <button type="button" id="btnThemKH" class="btn btn-primary">
               <i class="fas fa-plus"></i>
               Thêm khách hàng
             </button>
-            <!-- <button type="button" data-target="#importDlg" data-toggle="modal" class="btn btn-light btn-outline-secondary ml-1"> -->
+
             <label for="fileUpload" class="btn btn-light btn-outline-secondary ml-1 mb-0">
               <i class="fas fa-upload"></i>
               Import Excel
@@ -60,7 +60,7 @@
                 <th>Địa điểm giao hàng</th>
                 <th>Tổ chức/Cá nhân</th>
                 <th>Là nhà cung cấp</th>
-                <th>Trạng thái</th>
+                <th>Theo dõi</th>
               </tr>
             </thead>
             <tbody>
@@ -85,115 +85,222 @@
         </button>
       </div>
 
-      <div class="modal-body">
+      <div class="modal-body px-0">
         <div class="container-fluid">
           <div class="row">
-            <div class="span4">
-              <label>Mã khách hàng</label>
-              <input type="text" id="txtMaKH" class="w-100">
+            <div class="col-md-3">
+              <label class="mb-1">Mã khách hàng</label>
+              <input type="text" id="txtMaKH" class="form-control">
             </div>
-            <div class="span4">
-              <label>Tên khách hàng</label>
-              <input type="text" id="txtTenKH" class="w-100">
+            <div class="col-md-3">
+              <label class="mb-1">Tên khách hàng</label>
+              <input type="text" id="txtTenKH" class="form-control">
             </div>
-            <div class="span4">
-              <label>Địa chỉ</label>
-              <input type="text" id="txtDiaChi" class="w-100">
-            </div>
-          </div>
-          <div class="row">
-            <div class="span4">
-              <label>Mã số thuế</label>
-              <input type="text" id="txtMST" class="w-100">
-            </div>
-            <div class="span4">
-              <label>Điện thoại</label>
-              <input type="text" id="txtDienThoai" class="w-100">
-            </div>
-            <div class="span4">
-              <label>ĐT di động</label>
-              <input type="text" id="txtDiDong" class="w-100">
+            <div class="col-md-6">
+              <label class="mb-1">Địa chỉ</label>
+              <input type="text" id="txtDiaChi" class="form-control">
             </div>
           </div>
-          <div class="row">
-            <div class="span4">
-              <label>Nhóm KH, NCC</label>
-              <input type="text" autocomplete="off" class="select2-input" tabindex="0" style="width: 10px;">
-              <select multiple id="selNhomKH">
-                <?php
-                  foreach ($this->customerTypes as $cusType) {
-                    echo '<option value="' . $cusType['customer_type_name'] . '">' . $cusType['customer_type_name'] . '</option>';
-                  }
-                ?>
-              </select>
+
+          <div class="row mt-3">
+            <div class="col-md-6">
+              <label class="mb-1">Nhóm KH, NCC</label>
+              <select multiple id="selNhomKH"></select>
             </div>
-            <div class="span4">
-              <label></label>
-              <input type="text" id="txt" class="w-100">
+            <div class="col-md-3">
+            <label class="mb-1">Mã số thuế</label>
+              <input type="number" id="txtMST" class="form-control">
             </div>
-            <div class="span4">
-              <label></label>
-              <input type="text" id="txt" class="w-100">
+            <div class="col-md-3">
+              <label class="mb-1">Điện thoại</label>
+              <input type="text" id="txtDienThoai" class="form-control">
             </div>
           </div>
-          <div class="row">
-            <div class="span4">
-              <label></label>
-              <input type="text" id="txt" class="w-100">
+
+          <div class="row mt-3">
+            <div class="col-md-3">
+              <label class="mb-1">ĐT di động</label>
+              <input type="text" id="txtDiDong" class="form-control">
             </div>
-            <div class="span4">
-              <label></label>
-              <input type="text" id="txt" class="w-100">
+            <div class="col-md-3">
+              <label class="mb-1">Fax</label>
+              <input type="text" id="txtFax" class="form-control">
             </div>
-            <div class="span4">
-              <label></label>
-              <input type="text" id="txt" class="w-100">
+            <div class="col-md-3">
+              <label class="mb-1">Email</label>
+              <input type="email" id="txtEmail" class="form-control">
             </div>
-          </div>
-          <div class="row">
-            <div class="span4">
-              <label></label>
-              <input type="text" id="txt" class="w-100">
-            </div>
-            <div class="span4">
-              <label></label>
-              <input type="text" id="txt" class="w-100">
-            </div>
-            <div class="span4">
-              <label></label>
-              <input type="text" id="txt" class="w-100">
+            <div class="col-md-3">
+              <label class="mb-1">Website</label>
+              <input type="url" id="txtWebsite" class="form-control">
             </div>
           </div>
-          <div class="row">
-            <div class="span4">
-              <label></label>
-              <input type="text" id="txt" class="w-100">
+
+          <div class="row mt-3">
+            <div class="col-md-3">
+              <label class="mb-1">CMND / CCCD</label>
+              <input type="number" id="txtCMND" class="form-control">
             </div>
-            <div class="span4">
-              <label></label>
-              <input type="text" id="txt" class="w-100">
+            <div class="col-md-3">
+              <label class="mb-1">Ngày cấp</label>
+              <input id="dpNgayCap" class="form-control">
             </div>
-            <div class="span4">
-              <label></label>
-              <input type="text" id="txt" class="w-100">
+            <div class="col-md-3">
+              <label class="mb-1">Nơi cấp</label>
+              <input type="text" id="txtNoiCap" class="form-control">
             </div>
           </div>
-          <div class="row">
-            <div class="span4">
-              <label></label>
-              <input type="text" id="txt" class="w-100">
+
+          <div class="row mt-3">
+            <div class="col-md-6">
+              <label class="mb-1">Điều khoản TT</label>
+              <input type="text" id="txtDieuKhoanTT" class="form-control">
             </div>
-            <div class="span4">
-              <label></label>
-              <input type="text" id="txt" class="w-100">
+            <div class="col-md-3">
+              <label class="mb-1">Số ngày được nợ</label>
+              <input type="number" id="txtSoNgayDuocNo" class="form-control">
             </div>
-            <div class="span4">
-              <label></label>
-              <input type="text" id="txt" class="w-100">
+            <div class="col-md-3">
+              <label class="mb-1">Số nợ tối đa</label>
+              <input type="number" id="txtNoToiDa" class="form-control">
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-3">
+              <label class="mb-1">Nhân viên</label>
+              <input type="text" id="txtNhanVien" class="form-control">
+            </div>
+            <div class="col-md-3">
+              <label class="mb-1">Tên nhân viên</label>
+              <input type="text" id="txtTenNhanVien" class="form-control">
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-3">
+              <label class="mb-1">TK ngân hàng</label>
+              <input type="text" id="txtTKNH" class="form-control">
+            </div>
+            <div class="col-md-3">
+              <label class="mb-1">Tên ngân hàng</label>
+              <input type="text" id="txtTenNganHang" class="form-control">
+            </div>
+            <div class="col-md-3">
+              <label class="mb-1">Chi nhánh ngân hàng</label>
+              <input type="text" id="txtChiNhanhNH" class="form-control">
+            </div>
+            <div class="col-md-3">
+              <label class="mb-1">Tỉnh/TP TK ngân hàng</label>
+              <select id="selTinhTKNganHang"></select>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-3">
+              <label class="mb-1">Quốc gia</label>
+              <select id="selQuocGia"></select>
+            </div>
+            <div class="col-md-3">
+              <label class="mb-1">Tỉnh / TP</label>
+              <select id="selTinhTP"></select>
+            </div>
+            <div class="col-md-3">
+              <label class="mb-1">Quận/Huyện</label>
+              <select id="selQuan"></select>
+            </div>
+            <div class="col-md-3">
+              <label class="mb-1">Phường/Xã</label>
+              <select id="selPhuong"></select>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-3">
+              <label class="mb-1">Xưng hô</label>
+              <input type="text" id="txtXungHo" class="form-control">
+            </div>
+            <div class="col-md-3">
+              <label class="mb-1">Người liên hệ</label>
+              <input type="text" id="txtNguoiLienHe" class="form-control">
+            </div>
+            <div class="col-md-3">
+              <label class="mb-1">Chức danh</label>
+              <input type="text" id="txtChucDanh" class="form-control">
+            </div>
+            <div class="col-md-3">
+              <label class="mb-1">ĐT di động</label>
+              <input type="text" id="txtDTDiDong" class="form-control">
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-3">
+              <label class="mb-1">ĐTDĐ khác</label>
+              <input type="text" id="txtDTDDKhac" class="form-control">
+            </div>
+            <div class="col-md-3">
+              <label class="mb-1">ĐT cố định</label>
+              <input type="text" id="txtDTCoDinh" class="form-control">
+            </div>
+            <div class="col-md-3">
+              <label class="mb-1">Email</label>
+              <input type="text" id="txtEmailNguoiLienHe" class="form-control">
+            </div>
+            <div class="col-md-3">
+              <label class="mb-1">Địa chỉ</label>
+              <input type="text" id="txtDiaChiNguoiLienHe" class="form-control">
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-3">
+              <label class="mb-1">Địa điểm giao hàng</label>
+              <input type="text" id="txtDiaDiemGH" class="form-control">
+            </div>
+            <div class="col-md-3">
+              <label class="mb-1"> </label>
+              <div class="mt-2 pt-1">
+                <div class="form-check d-inline-block">
+                  <input class="form-check-input" type="radio" name="tochuc-canhan" id="radToChuc">
+                  <label class="form-check-label" for="radToChuc">
+                    Tổ chức
+                  </label>
+                </div>
+                <div class="form-check d-inline-block ml-3">
+                  <input class="form-check-input" type="radio" name="tochuc-canhan" id="radCaNhan">
+                  <label class="form-check-label" for="radCaNhan">
+                    Cá nhân
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <label class="mb-1"> </label>
+              <div class="mt-2 pt-1">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="chkNhaCC">
+                  <label class="form-check-label" for="chkNhaCC">
+                    Là nhà cung cấp
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <label class="mb-1"> </label>
+              <div class="mt-2 pt-1">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="chkNgungTheoDoi">
+                  <label class="form-check-label" for="chkNgungTheoDoi">
+                    Ngừng theo dõi
+                  </label>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
+      <!-- /modal-body -->
 
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">
@@ -214,7 +321,7 @@
 
 <!-- Import dialog -->
 <div id="importDlg" class="modal" tabindex="-1">
-  <div class="modal-dialog modal-sm">
+  <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Import Excel</h5>

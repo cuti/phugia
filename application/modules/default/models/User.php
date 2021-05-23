@@ -17,12 +17,6 @@ class Default_Model_User extends Zend_Db_Table_Abstract
     public function getUserByUsername($username)
     {
         $select = $this->select()->from($this)->where('user_username = ?', $username);
-        $row = $this->fetchRow($select);
-
-        if (!$row) {
-            return null;
-        }
-
-        return $row->toArray();
+        return $this->fetchRow($select);
     }
 }

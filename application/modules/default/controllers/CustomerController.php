@@ -1,5 +1,7 @@
 <?php
 
+require_once 'ExcelReaderWriter.php';
+
 class CustomerController extends Zend_Controller_Action
 {
     public function init()
@@ -33,9 +35,6 @@ class CustomerController extends Zend_Controller_Action
     public function indexAction()
     {
         $this->view->pageTitle = 'Quản Lý Khách Hàng';
-
-        $customerType = new Default_Model_CustomerType();
-        $this->view->customerTypes = $customerType->loadCustomerType();
     }
 
     public function getAllAction()
@@ -53,7 +52,7 @@ class CustomerController extends Zend_Controller_Action
         exit;
     }
 
-    public function uploadAction()
+    public function importAction()
     {
         $this->_helper->layout()->disableLayout();
         $req = $this->getRequest();
@@ -72,22 +71,61 @@ class CustomerController extends Zend_Controller_Action
             $success = file_put_contents($fileDir . '/' . $fileName . $fileExt, $content);
 
             if ($success) {
+                $fileData = ExcelReaderWriter::read($fileDir . '/' . $fileName . $fileExt, $fileExt);
 
-    // IMPORT DATA HERE
-
-                $data = array(
-                    'status' => 1,
-                    'fileName' => $fileName . $fileExt,
-                );
+                $customer = new Default_Model_Customer();
+                $result = $customer->importCustomer($fileData, $this->currentUser());
             }
         } else {
-            $data = array('status' => 0);
+            $result = array(
+                'message' => 'Invalid request',
+                'status' => -1,
+            );
         }
 
-        echo json_encode(array('data' => $data));
+        echo json_encode($result);
         exit;
     }
 
+    public function insertAction()
+    {
+        $this->_helper->layout()->disableLayout();
+        $req = $this->getRequest();
+
+        if ($req->isXmlHttpRequest() && $req->isPost()) {
+            $body = $req->getRawBody();
+            $data = json_decode($body);
+            $customer = json_decode(json_encode($data->customer), true);
+            $cusTypes = $data->customerTypes;
+
+            $customerModel = new Default_Model_Customer();
+            $result = $customerModel->insertCustomer($customer, $cusTypes, $this->currentUser());
+
+            if ($result === 'cus_code') {
+                $result = array(
+                    'message' => 'CUS_CODE_DUP',
+                    'status' => 0,
+                );
+            } else {
+                $result = array(
+                    'data' => $result,
+                    'status' => 1,
+                );
+            }
+        } else {
+            $result = array(
+                'message' => 'Invalid request',
+                'status' => 0,
+            );
+        }
+
+        echo json_encode($result);
+        exit;
+    }
+
+    /**
+     * Get current username
+     */
     private function currentUser()
     {
         $auth = Zend_Auth::getInstance();
@@ -95,7 +133,7 @@ class CustomerController extends Zend_Controller_Action
         return $identity->user_username;
     }
 
-    //****************************************************************************************************** */
+    /* ***************************************************************************************************** */
 
     public function updatecustomerssupportAction()
     {
