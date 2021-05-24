@@ -8,69 +8,23 @@
     theme: 'bootstrap4',
   };
 
-  let customerList;
+  let tblCustomer;
   let city;
   let district;
   let ward;
 
   function refreshDataTable() {
-    $.ajax({
-      url: 'customer/get-all',
-      dataType: 'json',
-      success: function (response) {
-        customerList = response.data;
-
-        if (response.data.length > 0) {
-          const d = response.data.map(c => ([
-            c.cus_code,
-            c.cus_name,
-            c.cus_address,
-            c.cus_tax_code,
-            c.cus_phone,
-            c.cus_mobile,
-            c.cus_types,
-            c.cus_fax,
-            c.cus_email,
-            c.cus_website,
-            c.cus_citizen_identity_card_number,
-            c.cus_citizen_identity_card_date,
-            c.cus_citizen_identity_card_issued_by,
-            c.cus_payment_terms,
-            c.cus_owed_days,
-            c.cus_max_owed,
-            c.cus_staff,
-            c.cus_staff_name,
-            c.cus_bank_account,
-            c.cus_bank_name,
-            c.cus_bank_branch_name,
-            c.cus_bank_city_name,
-            c.cus_country_name,
-            c.cus_city_name,
-            c.cus_district_name,
-            c.cus_ward_name,
-            c.cus_title,
-            c.cus_contact_person,
-            c.cus_contact_position,
-            c.cus_contact_mobile1,
-            c.cus_contact_mobile2,
-            c.cus_contact_phone,
-            c.cus_contact_email,
-            c.cus_contact_address,
-            c.cus_delivery_location,
-            c.cus_is_organization,
-            c.cus_is_supplier,
-            c.cus_active,
-          ]));
-
-          tblCustomer.fnClearTable();
-          tblCustomer.fnAddData(d);
-          tblCustomer.fnDraw();
-        }
-      }
-    });
+    tblCustomer.ajax.reload();
   }
 
-  refreshDataTable();
+  function phpDateToVnDate(ymd) {
+    const mDate = moment(ymd);
+    if (mDate.isValid()) {
+      return moment(ymd).format('DD/MM/YYYY');
+    }
+
+    return '';
+  }
 
   function clearSelect2(id) {
     $(`#${id}`).html('');
@@ -186,38 +140,300 @@
     $('#chkNgungTheoDoi').prop('checked', false);
   }
 
-  const tblCustomer = $('#tblCustomer').dataTable({
-    'aoColumnDefs': [
+  tblCustomer = $('#tblCustomer').DataTable({
+    ajax: {
+      url: 'customer/get-all',
+    },
+    columns: [
       {
-        'aTargets': ['_all'],
-        'bSortable': false,
-        'sDefaultContent': '',
+        data: 'cus_code',
+        responsivePriority: 1,
+        title: 'Mã khách hàng',
+        width: '100px',
+      },
+      {
+        data: 'cus_name',
+        responsivePriority: 1,
+        title: 'Tên khách hàng',
+        width: '100px',
+      },
+      {
+        data: 'cus_address',
+        responsivePriority: 1,
+        title: 'Địa chỉ',
+        width: '100px',
+      },
+      {
+        data: 'cus_phone',
+        responsivePriority: 1,
+        title: 'Điện thoại',
+        width: '100px',
+      },
+      {
+        data: 'cus_mobile',
+        responsivePriority: 1,
+        title: 'ĐT di động',
+        width: '100px',
+      },
+      {
+        data: 'cus_tax_code',
+        responsivePriority: 2,
+        title: 'Mã số thuế',
+        width: '100px',
+      },
+      {
+        data: 'cus_types',
+        responsivePriority: 2,
+        title: 'Nhóm KH, NCC',
+        width: '100px',
+      },
+      {
+        data: 'cus_fax',
+        responsivePriority: 2,
+        title: 'Fax',
+        width: '100px',
+      },
+      {
+        data: 'cus_email',
+        responsivePriority: 2,
+        title: 'Email',
+        width: '100px',
+      },
+      {
+        data: 'cus_website',
+        responsivePriority: 2,
+        title: 'Website',
+        width: '100px',
+      },
+      {
+        data: 'cus_citizen_identity_card_number',
+        responsivePriority: 2,
+        title: 'Số CMND',
+        width: '100px',
+      },
+      {
+        data: 'cus_citizen_identity_card_date',
+        render: data => phpDateToVnDate(data),
+        title: 'Ngày cấp',
+        responsivePriority: 2,
+        type: 'date',
+        width: '100px',
+      },
+      {
+        data: 'cus_citizen_identity_card_issued_by',
+        responsivePriority: 2,
+        title: 'Nơi cấp',
+        width: '100px',
+      },
+      {
+        data: 'cus_payment_terms',
+        responsivePriority: 2,
+        title: 'Điều khoản TT',
+        width: '100px',
+      },
+      {
+        data: 'cus_owed_days',
+        title: 'Số ngày được nợ',
+        responsivePriority: 2,
+        type: 'num',
+        width: '100px',
+      },
+      {
+        data: 'cus_max_owed',
+        render: $.fn.dataTable.render.number('.', ',', 0, '', ' đ'),
+        title: 'Số nợ tối đa',
+        responsivePriority: 2,
+        type: 'num',
+        width: '100px',
+      },
+      {
+        data: 'cus_staff',
+        responsivePriority: 2,
+        title: 'Nhân viên',
+        width: '100px',
+      },
+      {
+        data: 'cus_staff_name',
+        responsivePriority: 2,
+        title: 'Tên nhân viên',
+        width: '100px',
+      },
+      {
+        data: 'cus_bank_account',
+        responsivePriority: 2,
+        title: 'TK ngân hàng',
+        width: '100px',
+      },
+      {
+        data: 'cus_bank_name',
+        responsivePriority: 2,
+        title: 'Tên ngân hàng',
+        width: '100px',
+      },
+      {
+        data: 'cus_bank_branch_name',
+        responsivePriority: 2,
+        title: 'Chi nhánh TK ngân hàng',
+        width: '100px',
+      },
+      {
+        data: 'cus_bank_city_name',
+        responsivePriority: 2,
+        title: 'Tỉnh/TP TK ngân hàng',
+        width: '100px',
+      },
+      {
+        data: 'cus_country_name',
+        responsivePriority: 2,
+        title: 'Quốc gia',
+        width: '100px',
+      },
+      {
+        data: 'cus_city_name',
+        responsivePriority: 2,
+        title: 'Tỉnh/TP',
+        width: '100px',
+      },
+      {
+        data: 'cus_district_name',
+        responsivePriority: 2,
+        title: 'Quận/Huyện',
+        width: '100px',
+      },
+      {
+        data: 'cus_ward_name',
+        responsivePriority: 2,
+        title: 'Phường/Xã',
+        width: '100px',
+      },
+      {
+        data: 'cus_title',
+        responsivePriority: 2,
+        title: 'Xưng hô',
+        width: '100px',
+      },
+      {
+        data: 'cus_contact_person',
+        responsivePriority: 2,
+        title: 'Người liên hệ',
+        width: '100px',
+      },
+      {
+        data: 'cus_contact_position',
+        responsivePriority: 2,
+        title: 'Chức danh',
+        width: '100px',
+      },
+      {
+        data: 'cus_contact_mobile1',
+        responsivePriority: 2,
+        title: 'ĐT di động',
+        width: '100px',
+      },
+      {
+        data: 'cus_contact_mobile2',
+        responsivePriority: 2,
+        title: 'ĐTDĐ khác',
+        width: '100px',
+      },
+      {
+        data: 'cus_contact_phone',
+        responsivePriority: 2,
+        title: 'ĐT cố định',
+        width: '100px',
+      },
+      {
+        data: 'cus_contact_email',
+        responsivePriority: 2,
+        title: 'Email',
+        width: '100px',
+      },
+      {
+        data: 'cus_contact_address',
+        responsivePriority: 2,
+        title: 'Địa chỉ',
+        width: '100px',
+      },
+      {
+        data: 'cus_delivery_location',
+        responsivePriority: 2,
+        title: 'Địa điểm giao hàng',
+        width: '100px',
+      },
+      {
+        data: 'cus_is_organization',
+        render: data => {
+          let input = '<input type="checkbox" disabled';
+
+          if (data === '1') {
+            input += ' checked';
+          }
+
+          return input + '>';
+        },
+        title: 'Tổ chức/Cá nhân',
+        width: '100px',
+      },
+      {
+        data: 'cus_is_supplier',
+        render: data => {
+          let input = '<input type="checkbox" disabled';
+
+          if (data === '1') {
+            input += ' checked';
+          }
+
+          return input + '>';
+        },
+        title: 'Là nhà cung cấp',
+        width: '100px',
+      },
+      {
+        data: 'cus_active',
+        render: data => {
+          let input = '<input type="checkbox" disabled';
+
+          if (data === '1') {
+            input += ' checked';
+          }
+
+          return input + '>';
+        },
+        title: 'Theo dõi',
+        width: '100px',
+      },
+    ],
+    columnDefs: [
+      {
+        targets: ['_all'],
+        orderable: false,
+        defaultContent: '',
       },
       // {
-      //   'aTargets': [0, 21],
-      //   'bSearchable': false,
+      //   targets: [0, 21],
+      //   searchable: false,
       // }
     ],
-    'bJQueryUI': true,
-    'bRetrieve': true,
-    'oLanguage': {
-      'oPaginate': {
-        'sFirst': 'Đầu',
-        'sPrevious': 'Trước',
-        'sNext': 'Tiếp',
-        'sLast': 'Cuối'
+    language: {
+      emptyTable: 'Không có dữ liệu',
+      info: 'Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục',
+      infoEmpty: 'Đang xem 0 đến 0 trong tổng số 0 mục',
+      infoFiltered: '(được lọc từ _MAX_ mục)',
+      lengthMenu: 'Xem _MENU_ mục',
+      loadingRecords: 'Đang lấy dữ liệu...',
+      paginate: {
+        first: 'Đầu',
+        last: 'Cuối',
+        next: 'Tiếp',
+        previous: 'Trước',
       },
-      'sInfo': 'Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục',
-      'sInfoEmpty': 'Đang xem 0 đến 0 trong tổng số 0 mục',
-      'sInfoFiltered': '(được lọc từ _MAX_ mục)',
-      'sInfoPostFix': '',
-      'sLengthMenu': 'Xem _MENU_ mục',
-      'sProcessing': 'Đang xử lý...',
-      'sSearch': 'Tìm:',
-      'sZeroRecords': 'Không tìm thấy dòng nào phù hợp',
+      processing: 'Đang xử lý...',
+      search: 'Tìm ',
+      zeroRecords: 'Không tìm thấy dòng nào phù hợp',
     },
-    'sPaginationType': 'full_numbers',
-    'sScrollX': '100%',
+    pagingType: 'full_numbers',
+    // retrieve: true,
+    scrollX: true,
   });
 
   (function getCustomerTypes() {
