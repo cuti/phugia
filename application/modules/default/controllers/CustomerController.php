@@ -123,6 +123,43 @@ class CustomerController extends Zend_Controller_Action
         exit;
     }
 
+    public function updateAction()
+    {
+        $this->_helper->layout()->disableLayout();
+        $req = $this->getRequest();
+
+        if ($req->isXmlHttpRequest() && $req->isPost()) {
+            $body = $req->getRawBody();
+            $data = json_decode($body);
+            $customer = json_decode(json_encode($data->customer), true);
+            $cusId = $data->cusId;
+            $cusTypes = $data->customerTypes;
+
+            $customerModel = new Default_Model_Customer();
+            $result = $customerModel->updateCustomer($cusId, $customer, $cusTypes, $this->currentUser());
+
+            if ($result === 'cus_code') {
+                $result = array(
+                    'message' => 'CUS_CODE_DUP',
+                    'status' => 0,
+                );
+            } else {
+                $result = array(
+                    'data' => $result,
+                    'status' => 1,
+                );
+            }
+        } else {
+            $result = array(
+                'message' => 'Invalid request',
+                'status' => 0,
+            );
+        }
+
+        echo json_encode($result);
+        exit;
+    }
+
     /**
      * Get current username
      */
@@ -659,368 +696,6 @@ class CustomerController extends Zend_Controller_Action
                     );
 
                     $customer->update($data, 'cus_id = ' . (int) ($filter->filter($arrInput['cus_id'])));
-                }
-            }
-        }
-
-    }
-
-    /*update information of customer*/
-    public function updateAction()
-    {
-        $this->_helper->layout('layout')->disableLayout();
-        $this->auth = Zend_Auth::getInstance();
-        $this->identity = $this->auth->getIdentity();
-        $username = $this->identity->user_username;
-        $currentdate = new Zend_Date();
-        $filter = new Zend_Filter();
-        if ($this->getRequest()->isXmlHttpRequest()) {
-            if ($this->getRequest()->isPost()) {
-
-                $imagefile = '';
-                $attachmentfile = '';
-                $attachmentdiff = '';
-
-                //anh 3x4
-                if ($_FILES['image']['name'] != '') {
-                    //move_uploaded_file($_FILES['image']['tmp_name'], './files/upload/anh/'.$_FILES['image']['name']);
-                    $imagefile = $_FILES["image"]["name"];
-                }
-
-                // ly lich
-                if ($_FILES['attachment']['name'] != '') {
-                    // Upload file
-                    //move_uploaded_file($_FILES['attachment']['tmp_name'], './files/upload/ly-lich/'.$_FILES['attachment']['name']);
-                    $attachmentfile = $_FILES["attachment"]["name"];
-
-                }
-
-                if ($_FILES['attachment2']['name'] != '') {
-                    // Upload file
-                    //move_uploaded_file($_FILES['attachment']['tmp_name'], './files/upload/ly-lich/'.$_FILES['attachment']['name']);
-                    $attachmentdiff = $_FILES["attachment2"]["name"];
-
-                }
-
-                $arrInput = $this->_request->getParams();
-                $this->view->arrInput = $arrInput;
-                $customer = new Default_Model_Customer();
-
-                if (!Zend_Validate::is($arrInput['cus_id'], 'NotEmpty')) {
-                    $this->view->parError = 'Bạn phải chọn luật sư để cập nhật thông tin!';
-                }
-
-                if (Zend_Validate::is($arrInput['cus_email'], 'NotEmpty')) {
-                    // if($customer->validateIndentityCardOrPhoneOrEmail('email',
-                    //     $filter->filter($arrInput['cus_email'])) >0 ){
-                    //     $this->view->parError = 'Email đã tồn tại trong hệ thống!';
-                    // }
-                }
-
-                if (Zend_Validate::is($arrInput['cus_cellphone'], 'NotEmpty')) {
-                    if (Zend_Validate::is($arrInput['cus_cellphone_old'], 'NotEmpty')) {
-                        if ($filter->filter($arrInput['cus_cellphone']) != $filter->filter($arrInput['cus_cellphone_old'])) {
-                            if ($customer->validateIndentityCardOrPhoneOrEmail('phone',
-                                $filter->filter($arrInput['cus_cellphone'])) > 0) {
-                                $this->view->parError = 'Số điện thoại đã tồn tại trong hệ thống!';
-                            }
-                        }
-                    }
-
-                }
-
-                if (Zend_Validate::is($arrInput['cus_identity_card'], 'NotEmpty')) {
-                    if (Zend_Validate::is($arrInput['cus_identity_card_old'], 'NotEmpty')) {
-                        if ($filter->filter($arrInput['cus_identity_card']) != $filter->filter($arrInput['cus_identity_card_old'])) {
-                            if ($customer->validateIndentityCardOrPhoneOrEmail('ID',
-                                $filter->filter($arrInput['cus_identity_card'])) > 0) {
-                                $this->view->parError = 'Số CMND đã tồn tại trong hệ thống!';
-                            }
-                        }
-                    }
-                    // if($customer->validateIndentityCardOrPhoneOrEmail('ID',
-                    //     $filter->filter($arrInput['cus_identity_card'])) >0 ){
-                    //     $this->view->parError = 'Số CMND đã tồn tại trong hệ thống!';
-                    // }
-                }
-
-                /* covert date cmnd*/
-                // $cmnd = $filter->filter($arrInput['cus_identity_date']);
-                // $date_cmnd = str_replace('/', '-', $cmnd);
-                // $final_cmnd =  date('Y-m-d', strtotime($date_cmnd));
-
-                /* covert date birthday*/
-                $final_birthday = '';
-                if ($arrInput['cus_birthday'] != null && $arrInput['cus_birthday'] != '') {
-                    $birthday = $filter->filter($arrInput['cus_birthday']);
-                    $date_birthday = str_replace('/', '-', $birthday);
-                    $final_birthday = date('Y-m-d', strtotime($date_birthday));
-                }
-
-                $final_cmnd = '';
-                $cmnd = $filter->filter($arrInput['cus_identity_date']);
-                if ($cmnd != null && $cmnd != '') {
-                    $date_cmnd = str_replace('/', '-', $cmnd);
-                    $final_cmnd = date('Y-m-d', strtotime($date_cmnd));
-                }
-
-                /* covert date passport*/
-                // $passport = $filter->filter($arrInput['cus_passport_date']);
-                // $date_passport = str_replace('/', '-', $passport);
-                // $final_passport =  date('Y-m-d', strtotime($date_passport));
-                $gioitinh = 'Nam';
-                if ($filter->filter($arrInput['cus_sex']) == "nu") {
-                    $gioitinh = "Nữ";
-                }
-                if ($this->view->parError == '') {
-
-                    $data = array(
-                        'cus_firstname' => trim($filter->filter($arrInput['cus_firstname'])),
-                        'cus_lastname' => trim($filter->filter($arrInput['cus_lastname'])),
-                        'cus_identity_card' => trim($filter->filter($arrInput['cus_identity_card'])),
-                        'cus_cellphone' => trim($filter->filter($arrInput['cus_cellphone'])),
-                        // 'cus_homephone' => $filter->filter($arrInput['cus_homephone']),
-                        //'cus_identity_card' => $filter->filter($arrInput['cus_identity_card']),
-                        'cus_identity_place' => $filter->filter($arrInput['cus_identity_place']),
-                        'cus_identity_date' => $final_cmnd,
-                        'cus_birthday' => $final_birthday,
-                        // 'cus_passport_date' => $final_passport,
-                        'cus_sex' => $gioitinh,
-                        // 'cus_country' => $filter->filter($arrInput['cus_country']),
-                        'cus_nation' => $filter->filter($arrInput['cus_nation']),
-                        // 'cus_homephone' => $filter->filter($arrInput['cus_homephone']),
-                        // 'cus_passport_card' => $filter->filter($arrInput['cus_passport_card']),
-                        // 'cus_passport_place' => $filter->filter($arrInput['cus_passport_place']),
-                        'cus_address_resident' => $filter->filter($arrInput['cus_address_resident']),
-                        'cus_educations' => $filter->filter($arrInput['cus_educations']),
-                        //'cus_language_level' => $filter->filter($arrInput['cus_language_level']),
-                        'language_id' => $filter->filter($arrInput['language_id']),
-                        'city_id' => $filter->filter($arrInput['city_id']),
-                        //'cus_member' => $filter->filter($arrInput['cus_member']),
-                        'cus_fullname' => ($filter->filter($arrInput['cus_firstname']) . ' ' . $filter->filter($arrInput['cus_lastname'])),
-                        'cus_email' => $filter->filter($arrInput['cus_email']),
-                        //'cus_major' => $filter->filter($arrInput['cus_major']),
-                        'cus_address_resident_now' => $filter->filter($arrInput['cus_address_resident_now']),
-                        'cus_religion' => $filter->filter($arrInput['cus_religion']),
-                        'cus_nation' => $filter->filter($arrInput['cus_nation']),
-                        'cus_date_update' => $currentdate->toString('YYYY-MM-dd HH:mm:ss'),
-                        'cus_users_update' => $username,
-
-                    );
-                    //$this->view->data = $data;
-                    $customer->update($data, 'cus_id = ' . (int) ($filter->filter($arrInput['cus_id'])));
-
-                    $cmndluuhinh = $filter->filter($arrInput['cus_identity_card']);
-
-                    $this->view->imgupload = "files/upload/";
-
-                    $attachments = new Default_Model_Attachments();
-                    $dataattachments = $attachments->loadAttachmentsByCusId($arrInput['cus_id']);
-
-                    $existedLylich = false;
-                    $existedAnh = false;
-                    $existedDiff = false;
-                    if ($dataattachments != null && sizeof($dataattachments) > 0) {
-                        foreach ($dataattachments as $data) {
-                            if ($data['type'] == 'lylich') {
-                                if ($attachmentfile != '') {
-                                    $customernewid = $arrInput['cus_id'];
-                                    if ($data['attachment_name'] != null && $data['attachment_name'] != '') {
-                                        //unlink('./files/upload/ly-lich/' . $data['attachment_name']);
-                                        if (file_exists('./files/upload/ly-lich/' . $data['attachment_name'])) {
-                                            unlink('./files/upload/ly-lich/' . $data['attachment_name']);
-                                        }
-                                    }
-
-                                    // ly lich
-                                    if ($_FILES['attachment']['name'] != '') {
-                                        //$conDirApp = new Zend_Config_Ini('./application/configs/application.ini','dirApp');
-                                        //$conDirApp->attachIma;
-                                        // Upload file
-                                        //$folder = './files/upload/ly-lich/'.$customernewid.'/';
-                                        $folder = './files/upload/ly-lich/';
-                                        //if(!is_dir($folder)){
-                                        //    mkdir($folder);
-                                        //}else{
-                                        if (file_exists($folder . $_FILES['attachment']['name'])) {
-                                            //unlink('./files/upload/ly-lich/' . $data['attachment_name']);
-                                            unlink($folder . $_FILES['attachment']['name']);
-                                        }
-
-                                        //}
-                                        // Upload file
-                                        if (move_uploaded_file($_FILES['attachment']['tmp_name'], $folder . $_FILES['attachment']['name'])) {
-                                            //if(mime_content_type($folder.$_FILES['attachment']['name']) == 'application/pdf'){
-                                            $newName = $cmndluuhinh . '.pdf';
-                                            rename($folder . $_FILES['attachment']['name'], $folder . $newName);
-                                            $attachmentfile = $newName;
-
-                                            //}
-                                        }
-
-                                        //move_uploaded_file($_FILES['attachment']['tmp_name'], './files/upload/ly-lich/'.$_FILES['attachment']['name']);
-
-                                    }
-
-                                    $attachment = array(
-                                        'attachment_name' => $attachmentfile,
-                                    );
-                                    $attachments->update($attachment, 'attachment_id = ' . (int) ($data['attachment_id']));
-                                    $existedLylich = true;
-                                }
-                            } else if ($data['type'] == 'anh') {
-                                if ($imagefile != '') {
-                                    $customernewid = $arrInput['cus_id'];
-                                    if ($data['attachment_name'] != null && $data['attachment_name'] != '') {
-                                        //unlink('./files/upload/anh/' . $data['attachment_name']);
-                                        if (file_exists('./files/upload/anh/' . $data['attachment_name'])) {
-                                            unlink('./files/upload/anh/' . $data['attachment_name']);
-                                        }
-                                    }
-
-                                    // anh
-                                    if ($_FILES['image']['name'] != '') {
-                                        //$conDirApp = new Zend_Config_Ini('./application/configs/application.ini','dirApp');
-                                        //$conDirApp->attachIma;
-                                        //$customernewid = $arrInput['cus_id'];
-                                        // Upload file
-                                        //$folder = './files/upload/anh/'.$customernewid.'/';
-                                        $folder = './files/upload/anh/';
-                                        //if(!is_dir($folder)){
-                                        //    mkdir($folder);
-                                        //}else{
-                                        if (file_exists($folder . $_FILES['image']['name'])) {
-                                            //unlink('./files/upload/ly-lich/' . $data['attachment_name']);
-                                            unlink($folder . $_FILES['image']['name']);
-                                        }
-
-                                        //}
-                                        // Upload file
-                                        if (move_uploaded_file($_FILES['image']['tmp_name'], $folder . $_FILES['image']['name'])) {
-                                            //if(mime_content_type($folder.$_FILES['image']['name']) == 'image/jpeg'){
-                                            $newName = $cmndluuhinh . '_anh_1' . '.jpg';
-                                            rename($folder . $_FILES['image']['name'], $folder . $newName);
-                                            $imagefile = $newName;
-                                            // }else{
-                                            //     $newName = $cmndluuhinh.'_anh_1'.'.png';
-                                            //     rename($folder.$_FILES['image']['name'],$folder.$newName);
-                                            //     $imagefile =  $newName;
-                                            // }
-                                        }
-                                        //move_uploaded_file($_FILES['attachment']['tmp_name'], './files/upload/ly-lich/'.$_FILES['attachment']['name']);
-
-                                    }
-
-                                    $attachment = array(
-                                        'attachment_name' => $imagefile,
-                                    );
-                                    $attachments->update($attachment, 'attachment_id = ' . (int) ($data['attachment_id']));
-                                    $existedAnh = true;
-                                }
-                            } else if ($data['type'] == 'khac') {
-                                if ($attachmentdiff != '') {
-                                    //$customernewid = $arrInput['cus_id'];
-                                    if ($data['attachment_name'] != null && $data['attachment_name'] != '') {
-                                        //unlink('./files/upload/ly-lich/' . $data['attachment_name']);
-                                        if (file_exists('./files/upload/ly-lich-1/' . $data['attachment_name'])) {
-                                            unlink('./files/upload/ly-lich-1/' . $data['attachment_name']);
-                                        }
-                                    }
-
-                                    // ly lich
-                                    if ($_FILES['attachment2']['name'] != '') {
-                                        //$conDirApp = new Zend_Config_Ini('./application/configs/application.ini','dirApp');
-                                        //$conDirApp->attachIma;
-                                        // Upload file
-                                        $folder = './files/upload/ly-lich-1/';
-                                        //if(!is_dir($folder)){
-                                        //    mkdir($folder);
-                                        //}else{
-                                        if (file_exists($folder . $_FILES['attachment2']['name'])) {
-                                            //unlink('./files/upload/ly-lich/' . $data['attachment_name']);
-                                            unlink($folder . $_FILES['attachment2']['name']);
-                                        }
-
-                                        //}
-                                        // Upload file
-                                        if (move_uploaded_file($_FILES['attachment2']['tmp_name'], $folder . $_FILES['attachment2']['name'])) {
-                                            //if(mime_content_type($folder.$_FILES['attachment2']['name']) == 'application/pdf'){
-                                            $newName = $cmndluuhinh . '.pdf';
-                                            rename($folder . $_FILES['attachment2']['name'], $folder . $newName);
-                                            $attachmentdiff = $newName;
-
-                                            //}
-                                        }
-
-                                        //move_uploaded_file($_FILES['attachment']['tmp_name'], './files/upload/ly-lich/'.$_FILES['attachment']['name']);
-
-                                    }
-
-                                    $attachment = array(
-                                        'attachment_name' => $attachmentdiff,
-                                    );
-                                    $attachments->update($attachment, 'attachment_id = ' . (int) ($data['attachment_id']));
-                                    $existedDiff = true;
-                                }
-                            }
-                        }
-                    }
-
-                    if (!$existedLylich) {
-                        //create new attach for ly lich
-                        if ($attachmentfile != null && $attachmentfile != '') {
-                            $dataLylich = array(
-                                'attachment_name' => $attachmentfile,
-                                'cus_id' => $arrInput['cus_id'],
-                                'type' => 'lylich',
-                            );
-
-                            $attachments->insert($dataLylich);
-                        }
-                    }
-
-                    if (!$existedDiff) {
-                        //create new attach for ly lich
-                        if ($attachmentdiff != null && $attachmentdiff != '') {
-                            $dataLylich = array(
-                                'attachment_name' => $attachmentdiff,
-                                'cus_id' => $arrInput['cus_id'],
-                                'type' => 'khac',
-                            );
-
-                            $attachments->insert($dataLylich);
-                        }
-                    }
-
-                    if (!$existedAnh) {
-                        //create new attach for anh
-                        if ($imagefile != null && $imagefile != '') {
-                            $dataAnh = array(
-                                'attachment_name' => $imagefile,
-                                'cus_id' => $arrInput['cus_id'],
-                                'type' => 'anh',
-                            );
-
-                            $attachments->insert($dataAnh);
-                        }
-                    }
-
-                    /*insert log action*/
-                    $this->auth = Zend_Auth::getInstance();
-                    $this->identity = $this->auth->getIdentity();
-                    $currentdate = new Zend_Date();
-                    $useradminlog = new Default_Model_UserAdminLog();
-                    $datalog = array(
-                        'ip' => $this->getRequest()->getServer('REMOTE_ADDR'),
-                        'useradmin_username' => $this->identity->user_username,
-                        'action' => 'Cập nhật thông tin luật sư',
-                        'page' => $this->_request->getControllerName(),
-                        'useradmin_id' => $this->identity->user_id,
-                        'createddate' => $currentdate->toString('YYYY-MM-dd HH:mm:ss'),
-                        'access_object' => $filter->filter($arrInput['cus_id']),
-                    );
-                    $useradminlog->insert($datalog);
-
                 }
             }
         }

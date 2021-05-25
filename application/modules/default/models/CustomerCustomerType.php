@@ -14,4 +14,9 @@ class Default_Model_CustomerCustomerType extends Zend_Db_Table_Abstract
 
         return $this->insert($row);
     }
+
+    public function deleteByCusId($cusId)
+    {
+        return $this->delete('customer_id = ' . $cusId);
+    }
 }

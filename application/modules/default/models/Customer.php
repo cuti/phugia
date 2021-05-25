@@ -253,6 +253,47 @@ class Default_Model_Customer extends Zend_Db_Table_Abstract
         }
     }
 
+    /**
+     * Update customer information.
+     *
+     * @param  array $data              Data row.
+     * @param  array $customerTypes     Customer type ids.
+     * @param  string $username         Current username.
+     * @return bool                     Update result.
+     */
+    public function updateCustomer($cusId, $data, $customerTypes, $username)
+    {
+        try {
+            if (!$this->isCustomerExists($data['cus_code'], $cusId)) {
+                $user = new Default_Model_User();
+                $userObj = $user->getUserByUsername($username);
+
+                if ($userObj) {
+                    $userId = $userObj['user_id'];
+                }
+
+                $data['cus_last_updated'] = date('Y-m-d H:i:s');
+                $data['cus_last_updated_by_user_id'] = $userId;
+                $affectedCount = $this->update($data, 'cus_id = ' . $cusId);
+
+                $cusCustomerType = new Default_Model_CustomerCustomerType();
+                $cusCustomerType->deleteByCusId($cusId);
+
+                if (count($customerTypes) > 0) {
+                    foreach ($customerTypes as $cusTypeId) {
+                        $cusCustomerType->insertNew($cusId, $cusTypeId);
+                    }
+                }
+
+                return $affectedCount;
+            } else {
+                return 'cus_code';
+            }
+        } catch (Exception $err) {
+            throw $err;
+        }
+    }
+
     // --------------- PRIVATE FUNCTIONS ---------------
 
     private function appendCustomerTypes(&$customers)
@@ -262,7 +303,7 @@ class Default_Model_Customer extends Zend_Db_Table_Abstract
 
         for ($i = 0; $i < $customerCount; $i++) {
             $select = new Zend_Db_Select($db);
-            $select->from('customer__customer_type', array())
+            $select->from('customer__customer_type', array('customer_type_id'))
                 ->joinInner('customer_type', 'customer__customer_type.customer_type_id = customer_type.customer_type_id', array('customer_type_name'))
                 ->where('customer_id = ?', $customers[$i]['cus_id'])
                 ->order('customer_type_name ASC');
@@ -271,22 +312,36 @@ class Default_Model_Customer extends Zend_Db_Table_Abstract
 
             if (count($customerTypes) > 0) {
                 $ct = array();
+                $ctIds = array();
 
                 foreach ($customerTypes as $cusType) {
                     array_push($ct, $cusType['customer_type_name']);
+                    array_push($ctIds, $cusType['customer_type_id']);
                 }
 
                 $ct = implode(', ', $ct);
+                $ctIds = implode(',', $ctIds);
+
                 $customers[$i]['cus_types'] = $ct;
+                $customers[$i]['cus_type_ids'] = $ctIds;
             } else {
                 $customers[$i]['cus_types'] = '';
+                $customers[$i]['cus_type_ids'] = '';
             }
         }
     }
 
-    private function isCustomerExists($customerCode)
+    private function isCustomerExists($customerCode, $customerId = null)
     {
-        $select = $this->select()->from('customer', array('cus_id'))->where('UPPER(cus_code) = UPPER(?)', $customerCode);
+        if ($customerId === null) {
+            $select = $this->select()->from('customer', array('cus_id'))->where('UPPER(cus_code) = UPPER(?)', $customerCode);
+        } else {
+            $select = $this->select()
+                ->from('customer', array('cus_id'))
+                ->where('UPPER(cus_code) = UPPER(?)', $customerCode)
+                ->where('cus_id <> ?', $customerId);
+        }
+
         $result = $this->fetchAll($select);
 
         return count($result) > 0;
