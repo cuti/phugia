@@ -256,6 +256,7 @@ class Default_Model_Customer extends Zend_Db_Table_Abstract
     /**
      * Update customer information.
      *
+     * @param  string $cusId            Customer id.
      * @param  array $data              Data row.
      * @param  array $customerTypes     Customer type ids.
      * @param  string $username         Current username.
@@ -289,6 +290,34 @@ class Default_Model_Customer extends Zend_Db_Table_Abstract
             } else {
                 return 'cus_code';
             }
+        } catch (Exception $err) {
+            throw $err;
+        }
+    }
+
+    /**
+     * Delete customer.
+     *
+     * @param  string $cusId            Customer id.
+     * @param  string $username         Current username.
+     * @return bool                     Update result.
+     */
+    public function deleteCustomer($cusId, $username)
+    {
+        try {
+            $user = new Default_Model_User();
+            $userObj = $user->getUserByUsername($username);
+
+            if ($userObj) {
+                $userId = $userObj['user_id'];
+            }
+
+            // Also delete data in CUSTOMER__CUSTOMER_TYPE b/c of delete cascade
+            $affectedCount = $this->delete('cus_id = ' . $cusId);
+
+            // TODO: Log delete
+
+            return $affectedCount;
         } catch (Exception $err) {
             throw $err;
         }

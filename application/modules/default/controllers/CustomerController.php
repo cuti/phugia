@@ -160,6 +160,36 @@ class CustomerController extends Zend_Controller_Action
         exit;
     }
 
+    public function deleteAction()
+    {
+        $this->_helper->layout()->disableLayout();
+        $req = $this->getRequest();
+
+        if ($req->isXmlHttpRequest() && $req->isPost()) {
+            $body = $req->getRawBody();
+            $data = json_decode($body);
+            $cusId = $data->cusId;
+
+            $customerModel = new Default_Model_Customer();
+            $result = $customerModel->deleteCustomer($cusId, $this->currentUser());
+
+            $result = array(
+                'data' => $result,
+                'status' => 1,
+            );
+        } else {
+            $result = array(
+                'message' => 'Invalid request',
+                'status' => 0,
+            );
+        }
+
+        echo json_encode($result);
+        exit;
+    }
+
+    // --------------- PRIVATE FUNCTIONS ---------------
+
     /**
      * Get current username
      */

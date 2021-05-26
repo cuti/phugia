@@ -954,4 +954,10 @@
     setDataDetailDlg(data);
     $('#detailDlg').modal('show');
   });
+
+  $('body').on('click', '.btn-delete', e => {
+    const data = tblCustomer.row($(e.target).closest('tr')).data();
+
+    // TODO: Confirm delete
+  });
 })();
