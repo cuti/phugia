@@ -166,17 +166,26 @@ class CustomerController extends Zend_Controller_Action
         $req = $this->getRequest();
 
         if ($req->isXmlHttpRequest() && $req->isPost()) {
-            $body = $req->getRawBody();
-            $data = json_decode($body);
-            $cusId = $data->cusId;
+            try {
+                $body = $req->getRawBody();
+                $data = json_decode($body);
+                $cusId = $data->cusId;
+                $cusCode = $data->cusCode;
+                $cusName = $data->cusName;
 
-            $customerModel = new Default_Model_Customer();
-            $result = $customerModel->deleteCustomer($cusId, $this->currentUser());
+                $customerModel = new Default_Model_Customer();
+                $result = $customerModel->deleteCustomer($cusId, $cusCode, $cusName, $this->currentUser());
 
-            $result = array(
-                'data' => $result,
-                'status' => 1,
-            );
+                $result = array(
+                    'data' => $result,
+                    'status' => 1,
+                );
+            } catch (Exception $err) {
+                $result = array(
+                    'message' => 'Delete failed',
+                    'status' => 0,
+                );
+            }
         } else {
             $result = array(
                 'message' => 'Invalid request',

@@ -62,6 +62,7 @@ class Default_Model_Customer extends Zend_Db_Table_Abstract
             ->joinLeft('ward', 'cus.cus_ward_id = ward.ward_id', array('cus_ward_name' => 'ward_name'))
             ->joinLeft(array('uc' => 'user'), 'cus.cus_created_by_user_id = uc.user_id', array('cus_created_by_username' => 'user_username'))
             ->joinLeft(array('um' => 'user'), 'cus.cus_last_updated_by_user_id = um.user_id', array('cus_last_updated_by_username' => 'user_username'))
+            ->where('cus_deleted = 0')
             ->order('cus_code ASC');
 
         $customers = $db->fetchAll($select);
@@ -169,6 +170,7 @@ class Default_Model_Customer extends Zend_Db_Table_Abstract
                         'cus_active' => !$data[$i][37],
                         'cus_created' => date('Y-m-d H:i:s'),
                         'cus_created_by_user_id' => $userId,
+                        'cus_deleted' => 0,
                     );
 
                     $cus_id = $this->insert($importRow);
@@ -234,6 +236,7 @@ class Default_Model_Customer extends Zend_Db_Table_Abstract
 
                 $data['cus_created'] = date('Y-m-d H:i:s');
                 $data['cus_created_by_user_id'] = $userId;
+                $data['cus_deleted'] = 0;
                 $cus_id = $this->insert($data);
 
                 if (count($customerTypes) > 0) {
@@ -298,11 +301,13 @@ class Default_Model_Customer extends Zend_Db_Table_Abstract
     /**
      * Delete customer.
      *
-     * @param  string $cusId            Customer id.
-     * @param  string $username         Current username.
-     * @return bool                     Update result.
+     * @param  string $cusId      Customer id.
+     * @param  string $cusCode    Customer code.
+     * @param  string $cusName    Customer name.
+     * @param  string $username   Current username.
+     * @return int                The number of rows deleted.
      */
-    public function deleteCustomer($cusId, $username)
+    public function deleteCustomer($cusId, $cusCode, $cusName, $username)
     {
         try {
             $user = new Default_Model_User();
@@ -313,9 +318,19 @@ class Default_Model_Customer extends Zend_Db_Table_Abstract
             }
 
             // Also delete data in CUSTOMER__CUSTOMER_TYPE b/c of delete cascade
-            $affectedCount = $this->delete('cus_id = ' . $cusId);
+            $affectedCount = $this->update(
+                array(
+                    'cus_deleted' => 1
+                ),
+                array(
+                    'cus_id = ' . $cusId,
+                    "cus_code = '" . $cusCode . "'",
+                    "cus_name = N'" . $cusName . "'",
+                )
+            );
 
-            // TODO: Log delete
+            $logger = new Default_Model_LogOperation();
+            $logger->writeLog('Xóa khách hàng (Mã KH: ' . $cusCode . ', Tên KH: ' . $cusName, $username);
 
             return $affectedCount;
         } catch (Exception $err) {

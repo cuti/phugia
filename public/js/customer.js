@@ -96,6 +96,23 @@
     });
   }
 
+  function confirmDeleteCustomer(cusName) {
+    return Swal.fire({
+      cancelButtonText: 'Hủy',
+      confirmButtonText: 'Xóa',
+      customClass: {
+        confirmButton: 'bg-danger text-white',
+        icon: 'border-danger text-danger',
+      },
+      html: `Vui lòng xác nhận bạn muốn xóa khách hàng<br><strong>${cusName}</strong>`,
+      icon: 'warning',
+      reverseButtons: true,
+      showCancelButton: true,
+      title: 'Xóa khách hàng?',
+      width: '500px',
+    });
+  }
+
   function clearDetailDlg() {
     $('#hidCusId').val('');
     $('#txtMaKH').val('');
@@ -957,7 +974,30 @@
 
   $('body').on('click', '.btn-delete', e => {
     const data = tblCustomer.row($(e.target).closest('tr')).data();
+    const { cus_id, cus_code, cus_name } = data;
 
-    // TODO: Confirm delete
+    confirmDeleteCustomer(data.cus_name).then(result => {
+      if (result.isConfirmed) {
+        $.ajax({
+          data: JSON.stringify({
+            cusId: cus_id,
+            cusCode: cus_code,
+            cusName: cus_name,
+          }),
+          contentType: 'application/json',
+          url: 'customer/delete',
+          type: 'POST',
+          dataType: 'json',
+          success: function (res) {
+            if (res.status === 1) {
+              showSuccessToast('Xóa khách hàng thành công.', 5000, '300px');
+              tblCustomer.ajax.reload();
+            } else {
+              showErrorToast('Lỗi, không xóa được khách hàng.', '300px');
+            }
+          }
+        });
+      }
+    });
   });
 })();
