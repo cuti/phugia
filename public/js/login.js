@@ -1,26 +1,26 @@
-$(function () {
+(() => {
     $('input[name=username]').focus();
 
     if ($('#lblNote').text()) {
-        $('#lblNote').closest('.control-group').addClass('d-block').removeClass('d-none');
+        $('#lblNote').parent().removeClass('d-none');
 
         setTimeout(() => {
-            $('#lblNote').text('').closest('.control-group').addClass('d-none').removeClass('d-block');
+            $('#lblNote').text('').parent().addClass('d-none');
         }, 5000);
     }
 
-    $('#loginform').submit(function (e) {
+    $('form').submit(function (e) {
         const username = $('input[name=username]').val().trim();
         const pass = $('input[name=password]').val();
 
         if (username === '' || pass === '') {
             e.preventDefault();
 
-            $('#lblNote').text('Chưa nhập tài khoản hoặc mật khẩu.').closest('.control-group').addClass('d-block').removeClass('d-none');
+            $('#lblNote').text('Chưa nhập tài khoản hoặc mật khẩu.').parent().removeClass('d-none');
 
             setTimeout(() => {
-                $('#lblNote').text('').closest('.control-group').addClass('d-none').removeClass('d-block');
+                $('#lblNote').text('').parent().addClass('d-none');
             }, 3000);
         }
     });
-});
+})();
