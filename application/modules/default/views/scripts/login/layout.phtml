@@ -17,12 +17,13 @@
     <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/vendor/fontawesome-free/all.min.css" />
 
     <style type="text/css">
-        .login-box {
-            width: 360px;
+        .card {
+            margin-top: 80px;
+            width: 700px;
         }
 
-        .card {
-            margin-top: 100px;
+        .card-body>div:first-of-type {
+            border-right: 1px solid #afbce4;
         }
 
         .input-group-text {
@@ -48,11 +49,14 @@
     <div class="container">
         <!-- Outer Row -->
         <div class="row justify-content-center">
-            <div class="login-box">
-                <div class="card o-hidden border-0 shadow-lg">
-                    <div class="card-body p-5">
+            <div class="card border-0 shadow-lg">
+                <div class="card-body d-flex py-4">
+                    <div class="px-4 py-5 w-50">
+                        <img src="<?=$this->BaseUrl?>/public/images/medical-items.jpg" alt="" class="w-100">
+                    </div>
+                    <div class="px-4 py-5 w-50">
                         <div class="text-center">
-                            <h1 class="h4 text-gray-900 mb-4">ĐĂNG NHẬP</h1>
+                            <h1 class="h4 text-gray-900 mb-3">ĐĂNG NHẬP</h1>
                         </div>
                         <?=$this->layout()->content?>
                     </div>

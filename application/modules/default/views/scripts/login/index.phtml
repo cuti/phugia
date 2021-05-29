@@ -23,12 +23,14 @@
       value="1">
   </div>
 
-  <div class="form-group d-none text-danger">
-    <div id="lblNote"><?=$this->note?></div>
+  <div class="form-group">
+    <button type="submit" class="btn btn-primary btn-user btn-block">
+      <i class="fas fa-sign-in-alt"></i>
+      Đăng nhập
+    </button>
   </div>
 
-  <button type="submit" class="btn btn-primary btn-user btn-block">
-    <i class="fas fa-sign-in-alt"></i>
-    Đăng nhập
-  </button>
+  <div id="lblNote" class="form-group invisible text-danger">
+    &nbsp;<?=$this->note?>
+  </div>
 </form>

@@ -2,10 +2,10 @@
     $('input[name=username]').focus();
 
     if ($('#lblNote').text()) {
-        $('#lblNote').parent().removeClass('d-none');
+        $('#lblNote').removeClass('invisible');
 
         setTimeout(() => {
-            $('#lblNote').text('').parent().addClass('d-none');
+            $('#lblNote').text('&nbsp;').addClass('invisible');
         }, 5000);
     }
 
@@ -16,10 +16,10 @@
         if (username === '' || pass === '') {
             e.preventDefault();
 
-            $('#lblNote').text('Chưa nhập tài khoản hoặc mật khẩu.').parent().removeClass('d-none');
+            $('#lblNote').text('Chưa nhập tài khoản hoặc mật khẩu.').removeClass('invisible');
 
             setTimeout(() => {
-                $('#lblNote').text('').parent().addClass('d-none');
+                $('#lblNote').text('&nbsp;').addClass('invisible');
             }, 3000);
         }
     });
