@@ -378,12 +378,16 @@ class Default_Model_Customer extends Zend_Db_Table_Abstract
     private function isCustomerExists($customerCode, $customerId = null)
     {
         if ($customerId === null) {
-            $select = $this->select()->from('customer', array('cus_id'))->where('UPPER(cus_code) = UPPER(?)', $customerCode);
+            $select = $this->select()
+                ->from('customer', array('cus_id'))
+                ->where('UPPER(cus_code) = UPPER(?)', $customerCode)
+                ->where('cus_deleted = 0');
         } else {
             $select = $this->select()
                 ->from('customer', array('cus_id'))
                 ->where('UPPER(cus_code) = UPPER(?)', $customerCode)
-                ->where('cus_id <> ?', $customerId);
+                ->where('cus_id <> ?', $customerId)
+                ->where('cus_deleted = 0');
         }
 
         $result = $this->fetchAll($select);

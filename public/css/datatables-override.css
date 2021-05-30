@@ -1,4 +1,5 @@
-.dataTables_scrollBody>.data-table>tbody>tr>td {
+.dataTables_scrollBody>.data-table>tbody>tr>td,
+.dataTables_scrollHead .data-table>thead>tr>th {
   vertical-align: middle;
 }
 
