@@ -23,11 +23,11 @@ class ProductController extends Zend_Controller_Action
             if ($users2->num($username, $password) > 0) {
 
             } else {
-                $this->_redirect('/login');
+                $this->_redirect($this->view->BaseUrl . '/login');
                 exit;
             }
         } else {
-            $this->_redirect('/login');
+            $this->_redirect('$this->view->BaseUrl . /login');
             exit;
         }
     }

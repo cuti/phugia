@@ -1,27 +1,79 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+
+<html>
+
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-<link rel="stylesheet" href="<?php echo $this->BaseUrl?>/public/css/bootstrap.min.css" />
-<link rel="stylesheet" href="<?php echo $this->BaseUrl?>/public/css/bootstrap-responsive.min.css" />
-<link rel="stylesheet" href="<?php echo $this->BaseUrl?>/public/css/fullcalendar.css" />
-<link rel="stylesheet" href="<?php echo $this->BaseUrl?>/public/css/maruti-style.css" />
-<link rel="stylesheet" href="<?php echo $this->BaseUrl?>/public/css/maruti-media.css" class="skin-color" />
-<link rel="stylesheet" href="<?php echo $this->BaseUrl?>/public/css/maruti-login.css" />
-<title><?php echo $this->escape($this->pageTitle); ?></title>
+    <title><?=$this->escape($this->pageTitle)?></title>
 
+    <link rel="shortcut icon" href="<?=$this->BaseUrl?>/public/img/logo.png">
 
+    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/nunito.css" />
+    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/sb-admin-2.min.css" />
+    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/sb-admin-2-override.css" />
+    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/vendor/fontawesome-free/all.min.css" />
+
+    <style type="text/css">
+        .card {
+            margin-top: 80px;
+            width: 700px;
+        }
+
+        .card-body>div:first-of-type {
+            border-right: 1px solid #afbce4;
+        }
+
+        .header {
+            line-height: 1.5;
+        }
+
+        .input-group-text {
+            border-bottom-left-radius: 22px;
+            border-top-left-radius: 22px;
+            justify-content: center;
+            width: 44px;
+        }
+
+        .form-control {
+            border-bottom-right-radius: 22px;
+            border-top-right-radius: 22px;
+            height: 44px;
+        }
+
+        form.user .btn-user {
+            font-size: inherit;
+        }
+    </style>
 </head>
 
-<body>
+<body class="bg-gradient-primary">
+    <div class="container">
+        <!-- Outer Row -->
+        <div class="row justify-content-center">
+            <div class="card border-0 shadow-lg">
+                <div class="card-body d-flex py-4">
+                    <div class="px-4 py-5 w-50">
+                        <img src="<?=$this->BaseUrl?>/public/images/management-system.png" alt="" class="w-100">
+                    </div>
+                    <div class="px-4 py-5 w-50">
+                        <div class="text-center">
+                            <h4 class="header text-gray-900 mb-3">ĐĂNG NHẬP<br>QUẢN TRỊ HỆ THỐNG</h4>
+                        </div>
+                        <?=$this->layout()->content?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<?php 
-    echo $this->layout()->content;
-?>
-
+    <script src="<?=$this->BaseUrl?>/public/vendor/jquery/jquery.min.js"></script>
+    <script src="<?=$this->BaseUrl?>/public/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="<?=$this->BaseUrl?>/public/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="<?=$this->BaseUrl?>/public/js/sb-admin-2.min.js"></script>
+    <script src="<?=$this->BaseUrl?>/public/js/login.js"></script>
 </body>
 
 </html>

@@ -16,7 +16,7 @@ class SidebarController extends Zend_Controller_Action
         $menus = new Default_Model_Menu();
         $data = $menus->getMenuByUsername($username);
 
-        $rootUrl = $this->_request->getBaseUrl();
+        $rootUrl = $this->view->BaseUrl;
         $s = '';
 
         foreach ($data as $menu) {
@@ -47,7 +47,6 @@ class SidebarController extends Zend_Controller_Action
             }
         }
 
-        // $this->view->menu = $data;
         $this->view->menuHtml = $s;
     }
 }

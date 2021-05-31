@@ -38,10 +38,12 @@
 <body id="page-top">
 
     <?php
-        if (strpos($_SERVER['REQUEST_URI'], $this->BaseUrl . '/admin') > 0) {
+        if (strpos($_SERVER['REQUEST_URI'], 'admin') > 0) {
             $module = 'admin';
+            $root = $this->BaseUrl . '/admin';
         } else {
             $module = 'default';
+            $root = $this->BaseUrl;
         }
     ?>
 
@@ -129,7 +131,7 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Không</button>
-                    <a class="btn btn-primary" href="<?=$this->BaseUrl?>/logout">Thoát</a>
+                    <a class="btn btn-primary" href="<?=$root?>/logout">Thoát</a>
                 </div>
             </div>
         </div>

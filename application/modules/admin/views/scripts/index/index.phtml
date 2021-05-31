@@ -1,66 +1,17 @@
-<script>
-  $(document).ready(function(){
-    $("#search").hide();
-    $(".searchfield").hide();
-  });
-</script>
-<div id="content">
-  <div id="content-header">
-    <div id="breadcrumb"> <a href="#" title="Trang chủ" class="tip-bottom"><i class="icon-home"></i> Trang chủ</a> <a href="#" class="current"></a> </div>
-  </div>
-  <div class="container-fluid">
-    <div class="row-fluid">
-      <!-- <div class="span2">
-      </div>
-      <div class="span8"> -->
-          <h3> Hệ Thống Quản Trị Đoàn Luật Sư Hồ Chí Minh</h3>
-          <h3> Developer by SangTao Company</h3>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-primary">Dashboard</h6>
+        </div>
 
-    </div>
-    <div class="widget-box widget-plain">
-      <div class="center">
-        <ul class="stat-boxes">
-          <li>
-            <div class="left peity_bar_neutral"><span><span style="display: none;">2,4,9,7,12,10,12</span>
-              <canvas width="50" height="24"></canvas>
-              </span></div>
-            <div class="right"> <strong>15598</strong> Số lượt truy cập </div>
-          </li>
-          <li>
-            <div class="left peity_line_neutral"><span><span style="display: none;">10,15,8,14,13,10,10,15</span>
-              <canvas width="50" height="24"></canvas>
-              </span></div>
-            <div class="right"> <strong><?php echo $this->countcustomer; ?></strong> Tổng số luật sư </div>
-          </li>
-          <li>
-            <div class="left peity_bar_bad"><span><span style="display: none;">3,5,6,16,8,10,6</span>
-              <canvas width="50" height="24"></canvas>
-              </span></div>
-            <div class="right"> <strong><?php echo $this->numberlawyer; ?></strong> Luật sư chính thức</div>
-          </li>
-          <li>
-            <div class="left peity_line_good"><span><span style="display: none;">12,6,9,23,14,10,17</span>
-              <canvas width="50" height="24"></canvas>
-              </span></div>
-            <div class="right"> <strong><?php echo $this->numberintership; ?></strong> Luật sư tập sự </div>
-          </li>
-          <!-- <li>
-            <div class="left peity_bar_good"><span>12,6,9,23,14,10,13</span></div>
-            <div class="right"> <strong>2560</strong> Register</div>
-          </li> -->
-           <!--<li>
-            <div class="left peity_bar_bad"><span>12,6,9,23,14,10,5</span>-5%</div>
-            <div class="right"> <strong>155</strong> Panding Orders</div>
-          </li> -->
-        </ul>
+        <div class="card-body">
+          Body
+        </div>
       </div>
     </div>
-
   </div>
 </div>
 
-
-<script src="<?php echo $this->BaseUrl?>/public/js/excanvas.min.js"></script>
-<script src="<?php echo $this->BaseUrl?>/public/js/jquery.flot.min.js"></script>
-<script src="<?php echo $this->BaseUrl?>/public/js/jquery.flot.resize.min.js"></script>
-<script src="<?php echo $this->BaseUrl?>/public/js/jquery.peity.min.js"></script>
+<!-- <script src="<?=$this->BaseUrl?>/public/js/index.js"></script> -->
