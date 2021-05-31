@@ -1,56 +1,52 @@
 <?php
-class Admin_HeaderController extends Zend_Controller_Action
+
+class Admin_SidebarController extends Zend_Controller_Action
 {
-    public function init(){
-        $this->view->BaseUrl=$this->_request->getBaseUrl();        
+    public function init()
+    {
+        $this->view->BaseUrl = $this->_request->getBaseUrl();
     }
 
     public function indexAction()
     {
         $this->auth = Zend_Auth::getInstance();
         $this->identity = $this->auth->getIdentity();
- 
+
         $username = $this->identity->user_username;
+        $menus = new Admin_Model_Menu();
+        $data = $menus->getMenuByUsername($username);
 
-        $menus = new Admin_Model_Module();
-        $data = $menus->getModulesByUsername($username);
-
+        $rootUrl = $this->view->BaseUrl;
         $s = '';
-        foreach ($data as $module) {
-            
-            
-               //echo $this->BaseUrl;
-                //$mod =($this->controller==$module['module_controller'])?'active':'';    
-            if($module['module_type'] != null && $module['module_type'] != '' && $module['module_type'] == 'quantri'){    
-                $s .='<li><a href="'.$this->_request->getBaseUrl().'/admin/'.$module['module_controller'].'" >'.'<i class="icon icon-th-list"></i> <span>'.$module['module_name'].'</span>'.'</a>';
-                    if($module['module_id'] != null){                  
-                        $submenus = $menus->getSubcategoryByUsernameAndParentId($username,$module['module_id']);
-                        if($submenus != null && count($submenus) > 0 ){
-                            $s.= '<ul>';
-                            foreach ($submenus as $submodule) { 
-                                $s.='<li><a class="'.count($submenus).'" href="'.$this->_request->getBaseUrl().'/admin/'.$submodule['module_controller'].'">'.'<span>'.$submodule['module_name'].'</span></a></li>';
-                            }   
-                            $s.= '</ul>';
-                            
-                        }   
-                        unset($submenus); 
-                    }
-                   
-                    $s.='</li>'; 
+
+        foreach ($data as $menu) {
+            $s .= '<li class="nav-item">';
+
+            if ($menu['menu_url'] != null) {
+                $s .= '<a class="nav-link" href="' . $rootUrl . '/' . $menu['menu_url'] . '" title="' . $menu['menu_name'] . '">';
+                $s .= '<i class="fa-fw ' . $menu['menu_icon'] . '"></i>';
+                $s .= '<span>' . $menu['menu_name'] . '</span></a></li>';
+            } else {
+                $submenus = $menus->getSubMenuByUsernameAndParentId($username, $menu['menu_id']);
+
+                $s .= '<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse' . $menu['menu_group'] . '" aria-expanded="false" aria-controls="collapse' . $menu['menu_group'] . '">';
+                $s .= '<i class="fa-fw ' . $menu['menu_icon'] . '"></i>';
+                $s .= '<span>' . $menu['menu_name'] . '</span></a>';
+                $s .= '<div id="collapse' . $menu['menu_group'] . '" class="collapse" aria-labelledby="heading' . $menu['menu_group'] . '" data-parent="#accordionSidebar">';
+                $s .= '<div class="bg-white py-2 collapse-inner rounded">';
+
+                foreach ($submenus as $submenu) {
+                    $s .= '<a class="collapse-item" href="' . $rootUrl . '/' . $submenu['menu_url'] . '">';
+                    $s .= '<i class="fa-fw ' . $menu['menu_icon'] . ' mr-2"></i>';
+                    $s .= $submenu['menu_name'] . '</a>';
+                }
+
+                $s .= '</div></div></li>';
+
+                unset($submenus);
             }
-      
         }
 
-      
-        $this->view->menu =  $data;
-        $this->view->s =  $s;      
-
+        $this->view->menuHtml = $s;
     }
-
-    public function logoutAction() 
-    { 
-        $auth = Zend_Auth::getInstance(); 
-        $auth->clearIdentity();                                  
-        $this->_redirect('admin/login');                                   
-    } 
 }
