@@ -38,7 +38,7 @@
 <body id="page-top">
 
     <?php
-        if (strpos($_SERVER['REQUEST_URI'], $this->BaseUrl . '/admin') > 0) {
+        if (strpos($_SERVER['REQUEST_URI'], $this->BaseUrl . '/admin') >= 0) {
             $module = 'admin';
         } else {
             $module = 'default';
