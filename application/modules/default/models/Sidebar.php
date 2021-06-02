@@ -1,11 +1,11 @@
 <?php
 
-class Default_Model_Menu extends Zend_Db_Table_Abstract
+class Default_Model_Sidebar extends Zend_Db_Table_Abstract
 {
     protected $_name = 'menu';
     protected $_primary = 'menu_id';
 
-    public function getMenuByUsername($username)
+    public function getMenuByUsername($username, $module)
     {
         $db = Zend_Db_Table::getDefaultAdapter();
         $select = new Zend_Db_Select($db);
@@ -18,14 +18,14 @@ class Default_Model_Menu extends Zend_Db_Table_Abstract
             ->where('[user].user_username = ?', $username)
             ->where('menu.menu_parent_id IS NULL')
             ->where('menu.menu_active = 1')
-            ->where("menu.menu_module = 'default'")
+            ->where("menu.menu_module = ?", $module)
             ->order('menu.menu_order')
             ->order('menu.menu_name');
 
         return $resultSet = $db->fetchAll($select);
     }
 
-    public function getSubMenuByUsernameAndParentId($username, $parent_id)
+    public function getSubMenuByUsernameAndParentId($username, $parent_id, $module)
     {
         $db = Zend_Db_Table::getDefaultAdapter();
         $select = new Zend_Db_Select($db);
@@ -38,7 +38,7 @@ class Default_Model_Menu extends Zend_Db_Table_Abstract
             ->where('[user].user_username = ?', $username)
             ->where('menu.menu_parent_id = ?', $parent_id)
             ->where('menu.menu_active = 1')
-            ->where("menu.menu_module = 'default'")
+            ->where("menu.menu_module = ?", $module)
             ->order('menu.menu_order')
             ->order('menu.menu_name');
 

@@ -51,7 +51,7 @@
     <div id="wrapper">
 
         <!-- Sidebar -->
-        <?=$this->action('index', 'sidebar', $module)?>
+        <?=$this->action('menu', 'sidebar', 'default', array('module' => $module))?>
 
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
@@ -75,11 +75,16 @@
                         <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline"><?=$_SESSION['username']?></span>
+                                <span class="mr-2 d-none d-lg-inline"><?=$_SESSION['display_name']?></span>
                                 <i class="fas fa-user-circle"></i>
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-user fa-fw mr-2"></i>
+                                    Thông tin người dùng
+                                </a>
+                                <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                                     <i class="fas fa-sign-out-alt fa-fw mr-2"></i>
                                     Thoát
@@ -131,7 +136,7 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Không</button>
-                    <a class="btn btn-primary" href="<?=$root?>/logout">Thoát</a>
+                    <a class="btn btn-primary" href="<?=$this->BaseUrl?>/logout?m=<?=$module?>">Thoát</a>
                 </div>
             </div>
         </div>

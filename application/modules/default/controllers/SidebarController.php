@@ -7,14 +7,14 @@ class SidebarController extends Zend_Controller_Action
         $this->view->BaseUrl = $this->_request->getBaseUrl();
     }
 
-    public function indexAction()
+    public function menuAction()
     {
         $this->auth = Zend_Auth::getInstance();
         $this->identity = $this->auth->getIdentity();
-
+        $module = $this->getRequest()->getParam('module');
         $username = $this->identity->user_username;
-        $menus = new Default_Model_Menu();
-        $data = $menus->getMenuByUsername($username);
+        $menus = new Default_Model_Sidebar();
+        $data = $menus->getMenuByUsername($username, $module);
 
         $rootUrl = $this->view->BaseUrl;
         $s = '';
@@ -27,7 +27,7 @@ class SidebarController extends Zend_Controller_Action
                 $s .= '<i class="fa-fw ' . $menu['menu_icon'] . '"></i>';
                 $s .= '<span>' . $menu['menu_name'] . '</span></a></li>';
             } else {
-                $submenus = $menus->getSubMenuByUsernameAndParentId($username, $menu['menu_id']);
+                $submenus = $menus->getSubMenuByUsernameAndParentId($username, $menu['menu_id'], $module);
 
                 $s .= '<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse' . $menu['menu_group'] . '" aria-expanded="false" aria-controls="collapse' . $menu['menu_group'] . '">';
                 $s .= '<i class="fa-fw ' . $menu['menu_icon'] . '"></i>';

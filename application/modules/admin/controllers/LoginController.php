@@ -50,6 +50,7 @@ class Admin_LoginController extends Zend_Controller_Action
                 $_SESSION['login'] = "good";
                 $_SESSION['config'] = $this->view->BaseUrl;
                 $_SESSION['username'] = $username;
+                $_SESSION['display_name'] = $data->user_display_name;
                 $this->_redirect('/admin');
             } else {
                 $this->view->note = 'Tài khoản hoặc mật khẩu không đúng.';
