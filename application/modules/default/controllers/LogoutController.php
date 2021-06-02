@@ -7,6 +7,6 @@ class LogoutController extends Zend_Controller_Action
         $auth = Zend_Auth::getInstance();
         $auth->clearIdentity();
         Zend_Session::destroy();
-        $this->_redirect($this->_request->getBaseUrl() . '/login');
+        $this->_redirect('/login');
     }
 }

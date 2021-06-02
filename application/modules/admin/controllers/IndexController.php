@@ -19,11 +19,11 @@ class Admin_IndexController extends Zend_Controller_Action
             $users2 = new Admin_Model_User();
 
             if ($users2->num($username, $password) === 0) {
-                $this->_redirect($this->view->BaseUrl . '/admin/login');
+                $this->_redirect('/admin/login');
                 exit;
             }
         } else {
-            $this->_redirect($this->view->BaseUrl . '/admin/login');
+            $this->_redirect('/admin/login');
             exit;
         }
     }

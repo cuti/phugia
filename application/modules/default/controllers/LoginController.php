@@ -9,6 +9,21 @@ class LoginController extends Zend_Controller_Action
 
     public function preDispatch()
     {
+        $auth = Zend_Auth::getInstance();
+        $identity = $auth->getIdentity();
+
+        if ($identity) {
+            $username = $identity->user_username;
+            $password = $identity->user_password;
+
+            $users2 = new Admin_Model_User();
+
+            if ($users2->num($username, $password) > 0) {
+                $this->_redirect('');
+                exit;
+            }
+        }
+
         $this->_helper->layout->setLayoutPath(APPLICATION_PATH . '/modules/default/views/scripts/login');
     }
 
@@ -35,7 +50,7 @@ class LoginController extends Zend_Controller_Action
                 $_SESSION['login'] = "good";
                 $_SESSION['config'] = $this->view->BaseUrl;
                 $_SESSION['username'] = $username;
-                $this->_redirect($this->view->BaseUrl);
+                $this->_redirect('');
             } else {
                 $this->view->note = 'Tài khoản hoặc mật khẩu không đúng.';
             }
