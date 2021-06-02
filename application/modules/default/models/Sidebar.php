@@ -32,7 +32,7 @@ class Default_Model_Sidebar extends Zend_Db_Table_Abstract
 
         $select->distinct()
             ->from('menu', array('menu_id', 'menu_name', 'menu_icon', 'menu_url', 'menu_order'))
-            ->joinInner('role_menu', 'role_menu.rm_menu_id = menu.menu_id', array('rm_action_id'))
+            ->joinInner('role_menu', 'role_menu.rm_menu_id = menu.menu_id', array())
             ->joinInner('user_role', 'user_role.ur_role_id = role_menu.rm_role_id', array())
             ->joinInner('user', '[user].user_id = user_role.ur_user_id', array())
             ->where('[user].user_username = ?', $username)

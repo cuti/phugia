@@ -58,6 +58,10 @@
             if (pathName.startsWith($(e).attr('href'))) {
                 $(e).addClass('active');
                 $(e).closest('li').addClass('active');
+
+                // Expand the menu
+                $(e).parent().parent().addClass('show').prev().removeClass('collapsed').attr('aria-expanded', 'true');
+
                 return false;
             }
         });

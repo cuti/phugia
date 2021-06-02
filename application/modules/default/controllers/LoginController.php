@@ -46,6 +46,7 @@ class LoginController extends Zend_Controller_Action
 
             if ($result->isValid()) {
                 $data = $authAdapter->getResultRowObject();
+                $data->user_department = $this->getUserDepartment($data->user_id);
                 $auth->getStorage()->write($data);
                 $_SESSION['login'] = "good";
                 $_SESSION['config'] = $this->view->BaseUrl;
@@ -55,6 +56,27 @@ class LoginController extends Zend_Controller_Action
             } else {
                 $this->view->note = 'Tài khoản hoặc mật khẩu không đúng.';
             }
+        }
+    }
+
+    // --------------- PRIVATE FUNCTIONS ---------------
+
+    /**
+     * Get user's department.
+     */
+    private function getUserDepartment($userId)
+    {
+        $db = Zend_Db_Table::getDefaultAdapter();
+        $select = new Zend_Db_Select($db);
+        $select->from('user', array())
+            ->joinLeft(array('dep' => 'department'), '[user].user_department_id = dep.dep_id', array('dep_name'))
+            ->where('[user].user_id = ?', $userId);
+        $result = $db->fetchAll($select);
+
+        if (count($result) === 0) {
+            return '';
+        } else {
+            return $result[0]['dep_name'];
         }
     }
 }

@@ -20,9 +20,7 @@ class CustomerController extends Zend_Controller_Action
 
             $users2 = new Default_Model_User();
 
-            if ($users2->num($username, $password) > 0) {
-
-            } else {
+            if ($users2->num($username, $password) === 0) {
                 $this->_redirect('/login');
                 exit;
             }
