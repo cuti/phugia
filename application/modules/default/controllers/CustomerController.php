@@ -20,14 +20,12 @@ class CustomerController extends Zend_Controller_Action
 
             $users2 = new Default_Model_User();
 
-            if ($users2->num($username, $password) > 0) {
-
-            } else {
-                $this->_redirect($this->view->BaseUrl . '/login');
+            if ($users2->num($username, $password) === 0) {
+                $this->_redirect('/login');
                 exit;
             }
         } else {
-            $this->_redirect('$this->view->BaseUrl . /login');
+            $this->_redirect('/login');
             exit;
         }
     }
