@@ -38,64 +38,6 @@
     return data[0].id;
   }
 
-  function nullIfEmpty(params) {
-    if (params === '') {
-      return null;
-    }
-    return params;
-  }
-
-  function showSuccessToast(text, duration, width) {
-    Swal.fire({
-      customClass: {
-        htmlContainer: 'text-white',
-        icon: 'border-white text-white',
-        popup: 'bg-success',
-      },
-      icon: 'success',
-      showConfirmButton: false,
-      text,
-      timer: duration,
-      timerProgressBar: true,
-      toast: true,
-      width,
-    });
-  }
-
-  function showWarningToast(text, duration, width) {
-    Swal.fire({
-      customClass: {
-        htmlContainer: 'text-dark',
-        icon: 'border-dark text-dark',
-        popup: 'bg-warning',
-      },
-      icon: 'warning',
-      showConfirmButton: false,
-      text,
-      timer: duration,
-      timerProgressBar: true,
-      toast: true,
-      width,
-    });
-  }
-
-  function showErrorToast(text, width) {
-    Swal.fire({
-      confirmButtonText: 'Đóng',
-      customClass: {
-        actions: 'justify-content-end',
-        confirmButton: 'bg-white text-dark',
-        htmlContainer: 'text-white',
-        icon: 'border-white',
-        popup: 'bg-danger',
-      },
-      icon: 'error',
-      text,
-      toast: true,
-      width,
-    });
-  }
-
   function confirmDeleteCustomer(cusName) {
     return Swal.fire({
       cancelButtonText: 'Hủy',
@@ -778,48 +720,48 @@
 
   $('#btnSaveCustomer').click(() => {
     if ($('#txtMaKH').val().trim() === '') {
-      showWarningToast('Chưa nhập mã khách hàng.', 5000, '300px');
+      Toast.showWarning('Chưa nhập mã khách hàng.');
       return;
     }
 
     if ($('#txtTenKH').val().trim() === '') {
-      showWarningToast('Chưa nhập tên khách hàng.', 5000, '300px');
+      Toast.showWarning('Chưa nhập tên khách hàng.');
       return;
     }
 
     const cus_id = $('#hidCusId').val();
-    const cus_address = nullIfEmpty($('#txtDiaChi').val().trim());
-    const cus_tax_code = nullIfEmpty($('#txtMST').val());
-    const cus_phone = nullIfEmpty($('#txtDienThoai').val().trim());
-    const cus_mobile = nullIfEmpty($('#txtDiDong').val().trim());
-    const cus_fax = nullIfEmpty($('#txtFax').val().trim());
-    const cus_email = nullIfEmpty($('#txtEmail').val().trim());
-    const cus_website = nullIfEmpty($('#txtWebsite').val().trim());
-    const cus_citizen_identity_card_number = nullIfEmpty($('#txtCMND').val());
+    const cus_address = Utility.nullIfEmpty($('#txtDiaChi').val().trim());
+    const cus_tax_code = Utility.nullIfEmpty($('#txtMST').val());
+    const cus_phone = Utility.nullIfEmpty($('#txtDienThoai').val().trim());
+    const cus_mobile = Utility.nullIfEmpty($('#txtDiDong').val().trim());
+    const cus_fax = Utility.nullIfEmpty($('#txtFax').val().trim());
+    const cus_email = Utility.nullIfEmpty($('#txtEmail').val().trim());
+    const cus_website = Utility.nullIfEmpty($('#txtWebsite').val().trim());
+    const cus_citizen_identity_card_number = Utility.nullIfEmpty($('#txtCMND').val());
     const cus_citizen_identity_card_date = $('#dpNgayCap').val() === '' ? null : $('#dpNgayCap').data('daterangepicker').startDate.format('YYYY-MM-DD');
-    const cus_citizen_identity_card_issued_by = nullIfEmpty($('#txtNoiCap').val().trim());
-    const cus_payment_terms = nullIfEmpty($('#txtDieuKhoanTT').val().trim());
-    const cus_owed_days = nullIfEmpty($('#txtSoNgayDuocNo').val());
-    const cus_max_owed = nullIfEmpty($('#txtNoToiDa').val());
-    const cus_staff = nullIfEmpty($('#txtNhanVien').val().trim());
-    const cus_staff_name = nullIfEmpty($('#txtTenNhanVien').val().trim());
-    const cus_bank_account = nullIfEmpty($('#txtTKNH').val().trim());
-    const cus_bank_name = nullIfEmpty($('#txtTenNganHang').val().trim());
-    const cus_bank_branch_name = nullIfEmpty($('#txtChiNhanhNH').val().trim());
+    const cus_citizen_identity_card_issued_by = Utility.nullIfEmpty($('#txtNoiCap').val().trim());
+    const cus_payment_terms = Utility.nullIfEmpty($('#txtDieuKhoanTT').val().trim());
+    const cus_owed_days = Utility.nullIfEmpty($('#txtSoNgayDuocNo').val());
+    const cus_max_owed = Utility.nullIfEmpty($('#txtNoToiDa').val());
+    const cus_staff = Utility.nullIfEmpty($('#txtNhanVien').val().trim());
+    const cus_staff_name = Utility.nullIfEmpty($('#txtTenNhanVien').val().trim());
+    const cus_bank_account = Utility.nullIfEmpty($('#txtTKNH').val().trim());
+    const cus_bank_name = Utility.nullIfEmpty($('#txtTenNganHang').val().trim());
+    const cus_bank_branch_name = Utility.nullIfEmpty($('#txtChiNhanhNH').val().trim());
     const cus_bank_city_id = select2SelectedId('selTinhTKNganHang');
     const cus_country_id = select2SelectedId('selQuocGia');
     const cus_city_id = select2SelectedId('selTinhTP');
     const cus_district_id = select2SelectedId('selQuan');
     const cus_ward_id = select2SelectedId('selPhuong');
-    const cus_title = nullIfEmpty($('#txtXungHo').val().trim());
-    const cus_contact_person = nullIfEmpty($('#txtNguoiLienHe').val().trim());
-    const cus_contact_position = nullIfEmpty($('#txtChucDanh').val().trim());
-    const cus_contact_mobile1 = nullIfEmpty($('#txtDTDiDong').val().trim());
-    const cus_contact_mobile2 = nullIfEmpty($('#txtDTDDKhac').val().trim());
-    const cus_contact_phone = nullIfEmpty($('#txtDTCoDinh').val().trim());
-    const cus_contact_email = nullIfEmpty($('#txtEmailNguoiLienHe').val().trim());
-    const cus_contact_address = nullIfEmpty($('#txtDiaChiNguoiLienHe').val().trim());
-    const cus_delivery_location = nullIfEmpty($('#txtDiaDiemGH').val().trim());
+    const cus_title = Utility.nullIfEmpty($('#txtXungHo').val().trim());
+    const cus_contact_person = Utility.nullIfEmpty($('#txtNguoiLienHe').val().trim());
+    const cus_contact_position = Utility.nullIfEmpty($('#txtChucDanh').val().trim());
+    const cus_contact_mobile1 = Utility.nullIfEmpty($('#txtDTDiDong').val().trim());
+    const cus_contact_mobile2 = Utility.nullIfEmpty($('#txtDTDDKhac').val().trim());
+    const cus_contact_phone = Utility.nullIfEmpty($('#txtDTCoDinh').val().trim());
+    const cus_contact_email = Utility.nullIfEmpty($('#txtEmailNguoiLienHe').val().trim());
+    const cus_contact_address = Utility.nullIfEmpty($('#txtDiaChiNguoiLienHe').val().trim());
+    const cus_delivery_location = Utility.nullIfEmpty($('#txtDiaDiemGH').val().trim());
     const cus_types = $('#selNhomKH').select2('data').map(d => d.id);
 
     const data = {
@@ -882,12 +824,12 @@
       dataType: 'json',
       success: function (res) {
         if (res.status === 1) {
-          showSuccessToast('Lưu khách hàng thành công.', 5000, '300px');
+          Toast.showSuccess('Lưu khách hàng thành công.');
           tblCustomer.ajax.reload();
         } else if (res.message === 'CUS_CODE_DUP') {
-          showErrorToast('Mã khách hàng đã tồn tại.', '300px');
+          Toast.showError('Mã khách hàng đã tồn tại.');
         } else {
-          showErrorToast('Lưu không thành công, vui lòng kiểm tra lại thông tin khách hàng.', '400px');
+          Toast.showError('Lưu không thành công, vui lòng kiểm tra lại thông tin khách hàng.', '400px');
         }
       }
     });
@@ -990,10 +932,10 @@
           dataType: 'json',
           success: function (res) {
             if (res.status === 1) {
-              showSuccessToast('Xóa khách hàng thành công.', 5000, '300px');
+              Toast.showSuccess('Xóa khách hàng thành công.');
               tblCustomer.ajax.reload();
             } else {
-              showErrorToast('Lỗi, không xóa được khách hàng.', '300px');
+              Toast.showError('Lỗi, không xóa được khách hàng.');
             }
           }
         });

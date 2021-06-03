@@ -34,6 +34,78 @@ class UserInfoController extends Zend_Controller_Action
         $this->view->data = $this->getUserInfo();
     }
 
+    public function cpAction()
+    {
+        $this->_helper->layout()->disableLayout();
+        $req = $this->getRequest();
+
+        if ($req->isXmlHttpRequest() && $req->isPost()) {
+            $userInfo = $this->getUserInfo();
+            $userId = $userInfo['user_id'];
+            $userName = $userInfo['user_username'];
+            $oldPass = $req->getParam('oldpass', '');
+            $newPass = $req->getParam('newpass', '');
+            $user = new Default_Model_User();
+
+            if ($user->num($userName, MD5($oldPass)) > 0) {
+                $affectedCount = $user->changeUserPassword($userId, $newPass);
+
+                $result = array(
+                    'data' => $affectedCount,
+                    'status' => 1,
+                );
+            } else {
+                $result = array(
+                    'message' => 'Mật khẩu cũ không chính xác',
+                    'status' => 0,
+                );
+            }
+        } else {
+            $result = array(
+                'message' => 'Invalid request',
+                'status' => 0,
+            );
+        }
+
+        echo json_encode($result);
+        exit;
+    }
+
+    public function ciAction()
+    {
+        $this->_helper->layout()->disableLayout();
+        $req = $this->getRequest();
+
+        if ($req->isXmlHttpRequest() && $req->isPost()) {
+            $userInfo = $this->getUserInfo();
+            $userId = $userInfo['user_id'];
+
+            $fullName = $req->getParam('fullName', '');
+            $displayName = $req->getParam('displayName', '');
+
+            $data = array(
+                'user_fullname' => $fullName,
+                'user_display_name' => $displayName,
+            );
+
+            $user = new Default_Model_User();
+            $affectedCount = $user->updateUserInfo($userId, $data);
+
+            $result = array(
+                'data' => $affectedCount,
+                'status' => 1,
+            );
+        } else {
+            $result = array(
+                'message' => 'Invalid request',
+                'status' => 0,
+            );
+        }
+
+        echo json_encode($result);
+        exit;
+    }
+
     // --------------- PRIVATE FUNCTIONS ---------------
 
     /**
