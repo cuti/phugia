@@ -1,0 +1,84 @@
+<?php
+    if (strpos($_SERVER['REQUEST_URI'], 'admin') > 0) {
+        $root = $this->BaseUrl . '/admin';
+    } else {
+        $root = $this->BaseUrl;
+    }
+?>
+
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+    <!-- Sidebar - Brand -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="<?=$root?>/">
+        <img src="<?=$this->BaseUrl?>/public/img/logo.png" alt="logo-phu-gia" width="36">
+        <div class="sidebar-brand-text ml-3">Phú Gia CCRM</div>
+    </a>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider my-0">
+
+    <li class="nav-item">
+        <a class="nav-link" href="<?=$root?>/">
+            <i class="fa-fw fas fa-home"></i>
+            <span>Trang chủ</span>
+        </a>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider my-0">
+
+    <!-- Menu -->
+    <?=$this->menuHtml?>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider my-0">
+
+    <li class="nav-item">
+        <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">
+            <i class="fa-fw fas fa-sign-out-alt"></i>
+            <span>Thoát</span>
+        </a>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider d-none d-md-block">
+
+    <!-- Sidebar Toggler (Sidebar) -->
+    <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+    </div>
+</ul>
+
+<script>
+    (() => {
+        const pathName = location.pathname;
+
+        // Set active for sub menu
+        $('#accordionSidebar>li div a').each((i, e) => {
+            if (pathName.startsWith($(e).attr('href'))) {
+                $(e).addClass('active');
+                $(e).closest('li').addClass('active');
+
+                // Expand the menu
+                $(e).parent().parent().addClass('show').prev().removeClass('collapsed').attr('aria-expanded', 'true');
+
+                return false;
+            }
+        });
+
+        // Set active for parent menu
+        if ($('#accordionSidebar li.active').length === 0) {
+            $('#accordionSidebar>li>a').each((i, e) => {
+                if (i > 0 && pathName.startsWith($(e).attr('href'))) {
+                    $(e).parent().addClass('active');
+                    return false;
+                }
+            });
+        }
+
+        // Set active for homepage menu
+        if ($('#accordionSidebar li.active').length === 0) {
+            $('#accordionSidebar>li').eq(0).addClass('active');
+        }
+    })();
+</script>

@@ -4,24 +4,14 @@ class LoginController extends Zend_Controller_Action
 {
     public function init()
     {
-        $this->view->BaseUrl = $this->_request->getBaseUrl();
+        $this->view->BaseUrl = $this->getRequest()->getBaseUrl();
     }
 
     public function preDispatch()
     {
-        $auth = Zend_Auth::getInstance();
-        $identity = $auth->getIdentity();
-
-        if ($identity) {
-            $username = $identity->user_username;
-            $password = $identity->user_password;
-
-            $users2 = new Admin_Model_User();
-
-            if ($users2->num($username, $password) > 0) {
-                $this->_redirect('');
-                exit;
-            }
+        if (Zend_Auth::getInstance()->hasIdentity()) {
+            $this->_redirect('');
+            exit;
         }
 
         $this->_helper->layout->setLayoutPath(APPLICATION_PATH . '/modules/default/views/scripts/login');
@@ -29,29 +19,38 @@ class LoginController extends Zend_Controller_Action
 
     public function indexAction()
     {
-        Zend_Session::rememberMe(7200); // 1 hour
-        Zend_Session::start();
-
         $this->view->pageTitle = 'Đăng Nhập';
+        $req = $this->getRequest();
 
-        if ($this->_request->isPost()) {
-            $username = $this->_request->getParam('username', '');
-            $password = MD5($this->_request->getParam('password', ''));
+        if ($req->isPost()) {
+            $username = $req->getParam('username', '');
+            $password = MD5($req->getParam('password', ''));
+
             $users = new Default_Model_User();
-            $auth = Zend_Auth::getInstance();
             $authAdapter = new Zend_Auth_Adapter_DbTable($users->getAdapter(), 'user');
             $authAdapter->setIdentityColumn('user_username')->setCredentialColumn('user_password');
             $authAdapter->setIdentity($username)->setCredential($password);
+
+            $auth = Zend_Auth::getInstance();
             $result = $auth->authenticate($authAdapter);
 
             if ($result->isValid()) {
+                Zend_Session::rememberMe(3600); // 1 hour
+                Zend_Session::start();
+
                 $data = $authAdapter->getResultRowObject();
-                $data->user_department = $this->getUserDepartment($data->user_id);
-                $auth->getStorage()->write($data);
-                $_SESSION['login'] = "good";
-                $_SESSION['config'] = $this->view->BaseUrl;
-                $_SESSION['username'] = $username;
-                $_SESSION['display_name'] = $data->user_display_name;
+                $user_department = $this->getUserDepartment($data->user_id);
+                $identity = array(
+                    'user_id'      => $data->user_id,
+                    'fullname'     => $data->user_fullname,
+                    'display_name' => $data->user_display_name,
+                    'username'     => $data->user_username,
+                    'image'        => $data->user_image,
+                    'department'   => $user_department,
+                );
+
+                // Use session storage, with default namespace 'Zend_Auth'
+                $auth->getStorage()->write($identity);
                 $this->_redirect('');
             } else {
                 $this->view->note = 'Tài khoản hoặc mật khẩu không đúng.';
@@ -71,12 +70,12 @@ class LoginController extends Zend_Controller_Action
         $select->from('user', array())
             ->joinLeft(array('dep' => 'department'), '[user].user_department_id = dep.dep_id', array('dep_name'))
             ->where('[user].user_id = ?', $userId);
-        $result = $db->fetchAll($select);
+        $result = $db->fetchRow($select);
 
-        if (count($result) === 0) {
+        if ($result['dep_name'] === null) {
             return '';
         } else {
-            return $result[0]['dep_name'];
+            return $result['dep_name'];
         }
     }
 }

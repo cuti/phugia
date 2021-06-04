@@ -4,25 +4,12 @@ class Admin_IndexController extends Zend_Controller_Action
 {
     public function init()
     {
-        $this->view->BaseUrl = $this->_request->getBaseUrl();
+        $this->view->BaseUrl = $this->getRequest()->getBaseUrl();
     }
 
     public function preDispatch()
     {
-        $auth = Zend_Auth::getInstance();
-        $identity = $auth->getIdentity();
-
-        if ($identity) {
-            $username = $identity->user_username;
-            $password = $identity->user_password;
-
-            $users2 = new Admin_Model_User();
-
-            if ($users2->num($username, $password) === 0) {
-                $this->_redirect('/admin/login');
-                exit;
-            }
-        } else {
+        if (!Zend_Auth::getInstance()->hasIdentity()) {
             $this->_redirect('/admin/login');
             exit;
         }

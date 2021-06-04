@@ -23,15 +23,31 @@
     <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/datatables-override.css" />
     <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/vendor/daterangepicker/daterangepicker.css" />
 
+    <!-- jQuery -->
     <script src="<?=$this->BaseUrl?>/public/vendor/jquery/jquery.min.js"></script>
-    <script src="<?=$this->BaseUrl?>/public/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="<?=$this->BaseUrl?>/public/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Bootstrap -->
+    <script src="<?=$this->BaseUrl?>/public/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- DataTables -->
     <script src="<?=$this->BaseUrl?>/public/vendor/data-tables/datatables.min.js"></script>
+
+    <!-- Select2 -->
     <script src="<?=$this->BaseUrl?>/public/vendor/select2-4.0.13/select2.min.js"></script>
     <script src="<?=$this->BaseUrl?>/public/vendor/select2-4.0.13/i18n/vi.js"></script>
+
+    <!-- Momentjs -->
     <script src="<?=$this->BaseUrl?>/public/vendor/moment/moment-with-locales.min.js"></script>
+
+    <!-- Date range picker -->
     <script src="<?=$this->BaseUrl?>/public/vendor/daterangepicker/daterangepicker.min.js"></script>
+
+    <!-- Sweet alert 2 -->
     <script src="<?=$this->BaseUrl?>/public/vendor/swal2/sweetalert2.all.min.js"></script>
+
+    <!-- Helpers -->
+    <script src="<?=$this->BaseUrl?>/public/js/common.js"></script>
 
 </head>
 
@@ -51,7 +67,7 @@
     <div id="wrapper">
 
         <!-- Sidebar -->
-        <?=$this->action('menu', 'sidebar', 'default', array('module' => $module))?>
+        <?=$this->action('index', 'sidebar', 'default', array('module' => $module))?>
 
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
@@ -60,41 +76,7 @@
             <div id="content">
 
                 <!-- Topbar -->
-                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-
-                    <!-- Sidebar Toggle (Topbar) -->
-                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                        <i class="fa fa-bars"></i>
-                    </button>
-
-                    <!-- Topbar Navbar -->
-                    <ul class="navbar-nav ml-auto">
-
-                        <div class="topbar-divider d-none d-sm-block"></div>
-
-                        <!-- Nav Item - User Information -->
-                        <li class="nav-item dropdown no-arrow">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline"><?=$_SESSION['display_name']?></span>
-                                <i class="fas fa-user-circle"></i>
-                            </a>
-
-                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="<?=$this->BaseUrl?>/user-info">
-                                    <i class="fas fa-user fa-fw mr-2"></i>
-                                    Thông tin người dùng
-                                </a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-                                    <i class="fas fa-sign-out-alt fa-fw mr-2"></i>
-                                    Thoát
-                                </a>
-                            </div>
-                        </li>
-
-                    </ul>
-
-                </nav>
+                <?=$this->action('index', 'header', 'default')?>
                 <!-- End of Topbar -->
 
                 <!-- Page Content -->
@@ -104,13 +86,7 @@
             <!-- End of Main Content -->
 
             <!-- Footer -->
-            <footer class="sticky-footer bg-white">
-                <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>Developed by Sáng Tạo Company</span>
-                    </div>
-                </div>
-            </footer>
+            <?=$this->action('index', 'footer', 'default')?>
             <!-- End of Footer -->
 
         </div>
