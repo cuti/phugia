@@ -4,15 +4,14 @@ class SidebarController extends Zend_Controller_Action
 {
     public function init()
     {
-        $this->view->BaseUrl = $this->_request->getBaseUrl();
+        $this->view->BaseUrl = $this->getRequest()->getBaseUrl();
     }
 
-    public function menuAction()
+    public function indexAction()
     {
-        $this->auth = Zend_Auth::getInstance();
-        $this->identity = $this->auth->getIdentity();
         $module = $this->getRequest()->getParam('module');
-        $username = $this->identity->user_username;
+        $username = Zend_Auth::getInstance()->getIdentity()['username'];
+
         $menus = new Default_Model_Sidebar();
         $data = $menus->getMenuByUsername($username, $module);
 

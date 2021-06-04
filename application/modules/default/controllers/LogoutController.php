@@ -4,8 +4,7 @@ class LogoutController extends Zend_Controller_Action
 {
     public function indexAction()
     {
-        $auth = Zend_Auth::getInstance();
-        $auth->clearIdentity();
+        Zend_Auth::getInstance()->clearIdentity();
         Zend_Session::destroy();
 
         if (strpos($_SERVER['REQUEST_URI'], 'admin') > 0) {

@@ -4,7 +4,7 @@ class Admin_LoginController extends Zend_Controller_Action
 {
     public function init()
     {
-        $this->view->BaseUrl = $this->_request->getBaseUrl();
+        $this->view->BaseUrl = $this->getRequest()->getBaseUrl();
     }
 
     public function preDispatch()
@@ -29,32 +29,63 @@ class Admin_LoginController extends Zend_Controller_Action
 
     public function indexAction()
     {
-        Zend_Session::rememberMe(7200); // 1 hour
-        Zend_Session::start();
-
         $this->view->pageTitle = 'Đăng Nhập Quản Trị';
+        $req = $this->getRequest();
 
-        if ($this->_request->isPost()) {
-            $username = $this->_request->getParam('username', '');
-            $password = MD5($this->_request->getParam('password', ''));
+        if ($req->isPost()) {
+            $username = $req->getParam('username', '');
+            $password = MD5($req->getParam('password', ''));
+
             $users = new Admin_Model_User();
-            $auth = Zend_Auth::getInstance();
             $authAdapter = new Zend_Auth_Adapter_DbTable($users->getAdapter(), 'user');
             $authAdapter->setIdentityColumn('user_username')->setCredentialColumn('user_password');
             $authAdapter->setIdentity($username)->setCredential($password);
+
+            $auth = Zend_Auth::getInstance();
             $result = $auth->authenticate($authAdapter);
 
             if ($result->isValid()) {
+                Zend_Session::rememberMe(3600); // 1 hour
+                Zend_Session::start();
+
                 $data = $authAdapter->getResultRowObject();
-                $auth->getStorage()->write($data);
-                $_SESSION['login'] = "good";
-                $_SESSION['config'] = $this->view->BaseUrl;
-                $_SESSION['username'] = $username;
-                $_SESSION['display_name'] = $data->user_display_name;
+                $user_department = $this->getUserDepartment($data->user_id);
+                $identity = array(
+                    'user_id'      => $data->user_id,
+                    'fullname'     => $data->user_fullname,
+                    'display_name' => $data->user_display_name,
+                    'username'     => $data->user_username,
+                    'image'        => $data->user_image,
+                    'department'   => $user_department,
+                );
+
+                // Use session storage, with default namespace 'Zend_Auth'
+                $auth->getStorage()->write($identity);
                 $this->_redirect('/admin');
             } else {
                 $this->view->note = 'Tài khoản hoặc mật khẩu không đúng.';
             }
+        }
+    }
+
+    // --------------- PRIVATE FUNCTIONS ---------------
+
+    /**
+     * Get user's department.
+     */
+    private function getUserDepartment($userId)
+    {
+        $db = Zend_Db_Table::getDefaultAdapter();
+        $select = new Zend_Db_Select($db);
+        $select->from('user', array())
+            ->joinLeft(array('dep' => 'department'), '[user].user_department_id = dep.dep_id', array('dep_name'))
+            ->where('[user].user_id = ?', $userId);
+        $result = $db->fetchRow($select);
+
+        if ($result['dep_name'] === null) {
+            return '';
+        } else {
+            return $result['dep_name'];
         }
     }
 }

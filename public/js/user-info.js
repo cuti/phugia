@@ -75,12 +75,15 @@
   });
 
   $('#btnSave').click(() => {
+    const fullName = Utility.nullIfEmpty($('#txtFullName').val().trim());
+    const displayName = Utility.nullIfEmpty($('#txtDisplayName').val().trim());
+
     $.ajax({
       type: 'POST',
       url: 'user-info/ci',
       data: {
-        fullName: Utility.nullIfEmpty($('#txtFullName').val().trim()),
-        displayName: Utility.nullIfEmpty($('#txtDisplayName').val().trim())
+        fullName,
+        displayName
       },
       dataType: 'json',
       success: function (res) {
@@ -95,6 +98,14 @@
           $('#btnSua').removeClass('d-none');
           $('#btnCancel').addClass('d-none');
           $('#btnSave').addClass('d-none');
+
+          if (displayName) {
+            $('#userDropdown>span').text(displayName);
+          } else if (fullName) {
+            $('#userDropdown>span').text(fullName);
+          } else {
+            $('#userDropdown>span').text($('#txtUsername').val());
+          }
         }
       }
     });
