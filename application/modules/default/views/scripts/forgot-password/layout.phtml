@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Quên Mật Khẩu</title>
+
+    <link rel="shortcut icon" href="<?=$this->BaseUrl?>/public/img/logo.png">
+
+    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/nunito.css" />
+    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/sb-admin-2.min.css" />
+    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/sb-admin-2-override.css" />
+    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/vendor/fontawesome-free/all.min.css" />
+    <link rel="stylesheet" type="text/css" href="<?=$this->BaseUrl?>/public/css/swal2-override.css" />
+
+    <style type="text/css">
+        .card {
+            margin-top: 80px;
+            width: 700px;
+        }
+
+        .card-body>div:first-of-type {
+            border-right: 1px solid #afbce4;
+        }
+
+        .input-group-text {
+            border-bottom-left-radius: 22px;
+            border-top-left-radius: 22px;
+            justify-content: center;
+            width: 44px;
+        }
+
+        .form-control {
+            border-bottom-right-radius: 22px;
+            border-top-right-radius: 22px;
+            height: 44px;
+        }
+
+        form.user .btn-user {
+            font-size: inherit;
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-primary">
+    <div class="container">
+        <!-- Outer Row -->
+        <div class="row justify-content-center">
+            <div class="card border-0 shadow-lg">
+                <div class="card-body d-flex py-4">
+                    <div class="px-4 py-5 w-50">
+                        <img src="<?=$this->BaseUrl?>/public/images/forgot-password.png" alt="" class="w-100">
+                    </div>
+                    <div class="px-4 py-5 w-50">
+                        <div class="text-center">
+                            <h1 class="h4 text-gray-900 mb-3">QUÊN MẬT KHẨU?</h1>
+                            <p class="mb-4">Vui lòng nhập username của bạn vào ô bên dưới.
+                                Mật khẩu mới sẽ được gửi vào hộp thư của bạn!</p>
+                        </div>
+                        <?=$this->layout()->content?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="<?=$this->BaseUrl?>/public/vendor/jquery/jquery.min.js"></script>
+    <script src="<?=$this->BaseUrl?>/public/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="<?=$this->BaseUrl?>/public/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="<?=$this->BaseUrl?>/public/js/sb-admin-2.min.js"></script>
+    <script src="<?=$this->BaseUrl?>/public/vendor/swal2/sweetalert2.all.min.js"></script>
+    <script src="<?=$this->BaseUrl?>/public/js/common.js"></script>
+    <script src="<?=$this->BaseUrl?>/public/js/forgot-password.js"></script>
+</body>
+
+</html>

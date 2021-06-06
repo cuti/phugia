@@ -107,10 +107,10 @@
         data: null,
         render: () => {
           const btnEdit = `<button type="button" class="btn-edit btn btn-outline-secondary btn-sm" title="Điều chỉnh thông tin">
-              <i class="fas fa-edit"></i>
+              <i class="fas fa-user-edit"></i>
             </button>`;
-          const btnDelete = `<button type="button" class="btn-delete btn btn-danger btn-sm ml-2" title="Xóa">
-              <i class="fas fa-trash"></i>
+          const btnDelete = `<button type="button" class="btn-delete btn btn-outline-danger btn-sm ml-2" title="Xóa">
+              <i class="fas fa-user-slash"></i>
             </button>`;
           const btnResetPass = `<button type="button" class="btn-reset-pass btn btn-outline-secondary btn-sm ml-2" title="Cấp lại mật khẩu">
               <i class="fas fa-key"></i>
@@ -127,16 +127,18 @@
           let fa_icon, tooltip, btnClass;
 
           if (+data) {
-            fa_icon = 'check';
+            fa_icon = 'user-check';
             tooltip = 'Khóa người dùng';
             btnClass = 'success';
           } else {
-            fa_icon = 'lock';
+            fa_icon = 'user-lock';
             tooltip = 'Mở khóa người dùng';
             btnClass = 'danger';
           }
 
-          const btnToggleActive = `<button type="button" class="btn-toggle-active btn btn-outline-${btnClass} btn-sm" title="${tooltip}"><i class="fas fa-${fa_icon}"></i></button>`;
+          const btnToggleActive = `<button type="button" class="btn-toggle-active btn btn-outline-${btnClass} btn-sm" title="${tooltip}">
+              <i class="fas fa-${fa_icon}"></i>
+            </button>`;
 
           return btnToggleActive;
         },

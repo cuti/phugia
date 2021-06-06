@@ -1,0 +1,31 @@
+<form method="post" class="user">
+  <div class="form-group input-group">
+    <div class="input-group-prepend">
+      <div class="input-group-text" id="btnGroupAddon"><i class="fas fa-user"></i></div>
+    </div>
+    <input name="username"
+      type="text" class="form-control"
+      placeholder="Tài khoản"
+      aria-label="Tài khoản"
+      aria-describedby="btnGroupAddon">
+  </div>
+
+  <div class="form-group">
+    <button type="submit" class="btn btn-primary btn-user btn-block">
+      <i class="fas fa-key"></i>
+      Thiết lập lại mật khẩu
+    </button>
+  </div>
+
+  <hr>
+
+  <div class="text-center">
+    <a href="<?=$this->BaseUrl?>/login">Quay lại trang đăng nhập.</a>
+  </div>
+
+  <hr>
+
+  <div id="lblNote" class="form-group invisible text-danger text-center">
+    &nbsp;<?=$this->note?>
+  </div>
+</form>

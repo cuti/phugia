@@ -36,7 +36,7 @@ class SidebarController extends Zend_Controller_Action
 
                 foreach ($submenus as $submenu) {
                     $s .= '<a class="collapse-item" href="' . $rootUrl . '/' . $submenu['menu_url'] . '">';
-                    $s .= '<i class="fa-fw ' . $menu['menu_icon'] . ' mr-2"></i>';
+                    $s .= '<i class="fa-fw ' . $submenu['menu_icon'] . ' mr-2"></i>';
                     $s .= $submenu['menu_name'] . '</a>';
                 }
 
@@ -44,6 +44,10 @@ class SidebarController extends Zend_Controller_Action
 
                 unset($submenus);
             }
+        }
+
+        if ($s !== '') {
+            $s = '<hr class="sidebar-divider my-0">' . $s;
         }
 
         $this->view->menuHtml = $s;
