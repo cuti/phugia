@@ -34,7 +34,7 @@ class UserInfoController extends Zend_Controller_Action
             $newPass = $req->getParam('newpass', '');
             $user = new Default_Model_User();
 
-            if ($user->num($userName, MD5($oldPass)) > 0) {
+            if ($user->validate($userName, MD5($oldPass))) {
                 $affectedCount = $user->changeUserPassword($userId, $newPass);
 
                 $result = array(
@@ -69,10 +69,12 @@ class UserInfoController extends Zend_Controller_Action
 
             $fullName = $req->getParam('fullName', '');
             $displayName = $req->getParam('displayName', '');
+            $email = $req->getParam('email', '');
 
             $data = array(
                 'user_fullname' => $fullName,
                 'user_display_name' => $displayName,
+                'user_email' => $email,
             );
 
             $user = new Default_Model_User();
@@ -80,6 +82,7 @@ class UserInfoController extends Zend_Controller_Action
 
             $userInfo['fullname'] = $fullName;
             $userInfo['display_name'] = $displayName;
+            $userInfo['email'] = $email;
 
             $this->setUserInfo($userInfo);
 

@@ -1,74 +1,6 @@
 (() => {
   let tblProduct;
 
-  function phpDateToVnDate(ymd) {
-    const mDate = moment(ymd);
-
-    if (mDate.isValid()) {
-      return moment(ymd).format('DD/MM/YYYY');
-    }
-
-    return '';
-  }
-
-  function nullIfEmpty(params) {
-    if (params === '') {
-      return null;
-    }
-    return params;
-  }
-
-  function showSuccessToast(text, duration, width) {
-    Swal.fire({
-      customClass: {
-        htmlContainer: 'text-white',
-        icon: 'border-white text-white',
-        popup: 'bg-success',
-      },
-      icon: 'success',
-      showConfirmButton: false,
-      text,
-      timer: duration,
-      timerProgressBar: true,
-      toast: true,
-      width,
-    });
-  }
-
-  function showWarningToast(text, duration, width) {
-    Swal.fire({
-      customClass: {
-        htmlContainer: 'text-dark',
-        icon: 'border-dark text-dark',
-        popup: 'bg-warning',
-      },
-      icon: 'warning',
-      showConfirmButton: false,
-      text,
-      timer: duration,
-      timerProgressBar: true,
-      toast: true,
-      width,
-    });
-  }
-
-  function showErrorToast(text, width) {
-    Swal.fire({
-      confirmButtonText: 'Đóng',
-      customClass: {
-        actions: 'justify-content-end',
-        confirmButton: 'bg-white text-dark',
-        htmlContainer: 'text-white',
-        icon: 'border-white',
-        popup: 'bg-danger',
-      },
-      icon: 'error',
-      text,
-      toast: true,
-      width,
-    });
-  }
-
   function confirmDeleteProduct(prdName) {
     return Swal.fire({
       cancelButtonText: 'Hủy',
@@ -148,7 +80,7 @@
       },
       {
         data: 'product_created',
-        render: data => phpDateToVnDate(data),
+        render: data => Utility.phpDateToVnDate(data),
         title: 'Ngày tạo',
         type: 'date',
         width: '100px',
@@ -160,7 +92,7 @@
       },
       {
         data: 'product_last_updated',
-        render: data => phpDateToVnDate(data),
+        render: data => Utility.phpDateToVnDate(data),
         title: 'Ngày cập nhật sau cùng',
         type: 'date',
         width: '100px',
@@ -178,7 +110,7 @@
         defaultContent: '',
       },
       {
-        targets: [0, 1],
+        targets: [0],
         searchable: false,
       }
     ],
@@ -211,18 +143,18 @@
 
   $('#btnSaveProduct').click(() => {
     if ($('#txtMaVT').val().trim() === '') {
-      showWarningToast('Chưa nhập mã vật tư.', 5000, '300px');
+      Toast.showWarning('Chưa nhập mã vật tư.');
       return;
     }
 
     if ($('#txtTenVT').val().trim() === '') {
-      showWarningToast('Chưa nhập tên vật tư.', 5000, '300px');
+      Toast.showWarning('Chưa nhập tên vật tư.');
       return;
     }
 
     const product_id = $('#hidPrdId').val();
-    const product_unit_measure = nullIfEmpty($('#txtDonViTinh').val().trim());
-    const product_manufacturer = nullIfEmpty($('#txtHangSX').val().trim());
+    const product_unit_measure = Utility.nullIfEmpty($('#txtDonViTinh').val().trim());
+    const product_manufacturer = Utility.nullIfEmpty($('#txtHangSX').val().trim());
 
     const data = {
       product: {
@@ -250,12 +182,12 @@
       dataType: 'json',
       success: function (res) {
         if (res.status === 1) {
-          showSuccessToast('Lưu vật tư thành công.', 5000, '300px');
+          Toast.showSuccess('Lưu vật tư thành công.');
           tblProduct.ajax.reload();
         } else if (res.message === 'PRD_CODE_DUP') {
-          showErrorToast('Mã vật tư đã tồn tại.', '300px');
+          Toast.showError('Mã vật tư đã tồn tại.');
         } else {
-          showErrorToast('Lưu không thành công, vui lòng kiểm tra lại thông tin vật tư.', '400px');
+          Toast.showError('Lưu không thành công, vui lòng kiểm tra lại thông tin vật tư.', '400px');
         }
       }
     });
@@ -358,10 +290,10 @@
           dataType: 'json',
           success: function (res) {
             if (res.status === 1) {
-              showSuccessToast('Xóa vật tư thành công.', 5000, '300px');
+              Toast.showSuccess('Xóa vật tư thành công.');
               tblProduct.ajax.reload();
             } else {
-              showErrorToast('Lỗi, không xóa được vật tư.', '300px');
+              Toast.showError('Lỗi, không xóa được vật tư.');
             }
           }
         });

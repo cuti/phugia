@@ -5,11 +5,11 @@
 </style>
 
 <?php
-  if ($this->data['image']) {
+if ($this->data['image']) {
     $userImage = $this->data['image'];
-  } else {
+} else {
     $userImage = $this->BaseUrl . '/public/images/default-user.png';
-  }
+}
 ?>
 
 <div class="container-fluid">
@@ -34,6 +34,20 @@
             <div class="col-md-8">
               <div class="row">
                 <div class="col-md-12">
+                  <label class="mb-1">Tên đăng nhập</label>
+                  <input id="txtUsername" type="text" class="form-control" readonly value="<?=$this->data['username']?>">
+                </div>
+              </div>
+
+              <div class="row mt-3">
+                <div class="col-md-12">
+                  <label class="mb-1"><strong>Địa chỉ email</strong></label>
+                  <input id="txtEmail" type="email" class="form-control" readonly value="<?=$this->data['email']?>">
+                </div>
+              </div>
+
+              <div class="row mt-3">
+                <div class="col-md-12">
                   <label class="mb-1">Họ và tên</label>
                   <input id="txtFullName" type="text" class="form-control" readonly value="<?=$this->data['fullname']?>">
                 </div>
@@ -43,20 +57,6 @@
                 <div class="col-md-12">
                   <label class="mb-1">Tên hiển thị</label>
                   <input id="txtDisplayName" type="text" class="form-control" readonly value="<?=$this->data['display_name']?>">
-                </div>
-              </div>
-
-              <div class="row mt-3">
-                <div class="col-md-12">
-                  <label class="mb-1">Tên đăng nhập</label>
-                  <input id="txtUsername" type="text" class="form-control" readonly value="<?=$this->data['username']?>">
-                </div>
-              </div>
-
-              <div class="row mt-3">
-                <div class="col-md-12">
-                  <label class="mb-1">Mật khẩu</label>
-                  <input type="text" class="form-control" readonly value="(Đã mã hóa)">
                 </div>
               </div>
 
@@ -88,6 +88,7 @@
                 </div>
               </div>
             </div>
+          </div>
         </div>
       </div>
     </div>
@@ -107,7 +108,7 @@
         </button>
       </div>
 
-      <form id="formChangePass" method="post" action="<?=$this->BaseUrl?>/user-info/cp">
+      <form id="formChangePass" method="post">
         <div class="modal-body p-4">
           <label>Mật khẩu cũ</label>
           <input id="txtOldPass" name="oldpass" type="password" class="form-control">

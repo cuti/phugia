@@ -5,13 +5,36 @@ class Default_Model_User extends Zend_Db_Table_Abstract
     protected $_name = 'user';
     protected $_primary = 'user_id';
 
-    public function num($username, $password)
+    /**
+     * Authenticate user.
+     *
+     * @param string  $username
+     * @param string  $password
+     * @return array  Record matched.
+     */
+    public function authenticate($username, $password)
     {
-        $sql = "SELECT user_id FROM [user] WHERE user_username = ? AND user_password = ? AND user_status = 1";
+        $sql = "SELECT [user].*, dep.dep_name FROM [user] LEFT JOIN department dep ON [user].user_department_id = dep.dep_id WHERE user_username = ? AND user_password = ? AND user_active = 1";
+        $bind = array($username, MD5($password));
+        $result = $this->getAdapter()->fetchAll($sql, $bind);
+
+        return $result;
+    }
+
+    /**
+     * Validate username and password, without check if the user is active or not.
+     *
+     * @param string  $username
+     * @param string  $password
+     * @return bool   The validation is success or not.
+     */
+    public function validate($username, $password)
+    {
+        $sql = "SELECT user_id FROM [user] WHERE user_username = ? AND user_password = ?";
         $bind = array($username, $password);
         $result = count($this->getAdapter()->fetchAll($sql, $bind));
 
-        return $result;
+        return $result > 0;
     }
 
     public function getUserByUsername($username)

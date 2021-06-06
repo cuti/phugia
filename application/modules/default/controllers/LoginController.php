@@ -1,5 +1,7 @@
 <?php
 
+require_once 'Utility.php';
+
 class LoginController extends Zend_Controller_Action
 {
     public function init()
@@ -24,33 +26,28 @@ class LoginController extends Zend_Controller_Action
 
         if ($req->isPost()) {
             $username = $req->getParam('username', '');
-            $password = MD5($req->getParam('password', ''));
+            $password = $req->getParam('password', '');
 
             $users = new Default_Model_User();
-            $authAdapter = new Zend_Auth_Adapter_DbTable($users->getAdapter(), 'user');
-            $authAdapter->setIdentityColumn('user_username')->setCredentialColumn('user_password');
-            $authAdapter->setIdentity($username)->setCredential($password);
+            $result = $users->authenticate($username, $password);
 
-            $auth = Zend_Auth::getInstance();
-            $result = $auth->authenticate($authAdapter);
-
-            if ($result->isValid()) {
+            if (count($result) > 0) {
                 Zend_Session::rememberMe(3600); // 1 hour
                 Zend_Session::start();
 
-                $data = $authAdapter->getResultRowObject();
-                $user_department = $this->getUserDepartment($data->user_id);
+                $data = $result[0];
                 $identity = array(
-                    'user_id'      => $data->user_id,
-                    'fullname'     => $data->user_fullname,
-                    'display_name' => $data->user_display_name,
-                    'username'     => $data->user_username,
-                    'image'        => $data->user_image,
-                    'department'   => $user_department,
+                    'user_id'      => $data['user_id'],
+                    'fullname'     => $data['user_fullname'],
+                    'display_name' => $data['user_display_name'],
+                    'username'     => $data['user_username'],
+                    'image'        => $data['user_image'],
+                    'department'   => $data['dep_name'],
+                    'email'        => $data['user_email'],
                 );
 
                 // Use session storage, with default namespace 'Zend_Auth'
-                $auth->getStorage()->write($identity);
+                Zend_Auth::getInstance()->getStorage()->write($identity);
                 $this->_redirect('');
             } else {
                 $this->view->note = 'Tài khoản hoặc mật khẩu không đúng.';
@@ -59,23 +56,4 @@ class LoginController extends Zend_Controller_Action
     }
 
     // --------------- PRIVATE FUNCTIONS ---------------
-
-    /**
-     * Get user's department.
-     */
-    private function getUserDepartment($userId)
-    {
-        $db = Zend_Db_Table::getDefaultAdapter();
-        $select = new Zend_Db_Select($db);
-        $select->from('user', array())
-            ->joinLeft(array('dep' => 'department'), '[user].user_department_id = dep.dep_id', array('dep_name'))
-            ->where('[user].user_id = ?', $userId);
-        $result = $db->fetchRow($select);
-
-        if ($result['dep_name'] === null) {
-            return '';
-        } else {
-            return $result['dep_name'];
-        }
-    }
 }

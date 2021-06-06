@@ -189,8 +189,7 @@ class CustomerController extends Zend_Controller_Action
      */
     private function currentUser()
     {
-        $auth = Zend_Auth::getInstance();
-        $identity = $auth->getIdentity();
-        return $identity->user_username;
+        $identity = Zend_Auth::getInstance()->getIdentity();
+        return $identity['username'];
     }
 }
