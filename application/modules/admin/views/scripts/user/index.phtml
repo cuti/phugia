@@ -1,0 +1,117 @@
+<style type="text/css">
+  .btn-toggle-active:hover .fa-user-check:before {
+    content: "\f023";
+  }
+
+  .btn-toggle-active:hover .fa-user-lock:before {
+    content: "\f3c1";
+  }
+</style>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-primary">Danh sách người dùng</h6>
+        </div>
+
+        <div class="card-body">
+          <div class="border-bottom mb-3 pb-3">
+            <button type="button" id="btnNewUser" class="btn btn-primary">
+              <i class="fas fa-user-plus"></i>
+              Thêm người dùng
+            </button>
+          </div>
+
+          <table id="tblUser" class="table table-bordered table-striped table-hover data-table responsive">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--------------------------------------------------------------------------------------->
+
+<!-- Detail dialog -->
+<div id="detailDlg" class="modal fade" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Thông Tin Chi Tiết Người Dùng</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+
+      <form id="formUserDetail" method="post">
+        <div class="modal-body px-0">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-6">
+                <label class="mb-1"><strong>Username</strong></label>
+                <input type="text" id="txtUsername" class="form-control">
+              </div>
+              <div class="col-md-6">
+                <label class="mb-1"><strong>Mật khẩu</strong></label>
+                <input type="password" id="txtPassword" class="form-control">
+              </div>
+            </div>
+
+            <div class="row mt-3">
+              <div class="col-md-6">
+                <label class="mb-1">Họ và tên</label>
+                <input type="text" id="txtFullname" class="form-control">
+              </div>
+              <div class="col-md-6">
+                <label class="mb-1">Tên hiển thị</label>
+                <input type="text" id="txtDisplayName" class="form-control">
+              </div>
+            </div>
+
+            <div class="row mt-3">
+              <div class="col-md-6">
+                <label class="mb-1"><strong>Email</strong></label>
+                <input type="email" id="txtEmail" class="form-control">
+              </div>
+              <div class="col-md-6">
+                <label class="mb-1">Phòng</label>
+                <select id="selDepartment"></select>
+              </div>
+            </div>
+
+            <div class="row mt-3">
+              <div class="col-md-12">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="chkActive">
+                  <label class="form-check-label" for="chkActive">
+                    Kích hoạt
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /modal-body -->
+
+        <div class="modal-footer">
+          <div class="font-weight-bold mr-auto text-danger">Các trường in đậm là bắt buộc nhập</div>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            <i class="fas fa-times"></i>
+            Đóng
+          </button>
+          <button id="btnSaveUser" type="submit" class="btn btn-primary">
+            <i class="fas fa-save"></i>
+            Lưu
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- /Detail dialog -->
+
+<script src="<?=$this->BaseUrl?>/public/js/admin-user.js"></script>

@@ -8,7 +8,7 @@
       placeholder="Tài khoản"
       aria-label="Tài khoản"
       aria-describedby="btnGroupAddon"
-      value="ducnha">
+      value="admin">
   </div>
 
   <div class="form-group input-group">
@@ -30,7 +30,15 @@
     </button>
   </div>
 
-  <div id="lblNote" class="form-group invisible text-danger">
+  <hr>
+
+  <div class="text-center">
+    <a href="<?=$this->BaseUrl?>/forgot-password">Quên mật khẩu?</a>
+  </div>
+
+  <hr>
+
+  <div id="lblNote" class="form-group invisible text-danger text-center">
     &nbsp;<?=$this->note?>
   </div>
 </form>

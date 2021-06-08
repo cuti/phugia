@@ -26,6 +26,7 @@ const Toast = {
       width,
     });
   },
+
   /**
    * Show warning notification.
    * @param {string} text
@@ -48,6 +49,7 @@ const Toast = {
       width,
     });
   },
+
   /**
    * Show error notification.
    * @param {string} text
@@ -71,11 +73,31 @@ const Toast = {
   },
 };
 
+/**
+ * Dependencies:
+ *    - Momentjs
+ */
 const Utility = {
-  nullIfEmpty: function (params) {
+  /**
+   * Return NULL if the input string is empty. Otherwise, return the input string itself.
+   * @param {string} params
+   * @returns string|null
+   */
+  nullIfEmpty: params => {
     if (params === '') {
       return null;
     }
     return params;
   },
+
+  /**
+   * Convert PHP date string to Vietnamese format: DD/MM/YYYY.
+   * @param {string} ymd PHP date string format YYYY-MM-DD
+   * @returns string - The converted string, or an empty string if the input is invalid.
+   */
+  phpDateToVnDate: ymd => {
+    const mDate = moment(ymd);
+    if (mDate.isValid()) return moment(ymd).format('DD/MM/YYYY');
+    return '';
+  }
 };

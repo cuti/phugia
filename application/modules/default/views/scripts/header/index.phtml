@@ -18,11 +18,13 @@
       </a>
 
       <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-        <a class="dropdown-item" href="<?=$this->BaseUrl?>/user-info">
-          <i class="fas fa-user fa-fw mr-2"></i>
-          Thông tin người dùng
-        </a>
-        <div class="dropdown-divider"></div>
+        <?php
+          if (strpos($_SERVER['REQUEST_URI'], 'admin') === false) {
+            echo '<a class="dropdown-item" href="' . $this->BaseUrl . '/user-info">';
+            echo '<i class="fas fa-user fa-fw mr-2"></i>Thông tin người dùng</a>';
+            echo '<div class="dropdown-divider"></div>';
+          }
+        ?>
         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
           <i class="fas fa-sign-out-alt fa-fw mr-2"></i>
           Thoát

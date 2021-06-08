@@ -23,8 +23,8 @@ class ExcelReaderWriter
 
         $objPHPExcel = $objReader->load($fileFullPath);
         $sheet = $objPHPExcel->getSheet($sheetIndex);
-        $lastRow = $sheet->getHighestRow();                                                     // Row start from 1
-        $lastColumn = PHPExcel_Cell::columnIndexFromString($sheet->getHighestColumn());         // Column start from 0
+        $lastRow = $sheet->getHighestRow(); // Row start from 1
+        $lastColumn = PHPExcel_Cell::columnIndexFromString($sheet->getHighestColumn()); // Column start from 0
         $data = array();
 
         for ($row = 2; $row <= $lastRow; ++$row) { // Start from 2 b/c exclude header row
@@ -45,4 +45,3 @@ class ExcelReaderWriter
         return $data;
     }
 }
-?>

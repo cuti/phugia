@@ -1,5 +1,53 @@
 (() => {
-  let oldFullName, oldDisplayName;
+  let oldFullName, oldDisplayName, oldEmail;
+
+  function enableEditing() {
+    $('#txtFullName').attr('readonly', false);
+    $('#txtDisplayName').attr('readonly', false);
+    $('#txtEmail').attr('readonly', false).focus();
+
+    $('#btnSua').addClass('d-none');
+    $('#btnCancel').removeClass('d-none');
+    $('#btnSave').removeClass('d-none');
+  }
+
+  function disableEditing() {
+    $('#txtFullName').attr('readonly', true);
+    $('#txtDisplayName').attr('readonly', true);
+    $('#txtEmail').attr('readonly', true);
+
+    $('#btnSua').removeClass('d-none');
+    $('#btnCancel').addClass('d-none');
+    $('#btnSave').addClass('d-none');
+  }
+
+  function validateInput() {
+    if ($('#txtOldPass').val() === '') {
+      Toast.showWarning('Chưa nhập mật khẩu cũ', 3000);
+      $('#txtOldPass').focus();
+      return false;
+    }
+
+    if ($('#txtNewPass').val() === '') {
+      Toast.showWarning('Chưa nhập mật khẩu mới', 3000);
+      $('#txtNewPass').focus();
+      return false;
+    }
+
+    if ($('#txtConfirmNewPass').val() === '') {
+      Toast.showWarning('Chưa nhập lại mật khẩu mới', 3000);
+      $('#txtConfirmNewPass').focus();
+      return false;
+    }
+
+    if ($('#txtConfirmNewPass').val() !== $('#txtNewPass').val()) {
+      Toast.showWarning('Nhập lại mật khẩu mới không khớp', 3000);
+      $('#txtConfirmNewPass').focus();
+      return false;
+    }
+
+    return true;
+  }
 
   $('#changePassModal').on('shown.bs.modal', e => {
     $('#txtOldPass').focus();
@@ -8,25 +56,7 @@
   $('#formChangePass').submit(e => {
     e.preventDefault();
 
-    if ($('#txtOldPass').val() === '') {
-      Toast.showWarning('Chưa nhập mật khẩu cũ', 3000);
-      return;
-    }
-
-    if ($('#txtNewPass').val() === '') {
-      Toast.showWarning('Chưa nhập mật khẩu mới', 3000);
-      return;
-    }
-
-    if ($('#txtConfirmNewPass').val() === '') {
-      Toast.showWarning('Chưa nhập lại mật khẩu mới', 3000);
-      return;
-    }
-
-    if ($('#txtConfirmNewPass').val() !== $('#txtNewPass').val()) {
-      Toast.showWarning('Nhập lại mật khẩu mới không khớp', 3000);
-      return;
-    }
+    if (!validateInput()) return;
 
     $.ajax({
       type: 'POST',
@@ -53,37 +83,35 @@
   $('#btnSua').click(() => {
     oldFullName = $('#txtFullName').val();
     oldDisplayName = $('#txtDisplayName').val();
-
-    $('#txtFullName').attr('readonly', false).focus();
-    $('#txtDisplayName').attr('readonly', false);
-
-    $('#btnSua').addClass('d-none');
-    $('#btnCancel').removeClass('d-none');
-    $('#btnSave').removeClass('d-none');
+    oldEmail = $('#txtEmail').val();
+    enableEditing();
   });
 
   $('#btnCancel').click(() => {
     $('#txtFullName').val(oldFullName);
     $('#txtDisplayName').val(oldDisplayName);
-
-    $('#txtFullName').attr('readonly', true);
-    $('#txtDisplayName').attr('readonly', true);
-
-    $('#btnSua').removeClass('d-none');
-    $('#btnCancel').addClass('d-none');
-    $('#btnSave').addClass('d-none');
+    $('#txtEmail').val(oldEmail);
+    disableEditing();
   });
 
   $('#btnSave').click(() => {
+    if ($('#txtEmail').val().trim() === '') {
+      Toast.showWarning('Chưa nhập địa chỉ email.');
+      $('#txtEmail').focus();
+      return;
+    }
+
     const fullName = Utility.nullIfEmpty($('#txtFullName').val().trim());
     const displayName = Utility.nullIfEmpty($('#txtDisplayName').val().trim());
+    const email = Utility.nullIfEmpty($('#txtEmail').val().trim());
 
     $.ajax({
       type: 'POST',
       url: 'user-info/ci',
       data: {
         fullName,
-        displayName
+        displayName,
+        email,
       },
       dataType: 'json',
       success: function (res) {
@@ -91,13 +119,7 @@
           Toast.showError(res.message);
         } else {
           Toast.showSuccess('Cập nhật thông tin người dùng thành công', 3000);
-
-          $('#txtFullName').attr('readonly', true);
-          $('#txtDisplayName').attr('readonly', true);
-
-          $('#btnSua').removeClass('d-none');
-          $('#btnCancel').addClass('d-none');
-          $('#btnSave').addClass('d-none');
+          disableEditing();
 
           if (displayName) {
             $('#userDropdown>span').text(displayName);

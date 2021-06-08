@@ -13,23 +13,13 @@
   let district;
   let ward;
 
-  function phpDateToVnDate(ymd) {
-    const mDate = moment(ymd);
-
-    if (mDate.isValid()) {
-      return moment(ymd).format('DD/MM/YYYY');
-    }
-
-    return '';
-  }
-
   function clearSelect2(id) {
     $(`#${id}`).html('');
     $(`#${id}`).trigger('select2:select');
   }
 
-  function select2SelectedId(select2Id) {
-    const data = $(`#${select2Id}`).select2('data');
+  function select2SelectedId(id) {
+    const data = $(`#${id}`).select2('data');
 
     if (data.length === 0) {
       return null;
@@ -273,7 +263,7 @@
       },
       {
         data: 'cus_citizen_identity_card_date',
-        render: data => phpDateToVnDate(data),
+        render: data => Utility.phpDateToVnDate(data),
         title: 'Ngày cấp',
         responsivePriority: 2,
         type: 'date',
@@ -467,7 +457,7 @@
       },
       {
         data: 'cus_created',
-        render: data => phpDateToVnDate(data),
+        render: data => Utility.phpDateToVnDate(data),
         responsivePriority: 2,
         title: 'Ngày tạo',
         type: 'date',
@@ -481,7 +471,7 @@
       },
       {
         data: 'cus_last_updated',
-        render: data => phpDateToVnDate(data),
+        render: data => Utility.phpDateToVnDate(data),
         responsivePriority: 2,
         title: 'Ngày cập nhật sau cùng',
         type: 'date',
