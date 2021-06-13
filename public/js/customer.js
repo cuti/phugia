@@ -524,7 +524,7 @@
       success: function (res) {
         $('#selNhomKH').select2({
           allowClear: true,
-          data: res.results,
+          data: res.data,
           dropdownParent: $('#selNhomKH').parent(),
           placeholder: 'Chọn...',
           theme: 'bootstrap4',
@@ -538,7 +538,7 @@
       url: 'country/get-all',
       dataType: 'json',
       success: function (res) {
-        const data = res.results.map(d => ({
+        const data = res.data.map(d => ({
           id: d.id,
           text: d.vn_name || d.text
         }));
@@ -589,7 +589,7 @@
       url: 'city/get-all',
       dataType: 'json',
       success: function (res) {
-        city = res.results;
+        city = res.data;
 
         $('#selTinhTKNganHang').select2({
           ...select2Default,
@@ -646,7 +646,7 @@
       url: 'district/get-all',
       dataType: 'json',
       success: function (res) {
-        district = res.results;
+        district = res.data;
 
         $('#selQuan').select2({
           ...select2Default,
@@ -681,7 +681,7 @@
       url: 'ward/get-all',
       dataType: 'json',
       success: function (res) {
-        ward = res.results;
+        ward = res.data;
 
         $('#selPhuong').select2({
           ...select2Default,

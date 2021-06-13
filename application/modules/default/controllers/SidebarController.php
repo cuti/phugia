@@ -32,7 +32,7 @@ class SidebarController extends Zend_Controller_Action
                 $s .= '<i class="fa-fw ' . $menu['menu_icon'] . '"></i>';
                 $s .= '<span>' . $menu['menu_name'] . '</span></a>';
                 $s .= '<div id="collapse' . $menu['menu_group'] . '" class="collapse" aria-labelledby="heading' . $menu['menu_group'] . '" data-parent="#accordionSidebar">';
-                $s .= '<div class="bg-white py-2 collapse-inner rounded">';
+                $s .= '<div class="sub-wrapper py-2 collapse-inner rounded">';
 
                 foreach ($submenus as $submenu) {
                     $s .= '<a class="collapse-item" href="' . $rootUrl . '/' . $submenu['menu_url'] . '">';

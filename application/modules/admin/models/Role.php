@@ -1,81 +1,209 @@
 <?php
 
-class Admin_Model_Role  extends Zend_Db_Table_Abstract{
-    
+class Admin_Model_Role extends Zend_Db_Table_Abstract
+{
     protected $_name = 'role';
+    protected $_primary = 'role_id';
 
-    protected $_primary = 'role_id'; 
-
-    protected $_sequence = true;
-
-    public function loadRolesByRlId($id){
-        $db = Zend_Db_Table::getDefaultAdapter();
-        $select = new Zend_Db_Select($db);
-        $select
-        ->from("role",array(
-        'role_id'=>'role_id',
-        'role_name'=>'role_name',
-        'role_action'=>'role_action',
-        'role_status'=>'role_status',
-        'rl_id' => 'rl_id'))    
-        ->joinLeft(
-        'action',
-        'action.action_id = role.action_id',
-        array('action_name' =>'action_name',
-        'action_actname'=>'action_actname')) 
-        ->joinLeft(
-        'module',
-        'module.module_id = role.module_id',
-        array('module_name' => 'module_name',
-        'module_controller_name' => 'module_controller_name'));                     
-                        
-        $row = $db->fetchAll($select);
+    public function getRoleByRoleId($roleId)
+    {
+        $where = $this->getAdapter()->quoteInto('role_id = ?', $roleId);
+        $row = $this->fetchRow($where);
         return $row;
     }
 
-    public function loadRoles()
+    public function loadRole()
     {
-        $db = Zend_Db_Table::getDefaultAdapter();
-        $select = new Zend_Db_Select($db);
-        $select
-        ->from("role",array(
-        'role_id'=>'role_id',
-        'role_name'=>'role_name',
-        'role_action'=>'role_action',
-        'role_status'=>'role_status'))    
-        ->joinLeft(
-        'action',
-        'action.action_id = role.action_id',
-        array('action_name' =>'action_name',
-        'action_actname'=>'action_actname')) 
-        ->joinLeft(
-        'module',
-        'module.module_id = role.module_id',
-        array('module_name' => 'module_name',
-        'module_controller_name' => 'module_controller_name'));                     
-                        
-        $row = $db->fetchAll($select);
-        return $row;
+        $sql = 'SELECT r.role_id
+                     , r.role_name
+                     , r.role_active
+                     , r.role_created
+                     , r.role_created_by_user_id
+                     , r.role_last_updated
+                     , r.role_last_updated_by_user_id
+                     , uc.user_username AS role_created_by_username
+                     , um.user_username AS role_last_updated_by_username
+                     , (SELECT COUNT(DISTINCT ur_user_id)
+                          FROM user_role
+                         WHERE ur_role_id = r.role_id) AS user_count
+                  FROM [role] r
+                       LEFT JOIN [user] uc ON r.role_created_by_user_id = uc.user_id
+                       LEFT JOIN [user] um ON r.role_last_updated_by_user_id = um.user_id
+              ORDER BY r.role_name ASC';
+
+        $result = $this->getAdapter()->fetchAll($sql);
+
+        return $result;
     }
 
-    public function loadRoleByRoleId($id)
+    public function loadRoleShort()
     {
-        $db = Zend_Db_Table::getDefaultAdapter();
-        $select = new Zend_Db_Select($db);
-        $select->distinct()
-            ->from("module", array('module_controller','module_id'))
-            ->joinInner(
-            'role',
-            'role.module_id = module.module_id',
-            array()) 
-            ->joinInner(
-                'action',
-                'role.action_id = action.action_id',
-                array('action_actname'))  
-            ->where('role.role_id = ?',$id);
-            
-            // ->limit(1);   
-                        
-        return $db->fetchRow($select);
+        $sql = 'SELECT role_id AS id, role_name AS [text]
+                  FROM [role]
+                 WHERE role_active = 1
+              ORDER BY role_name ASC';
+
+        $result = $this->getAdapter()->fetchAll($sql);
+
+        return $result;
+    }
+
+    /**
+     * Insert role to DB.
+     *
+     * @param  array $data  Data row.
+     * @return mixed        The primary key of the row inserted.
+     */
+    public function insertRole($data)
+    {
+        try {
+            if (!$this->isRoleExists($data['role_name'])) {
+                $data['role_created'] = date('Y-m-d H:i:s');
+                $data['role_created_by_user_id'] = $this->currentUserId();
+                return $this->insert($data);
+            } else {
+                throw new Exception('role_name');
+            }
+        } catch (Exception $err) {
+            throw $err;
+        }
+    }
+
+    /**
+     * Update role.
+     *
+     * @param  array $data  Key-value pairs of fields to be updated, include role_id.
+     * @return int          The number of rows updated.
+     */
+    public function updateRole($data)
+    {
+        try {
+            $roleId = $data['role_id'];
+
+            if (!$this->isRoleExists($data['role_name'], $roleId)) {
+                $updateData = array_filter($data, function($k) {
+                    return $k !== 'role_id';
+                }, ARRAY_FILTER_USE_KEY);
+
+                $updateData['role_last_updated'] = date('Y-m-d H:i:s');
+                $updateData['role_last_updated_by_user_id'] = $this->currentUserId();
+
+                $where = $this->getAdapter()->quoteInto('role_id = ?', $roleId);
+
+                $affectedCount = $this->update($updateData, $where);
+
+                $logger = new Admin_Model_LogAdministration();
+                $logger->writeLog('Cập nhật vai trò, tên vai trò: ' . $data['role_name']);
+
+                return $affectedCount;
+            } else {
+                throw new Exception('role_name');
+            }
+        } catch (Exception $err) {
+            throw $err;
+        }
+    }
+
+    /**
+     * Delete role.
+     *
+     * @param  int    $roleId   Role id.
+     * @param  string $roleName Role name.
+     * @return int              The number of rows deleted.
+     */
+    public function deleteRole($roleId, $roleName)
+    {
+        try {
+            $adapter = $this->getAdapter();
+
+            // Tự động gỡ người dùng và menu liên quan đến nhóm này, theo CASCADE DELETE
+            $affectedCount = $this->delete(
+                array(
+                    $adapter->quoteInto('role_id = ?', $roleId),
+                    $adapter->quoteInto('role_name = ?', $roleName),
+                )
+            );
+
+            $logger = new Admin_Model_LogAdministration();
+            $logger->writeLog('Xóa vai trò, tên vai trò: ' . $roleName);
+
+            return $affectedCount;
+        } catch (Exception $err) {
+            throw $err;
+        }
+    }
+
+    /**
+     * Change role status.
+     *
+     * @param  string $roleId       Role id.
+     * @param  bool   $isActive     Role is active or not.
+     * @return bool                 The number of rows updated.
+     */
+    public function changeStatusRole($roleId, $isActive)
+    {
+        try {
+            $sql = "UPDATE [role]
+                       SET role_active = ?,
+                           role_last_updated = GETDATE(),
+                           role_last_updated_by_user_id = ?
+                     WHERE role_id = ?";
+
+            $bind = array(
+                $isActive ? 1 : 0,
+                $this->currentUserId(),
+                $roleId
+            );
+
+            $stm = $this->getAdapter()->query($sql, $bind);
+            $resultRole = $stm->execute();
+
+            if (!$isActive) {
+                (new Admin_Model_User())->setInactiveForUserByRoleId($roleId);
+            }
+
+            $roleObj = $this->getRoleByRoleId($roleId);
+
+            $logger = new Admin_Model_LogAdministration();
+
+            if ($isActive) {
+                $logger->writeLog('Kích hoạt nhóm người dùng: ' . $roleObj['role_name']);
+            } else {
+                $logger->writeLog('Xóa kích hoạt nhóm người dùng: ' . $roleObj['role_name']);
+            }
+
+            return $resultRole;
+        } catch (Exception $err) {
+            throw $err;
+        }
+    }
+
+    // --------------- PRIVATE FUNCTIONS ---------------
+
+    private function isRoleExists($roleName, $roleId = null)
+    {
+        if ($roleId === null) {
+            $select = $this->select()
+                ->from('role', array('role_id'))
+                ->where('UPPER(role_name) = UPPER(?)', $roleName);
+        } else {
+            $select = $this->select()
+                ->from('role', array('role_id'))
+                ->where('UPPER(role_name) = UPPER(?)', $roleName)
+                ->where('role_id <> ?', $roleId);
+        }
+
+        $result = $this->fetchAll($select);
+
+        return count($result) > 0;
+    }
+
+    /**
+     * Get current logged in user_id
+     */
+    private function currentUserId()
+    {
+        $identity = Zend_Auth::getInstance()->getIdentity();
+        return $identity['user_id'];
     }
 }

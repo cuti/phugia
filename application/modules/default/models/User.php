@@ -14,7 +14,10 @@ class Default_Model_User extends Zend_Db_Table_Abstract
      */
     public function authenticate($username, $password)
     {
-        $sql = "SELECT [user].*, dep.dep_name FROM [user] LEFT JOIN department dep ON [user].user_department_id = dep.dep_id WHERE user_username = ? AND user_password = ? AND user_active = 1";
+        $sql = "SELECT [user].*, dep.dep_name
+                  FROM [user]
+                       LEFT JOIN department dep ON [user].user_department_id = dep.dep_id
+                 WHERE user_username = ? AND user_password = ? AND user_active = 1";
         $bind = array($username, MD5($password));
         $result = $this->getAdapter()->fetchAll($sql, $bind);
 

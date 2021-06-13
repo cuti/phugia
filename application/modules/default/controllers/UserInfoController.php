@@ -10,20 +10,27 @@ class UserInfoController extends Zend_Controller_Action
     public function preDispatch()
     {
         if (!Zend_Auth::getInstance()->hasIdentity()) {
-            $this->_redirect('/login');
-            exit;
+            if ($this->getRequest()->isXmlHttpRequest()) {
+                echo json_encode(array('message' => 'SESSION_END'));
+                exit;
+            } else {
+                $this->_redirect('/login');
+            }
+        }
+
+        if ($this->getRequest()->isXmlHttpRequest()) {
+            $this->setRestResponse();
         }
     }
 
     public function indexAction()
     {
-        $this->view->pageTitle = 'Quản Lý Khách Hàng';
+        $this->view->pageTitle = 'Thông Tin Người Dùng';
         $this->view->data = $this->getUserInfo();
     }
 
     public function cpAction()
     {
-        $this->_helper->layout()->disableLayout();
         $req = $this->getRequest();
 
         if ($req->isXmlHttpRequest() && $req->isPost()) {
@@ -55,12 +62,10 @@ class UserInfoController extends Zend_Controller_Action
         }
 
         echo json_encode($result);
-        exit;
     }
 
     public function ciAction()
     {
-        $this->_helper->layout()->disableLayout();
         $req = $this->getRequest();
 
         if ($req->isXmlHttpRequest() && $req->isPost()) {
@@ -98,10 +103,16 @@ class UserInfoController extends Zend_Controller_Action
         }
 
         echo json_encode($result);
-        exit;
     }
 
     // --------------- PRIVATE FUNCTIONS ---------------
+
+    private function setRestResponse()
+    {
+        $this->_helper->layout()->disableLayout();
+        $this->_helper->viewRenderer->setNoRender(true);
+        $this->getResponse()->setHeader('Content-Type', 'application/json', true);
+    }
 
     /**
      * Get current user information.

@@ -5,6 +5,13 @@ class Admin_Model_User extends Zend_Db_Table_Abstract
     protected $_name = 'user';
     protected $_primary = 'user_id';
 
+    public function getUserByUserId($userId)
+    {
+        $where = $this->getAdapter()->quoteInto('user_id = ?', $userId);
+        $row = $this->fetchRow($where);
+        return $row;
+    }
+
     public function getUserByUsername($username)
     {
         $where = $this->getAdapter()->quoteInto('user_username = ?', $username);
@@ -14,53 +21,59 @@ class Admin_Model_User extends Zend_Db_Table_Abstract
 
     public function loadUser()
     {
-        $db = Zend_Db_Table::getDefaultAdapter();
-        $select = new Zend_Db_Select($db);
-        $userFields = array(
-            'user_id',
-            'user_fullname',
-            'user_display_name',
-            'user_username',
-            'user_department_id',
-            'user_email',
-            'user_active',
-            'user_created',
-            'user_created_by_user_id',
-            'user_last_updated',
-            'user_last_updated_by_user_id',
-        );
+        $sql = 'SELECT u.user_id
+                     , u.user_fullname
+                     , u.user_display_name
+                     , u.user_username
+                     , u.user_department_id
+                     , u.user_email
+                     , u.user_active
+                     , u.user_created
+                     , u.user_created_by_user_id
+                     , u.user_last_updated
+                     , u.user_last_updated_by_user_id
+                     , dep.dep_name AS user_department
+                     , uc.user_username AS user_created_by_username
+                     , um.user_username AS user_last_updated_by_username
+                     , r.role_id
+                     , r.role_name
+                  FROM [user] u
+                       LEFT JOIN department dep ON u.user_department_id = dep.dep_id
+                       LEFT JOIN [user] uc ON u.user_created_by_user_id = uc.user_id
+                       LEFT JOIN [user] um ON u.user_last_updated_by_user_id = um.user_id
+                       LEFT JOIN user_role ur ON u.user_id = ur.ur_user_id
+                       LEFT JOIN [role] r ON ur.ur_role_id = r.role_id
+                 WHERE u.user_deleted = 0
+              ORDER BY u.user_username ASC';
 
-        $select->from('user', $userFields)
-            ->joinLeft(array('dep' => 'department'), '[user].user_department_id = dep.dep_id', array('user_department' => 'dep_name'))
-            ->joinLeft(array('uc' => 'user'), '[user].user_created_by_user_id = uc.user_id', array('user_created_by_username' => 'user_username'))
-            ->joinLeft(array('um' => 'user'), '[user].user_last_updated_by_user_id = um.user_id', array('user_last_updated_by_username' => 'user_username'))
-            ->order('user_username ASC');
+        $stm = $this->getAdapter()->query($sql);
+        $result = $stm->fetchAll();
 
-        return $db->fetchAll($select);
+        return $result;
     }
 
     /**
      * Insert user to DB.
      *
-     * @param  array $data          Data row.
-     * @param  string $username     Current username.
-     * @return bool                 Insert result.
+     * @param  array $data  Data row.
+     * @return bool         Insert result.
      */
-    public function insertUser($data, $username)
+    public function insertUser($data, $roleId)
     {
         try {
             if (!$this->isUserExists($data['user_username'])) {
-                $userObj = $this->getUserByUsername($username);
-
-                if ($userObj) {
-                    $userId = $userObj['user_id'];
-                }
-
                 $data['user_password'] = MD5($data['user_password']);
                 $data['user_created'] = date('Y-m-d H:i:s');
-                $data['user_created_by_user_id'] = $userId;
+                $data['user_created_by_user_id'] = $this->currentUserId();
+                $data['user_deleted'] = 0;
 
-                return $this->insert($data);
+                $userId = $this->insert($data);
+
+                $sql = 'INSERT INTO user_role(ur_user_id, ur_role_id)
+                             VALUES (?, ?)';
+                $this->getAdapter()->query($sql, array($userId, $roleId));
+
+                return $userId;
             } else {
                 return 'user_username';
             }
@@ -72,26 +85,30 @@ class Admin_Model_User extends Zend_Db_Table_Abstract
     /**
      * Update user information.
      *
-     * @param  string $userId       User id.
-     * @param  array  $data         Data row.
-     * @param  string $username     Current username.
-     * @return bool                 Update result.
+     * @param  string $userId   User id.
+     * @param  array  $data     Data row.
+     * @return bool             Update result.
      */
-    public function updateUser($userId, $data, $username)
+    public function updateUser($userId, $data, $roleId)
     {
         try {
             if (!$this->isUserExists($data['user_username'], $userId)) {
-                $userObj = $this->getUserByUsername($username);
-
-                if ($userObj) {
-                    $userIdUpdate = $userObj['user_id'];
-                }
-
                 $data['user_last_updated'] = date('Y-m-d H:i:s');
-                $data['user_last_updated_by_user_id'] = $userIdUpdate;
+                $data['user_last_updated_by_user_id'] = $this->currentUserId();
+
                 $where = $this->getAdapter()->quoteInto('user_id = ?', $userId);
 
-                return $this->update($data, $where);
+                $this->update($data, $where);
+
+                $sql = 'UPDATE user_role
+                           SET ur_role_id = ?
+                         WHERE ur_user_id = ?';
+                $this->getAdapter()->query($sql, array($roleId, $userId));
+
+                $logger = new Admin_Model_LogAdministration();
+                $logger->writeLog('Cập nhật thông tin người dùng, username: ' . $data['user_username']);
+
+                return 1;
             } else {
                 return 'user_username';
             }
@@ -103,24 +120,20 @@ class Admin_Model_User extends Zend_Db_Table_Abstract
     /**
      * Delete user.
      *
-     * @param  string $userId           User id to delete.
-     * @param  string $username         Username to delete.
-     * @param  string $departmentId     User's department id to delete'.
-     * @param  string $curUsername      Current username.
-     * @return int                      The number of rows deleted.
+     * @param  string $userId   User id to delete.
+     * @param  string $username Username to delete.
+     * @param  string $email    User's email to delete'.
+     * @return int              The number of rows deleted.
      */
-    public function deleteUser($userId, $username, $email, $curUsername)
+    public function deleteUser($userId, $username, $email)
     {
         try {
-            $userObj = $this->getUserByUsername($curUsername);
-
-            if ($userObj) {
-                $curUserId = $userObj['user_id'];
-            }
-
             $adapter = $this->getAdapter();
 
-            $affectedCount = $this->delete(
+            $affectedCount = $this->update(
+                array(
+                    'user_deleted' => 1,
+                ),
                 array(
                     $adapter->quoteInto('user_id = ?', $userId),
                     $adapter->quoteInto('user_username = ?', $username),
@@ -129,7 +142,7 @@ class Admin_Model_User extends Zend_Db_Table_Abstract
             );
 
             $logger = new Admin_Model_LogAdministration();
-            $logger->writeLog('Xóa người dùng (Username: ' . $username, $curUsername);
+            $logger->writeLog('Xóa người dùng, username: ' . $username);
 
             return $affectedCount;
         } catch (Exception $err) {
@@ -140,27 +153,60 @@ class Admin_Model_User extends Zend_Db_Table_Abstract
     /**
      * Change user status.
      *
-     * @param  string $userId       User id.
-     * @param  string $username     Current username.
-     * @return bool                 Update result.
+     * @param  string $userId   User id.
+     * @return bool             Update result.
      */
-    public function changeStatusUser($userId, $username)
+    public function changeStatusUser($userId)
     {
         try {
-            $userObj = $this->getUserByUsername($username);
-
-            if ($userObj) {
-                $userIdUpdate = $userObj['user_id'];
-            }
-
-            $data['user_last_updated'] = date('Y-m-d H:i:s');
-            $data['user_last_updated_by_user_id'] = $userIdUpdate;
             $where = $this->getAdapter()->quoteInto('user_id = ?', $userId);
 
-            return $this->update(
+            $affectedCount = $this->update(
                 array('user_active' => new Zend_Db_Expr('1 - user_active')),
                 $where
             );
+
+            $userObj = $this->getUserByUserId($userId);
+
+            $logger = new Admin_Model_LogAdministration();
+            $logger->writeLog('Đổi trạng thái người dùng, username: ' . $userObj['user_username']);
+
+            return $affectedCount;
+        } catch (Exception $err) {
+            throw $err;
+        }
+    }
+
+    /**
+     * Change user status.
+     *
+     * @param  string $roleId       Role id.
+     * @return bool                 Update result.
+     */
+    public function setInactiveForUserByRoleId($roleId)
+    {
+        try {
+            $sql = "UPDATE [user]
+                       SET user_active = 0,
+                           user_last_updated = GETDATE(),
+                           user_last_updated_by_user_id = ?
+                     WHERE user_id IN (SELECT ur_user_id
+                                         FROM user_role
+                                        WHERE ur_role_id = ?)";
+
+            $bind = array(
+                $this->currentUserId(),
+                $roleId
+            );
+
+            $this->getAdapter()->query($sql, $bind);
+
+            $roleObj = (new Admin_Model_Role())->getRoleByRoleId($roleId);
+
+            $logger = new Admin_Model_LogAdministration();
+            $logger->writeLog('Xóa kích hoạt tất cả người dùng của nhóm: ' . $roleObj['role_name']);
+
+            return 1;
         } catch (Exception $err) {
             throw $err;
         }
@@ -184,5 +230,14 @@ class Admin_Model_User extends Zend_Db_Table_Abstract
         $result = $this->fetchAll($select);
 
         return count($result) > 0;
+    }
+
+    /**
+     * Get current logged in user_id
+     */
+    private function currentUserId()
+    {
+        $identity = Zend_Auth::getInstance()->getIdentity();
+        return $identity['user_id'];
     }
 }

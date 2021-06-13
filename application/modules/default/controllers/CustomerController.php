@@ -1,7 +1,5 @@
 <?php
 
-require_once 'ExcelReaderWriter.php';
-
 class CustomerController extends Zend_Controller_Action
 {
     public function init()
@@ -12,8 +10,16 @@ class CustomerController extends Zend_Controller_Action
     public function preDispatch()
     {
         if (!Zend_Auth::getInstance()->hasIdentity()) {
-            $this->_redirect('/login');
-            exit;
+            if ($this->getRequest()->isXmlHttpRequest()) {
+                echo json_encode(array('message' => 'SESSION_END'));
+                exit;
+            } else {
+                $this->_redirect('/login');
+            }
+        }
+
+        if ($this->getRequest()->isXmlHttpRequest()) {
+            $this->setRestResponse();
         }
     }
 
@@ -24,8 +30,6 @@ class CustomerController extends Zend_Controller_Action
 
     public function getAllAction()
     {
-        $this->_helper->layout()->disableLayout();
-
         if ($this->getRequest()->isGet()) {
             $customer = new Default_Model_Customer();
             $data = $customer->loadCustomer();
@@ -34,12 +38,10 @@ class CustomerController extends Zend_Controller_Action
         }
 
         echo json_encode(array('data' => $data));
-        exit;
     }
 
     public function importAction()
     {
-        $this->_helper->layout()->disableLayout();
         $req = $this->getRequest();
 
         if ($req->isXmlHttpRequest() && $req->isPost()) {
@@ -56,6 +58,8 @@ class CustomerController extends Zend_Controller_Action
             $success = file_put_contents($fileDir . '/' . $fileName . $fileExt, $content);
 
             if ($success) {
+                require_once 'ExcelReaderWriter.php';
+
                 $fileData = ExcelReaderWriter::read($fileDir . '/' . $fileName . $fileExt, $fileExt);
 
                 $customer = new Default_Model_Customer();
@@ -69,12 +73,10 @@ class CustomerController extends Zend_Controller_Action
         }
 
         echo json_encode($result);
-        exit;
     }
 
     public function insertAction()
     {
-        $this->_helper->layout()->disableLayout();
         $req = $this->getRequest();
 
         if ($req->isXmlHttpRequest() && $req->isPost()) {
@@ -105,12 +107,10 @@ class CustomerController extends Zend_Controller_Action
         }
 
         echo json_encode($result);
-        exit;
     }
 
     public function updateAction()
     {
-        $this->_helper->layout()->disableLayout();
         $req = $this->getRequest();
 
         if ($req->isXmlHttpRequest() && $req->isPost()) {
@@ -142,12 +142,10 @@ class CustomerController extends Zend_Controller_Action
         }
 
         echo json_encode($result);
-        exit;
     }
 
     public function deleteAction()
     {
-        $this->_helper->layout()->disableLayout();
         $req = $this->getRequest();
 
         if ($req->isXmlHttpRequest() && $req->isPost()) {
@@ -179,10 +177,16 @@ class CustomerController extends Zend_Controller_Action
         }
 
         echo json_encode($result);
-        exit;
     }
 
     // --------------- PRIVATE FUNCTIONS ---------------
+
+    private function setRestResponse()
+    {
+        $this->_helper->layout()->disableLayout();
+        $this->_helper->viewRenderer->setNoRender(true);
+        $this->getResponse()->setHeader('Content-Type', 'application/json', true);
+    }
 
     /**
      * Get current username

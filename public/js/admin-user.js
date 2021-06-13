@@ -65,7 +65,8 @@
       user_username,
       user_department_id,
       user_email,
-      user_active
+      user_active,
+      role_id
     } = data;
 
     editingUserId = user_id;
@@ -74,6 +75,7 @@
     $('#txtDisplayName').val(user_display_name);
     $('#txtPassword').val('(Đã mã hóa)').prop('readonly', true);
     $('#selDepartment').val(user_department_id).trigger('change');
+    $('#selRole').val(role_id).trigger('change');
     $('#txtEmail').val(user_email);
     $('#chkActive').prop('checked', !!+user_active);
   }
@@ -149,6 +151,11 @@
         data: 'user_username',
         title: 'Username',
         width: '120px',
+      },
+      {
+        data: 'role_name',
+        title: 'Nhóm người dùng',
+        width: '180px',
       },
       {
         data: 'user_email',
@@ -233,7 +240,12 @@
       url: 'department/get-all',
       dataType: 'json',
       success: function (res) {
-        const data = res.results.map(d => ({
+        if (res.message === 'SESSION_END') {
+          Toast.showError('Đã hết phiên làm việc, vui lòng đăng nhập lại để tiếp tục sử dụng');
+          return;
+        }
+
+        const data = res.data.map(d => ({
           id: d.id,
           text: d.text
         }));
@@ -246,6 +258,25 @@
             id: '0',
             text: 'Chọn...'
           },
+          theme: 'bootstrap4',
+        });
+      }
+    });
+  })();
+
+  (function getRole() {
+    $.ajax({
+      url: 'role/get-list',
+      dataType: 'json',
+      success: function (res) {
+        if (res.message === 'SESSION_END') {
+          Toast.showError('Đã hết phiên làm việc, vui lòng đăng nhập lại để tiếp tục sử dụng');
+          return;
+        }
+
+        $('#selRole').select2({
+          data: res.data,
+          dropdownParent: $('#selRole').parent(),
           theme: 'bootstrap4',
         });
       }
@@ -270,6 +301,7 @@
     const user_fullname = Utility.nullIfEmpty($('#txtFullname').val().trim());
     const user_display_name = Utility.nullIfEmpty($('#txtDisplayName').val().trim());
     const user_department_id = select2SelectedId('selDepartment');
+    const role_id = select2SelectedId('selRole');
 
     const data = {
       user: {
@@ -280,6 +312,7 @@
         user_email: $('#txtEmail').val().trim(),
         user_active: $('#chkActive').is(':checked') ? 1 : 0,
       },
+      roleId: role_id,
     };
 
     let url;
@@ -299,6 +332,11 @@
       type: 'POST',
       dataType: 'json',
       success: function (res) {
+        if (res.message === 'SESSION_END') {
+          Toast.showError('Đã hết phiên làm việc, vui lòng đăng nhập lại để tiếp tục sử dụng');
+          return;
+        }
+
         if (res.status === 1) {
           Toast.showSuccess('Lưu người dùng thành công.');
           tblUser.ajax.reload();
@@ -335,6 +373,11 @@
           type: 'POST',
           dataType: 'json',
           success: function (res) {
+            if (res.message === 'SESSION_END') {
+              Toast.showError('Đã hết phiên làm việc, vui lòng đăng nhập lại để tiếp tục sử dụng');
+              return;
+            }
+
             if (res.status === 1) {
               Toast.showSuccess('Xóa người dùng thành công.');
               tblUser.ajax.reload();
@@ -360,6 +403,11 @@
           type: 'POST',
           dataType: 'json',
           success: function (res) {
+            if (res.message === 'SESSION_END') {
+              Toast.showError('Đã hết phiên làm việc, vui lòng đăng nhập lại để tiếp tục sử dụng');
+              return;
+            }
+
             if (res.status === 1) {
               Toast.showSuccess('Thiết lập lại mật khẩu cho người dùng thành công. Một email với mật khẩu mới đã được gửi đến hộp thư của người dùng.', 10000);
             } else {
@@ -382,6 +430,11 @@
       type: 'POST',
       dataType: 'json',
       success: function (res) {
+        if (res.message === 'SESSION_END') {
+          Toast.showError('Đã hết phiên làm việc, vui lòng đăng nhập lại để tiếp tục sử dụng');
+          return;
+        }
+
         if (res.status === 1) {
           Toast.showSuccess('', 1500, '90px');
           tblUser.ajax.reload();

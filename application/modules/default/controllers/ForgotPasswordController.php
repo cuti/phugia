@@ -12,6 +12,10 @@ class ForgotPasswordController extends Zend_Controller_Action
     public function preDispatch()
     {
         $this->_helper->layout->setLayoutPath(APPLICATION_PATH . '/modules/default/views/scripts/forgot-password');
+
+        if ($this->getRequest()->isXmlHttpRequest()) {
+            $this->setRestResponse();
+        }
     }
 
     public function indexAction()
@@ -23,7 +27,6 @@ class ForgotPasswordController extends Zend_Controller_Action
      */
     public function rpAction()
     {
-        $this->_helper->layout()->disableLayout();
         $req = $this->getRequest();
 
         if ($req->isXmlHttpRequest() && $req->isPost()) {
@@ -84,10 +87,16 @@ class ForgotPasswordController extends Zend_Controller_Action
         }
 
         echo json_encode($result);
-        exit;
     }
 
     // --------------- PRIVATE FUNCTIONS ---------------
+
+    private function setRestResponse()
+    {
+        $this->_helper->layout()->disableLayout();
+        $this->_helper->viewRenderer->setNoRender(true);
+        $this->getResponse()->setHeader('Content-Type', 'application/json', true);
+    }
 
     private function getUserInfoByUsername($username)
     {

@@ -1,3 +1,24 @@
+:root {
+  --sidebar-width: 230px;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 2px grey;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #acaeaf;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9f979c;
+}
+
 html {
   font-size: 14px;
 }
@@ -27,11 +48,33 @@ footer.sticky-footer .copyright {
   font-size: 1rem;
 }
 
+.sidebar .nav-item .nav-link {
+  width: inherit;
+}
+
+.sidebar .collapse-inner.sub-wrapper {
+  background-color: rgba(255, 255, 255, .25);
+}
+
+.sidebar .nav-item .collapse .collapse-inner.sub-wrapper .collapse-item, .sidebar .nav-item .collapsing .collapse-inner.sub-wrapper .collapse-item {
+  color: rgba(255, 255, 255, .9);
+}
+
+.sidebar .nav-item .collapse .collapse-inner.sub-wrapper .collapse-item:hover, .sidebar .nav-item .collapsing .collapse-inner.sub-wrapper .collapse-item:hover, .sidebar .nav-item .collapse .collapse-inner.sub-wrapper .collapse-item.active, .sidebar .nav-item .collapsing .collapse-inner.sub-wrapper .collapse-item.active {
+  background-color: rgba(0, 0, 0, .07);
+}
+
+#wrapper #content-wrapper {
+  width: calc(100% - var(--sidebar-width));
+}
+
 @media (min-width: 768px) {
+  .sidebar {
+    width: var(--sidebar-width) !important;
+  }
   .sidebar .nav-item .nav-link span {
     font-size: 0.9rem;
   }
-
   .sidebar.toggled .nav-item .nav-link span {
     font-size: 0.85rem;
   }

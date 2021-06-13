@@ -9,20 +9,12 @@ class Admin_Model_LogAdministration extends Zend_Db_Table_Abstract
      * Write administration log.
      *
      * @param  string $action     User action.
-     * @param  string $username   Current username.
      * @return mixed              Log id.
      */
-    public function writeLog($action, $username)
+    public function writeLog($action)
     {
         try {
-            $user = new Admin_Model_User();
-            $userObj = $user->getUserByUsername($username);
-
-            if ($userObj) {
-                $userId = $userObj['user_id'];
-            } else {
-                throw new Exception('Invalid username.');
-            }
+            $userId = Zend_Auth::getInstance()->getIdentity()['user_id'];
 
             $data = array(
                 'log_action' => $action,

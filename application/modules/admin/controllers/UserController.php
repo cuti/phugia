@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Utility.php';
-
 class Admin_UserController extends Zend_Controller_Action
 {
     public function init()
@@ -12,8 +10,16 @@ class Admin_UserController extends Zend_Controller_Action
     public function preDispatch()
     {
         if (!Zend_Auth::getInstance()->hasIdentity()) {
-            $this->_redirect('/admin/login');
-            exit;
+            if ($this->getRequest()->isXmlHttpRequest()) {
+                echo json_encode(array('message' => 'SESSION_END'));
+                exit;
+            } else {
+                $this->_redirect('/admin/login');
+            }
+        }
+
+        if ($this->getRequest()->isXmlHttpRequest()) {
+            $this->setRestResponse();
         }
     }
 
@@ -24,8 +30,6 @@ class Admin_UserController extends Zend_Controller_Action
 
     public function getAllAction()
     {
-        $this->_helper->layout()->disableLayout();
-
         if ($this->getRequest()->isGet()) {
             $user = new Admin_Model_User();
             $data = $user->loadUser();
@@ -34,21 +38,20 @@ class Admin_UserController extends Zend_Controller_Action
         }
 
         echo json_encode(array('data' => $data));
-        exit;
     }
 
     public function insertAction()
     {
-        $this->_helper->layout()->disableLayout();
         $req = $this->getRequest();
 
         if ($req->isXmlHttpRequest() && $req->isPost()) {
             $body = $req->getRawBody();
             $data = json_decode($body);
             $user = json_decode(json_encode($data->user), true);
+            $roleId = $data->roleId;
 
             $userModel = new Admin_Model_User();
-            $result = $userModel->insertUser($user, $this->currentUser());
+            $result = $userModel->insertUser($user, $roleId);
 
             if ($result === 'user_username') {
                 $result = array(
@@ -69,12 +72,10 @@ class Admin_UserController extends Zend_Controller_Action
         }
 
         echo json_encode($result);
-        exit;
     }
 
     public function updateAction()
     {
-        $this->_helper->layout()->disableLayout();
         $req = $this->getRequest();
 
         if ($req->isXmlHttpRequest() && $req->isPost()) {
@@ -82,9 +83,10 @@ class Admin_UserController extends Zend_Controller_Action
             $data = json_decode($body);
             $user = json_decode(json_encode($data->user), true);
             $userId = $data->userId;
+            $roleId = $data->roleId;
 
             $userModel = new Admin_Model_User();
-            $result = $userModel->updateUser($userId, $user, $this->currentUser());
+            $result = $userModel->updateUser($userId, $user, $roleId);
 
             if ($result === 'user_username') {
                 $result = array(
@@ -105,12 +107,10 @@ class Admin_UserController extends Zend_Controller_Action
         }
 
         echo json_encode($result);
-        exit;
     }
 
     public function deleteAction()
     {
-        $this->_helper->layout()->disableLayout();
         $req = $this->getRequest();
 
         if ($req->isXmlHttpRequest() && $req->isPost()) {
@@ -122,7 +122,7 @@ class Admin_UserController extends Zend_Controller_Action
                 $email = $data->email;
 
                 $user = new Admin_Model_User();
-                $result = $user->deleteUser($userId, $username, $email, $this->currentUser());
+                $result = $user->deleteUser($userId, $username, $email);
 
                 $result = array(
                     'data' => $result,
@@ -142,12 +142,10 @@ class Admin_UserController extends Zend_Controller_Action
         }
 
         echo json_encode($result);
-        exit;
     }
 
     public function changeStatusAction()
     {
-        $this->_helper->layout()->disableLayout();
         $req = $this->getRequest();
 
         if ($req->isXmlHttpRequest() && $req->isPost()) {
@@ -156,7 +154,7 @@ class Admin_UserController extends Zend_Controller_Action
             $userId = $data->usrId;
 
             $user = new Admin_Model_User();
-            $result = $user->changeStatusUser($userId, $this->currentUser());
+            $result = $user->changeStatusUser($userId);
 
             $result = array(
                 'data' => $result,
@@ -170,7 +168,6 @@ class Admin_UserController extends Zend_Controller_Action
         }
 
         echo json_encode($result);
-        exit;
     }
 
     /**
@@ -178,7 +175,6 @@ class Admin_UserController extends Zend_Controller_Action
      */
     public function rpAction()
     {
-        $this->_helper->layout()->disableLayout();
         $req = $this->getRequest();
 
         if ($req->isXmlHttpRequest() && $req->isPost()) {
@@ -187,6 +183,9 @@ class Admin_UserController extends Zend_Controller_Action
                 $data = json_decode($body);
                 $username = $data->username;
                 $userInfo = $this->getUserInfoByUsername($username);
+
+                require_once 'Utility.php';
+
                 $password = Utility::generateSecret(MIN_PASS_LEN);
 
                 $userModel = new Default_Model_User();
@@ -232,18 +231,15 @@ class Admin_UserController extends Zend_Controller_Action
         }
 
         echo json_encode($result);
-        exit;
     }
 
     // --------------- PRIVATE FUNCTIONS ---------------
 
-    /**
-     * Get current username
-     */
-    private function currentUser()
+    private function setRestResponse()
     {
-        $identity = Zend_Auth::getInstance()->getIdentity();
-        return $identity['username'];
+        $this->_helper->layout()->disableLayout();
+        $this->_helper->viewRenderer->setNoRender(true);
+        $this->getResponse()->setHeader('Content-Type', 'application/json', true);
     }
 
     private function getUserInfoByUsername($username)

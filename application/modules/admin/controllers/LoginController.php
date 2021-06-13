@@ -1,7 +1,5 @@
 <?php
 
-require_once 'Utility.php';
-
 class Admin_LoginController extends Zend_Controller_Action
 {
     public function init()
@@ -13,7 +11,6 @@ class Admin_LoginController extends Zend_Controller_Action
     {
         if (Zend_Auth::getInstance()->hasIdentity()) {
             $this->_redirect('/admin');
-            exit;
         }
 
         $this->_helper->layout->setLayoutPath(APPLICATION_PATH . '/modules/admin/views/scripts/login');

@@ -1,5 +1,4 @@
-.dataTables_scrollBody>.data-table>tbody>tr>td,
-.dataTables_scrollHead .data-table>thead>tr>th {
+.dataTables_scrollBody>.data-table>tbody>tr>td, .dataTables_scrollHead .data-table>thead>tr>th {
   vertical-align: middle;
 }
 
@@ -11,16 +10,16 @@ table.dataTable>tbody>tr.child span.dtr-title {
   width: 200px;
 }
 
-table.dataTable.dtr-inline.collapsed>tbody>tr>td.dtr-control,
-table.dataTable.dtr-inline.collapsed>tbody>tr>th.dtr-control {
+table.dataTable.dtr-inline.collapsed>tbody>tr>td.dtr-control, table.dataTable.dtr-inline.collapsed>tbody>tr>th.dtr-control {
   padding-left: 40px;
 }
 
-table.dataTable.dtr-inline.collapsed>tbody>tr>td.dtr-control:before,
-table.dataTable.dtr-inline.collapsed>tbody>tr>th.dtr-control:before,
-table.dataTable.dtr-inline.collapsed>tbody>tr.parent>td.dtr-control:before,
-table.dataTable.dtr-inline.collapsed>tbody>tr.parent>th.dtr-control:before {
-  background-color: #4e73df;
+table.dataTable.dtr-inline.collapsed>tbody>tr>td.dtr-control:before, table.dataTable.dtr-inline.collapsed>tbody>tr>th.dtr-control:before, table.dataTable.dtr-inline.collapsed>tbody>tr.parent>td.dtr-control:before, table.dataTable.dtr-inline.collapsed>tbody>tr.parent>th.dtr-control:before {
+  background-color: hsl(208deg 18% 43%);
   height: initial;
   left: 26px;
+}
+
+table.dataTable.dtr-inline.collapsed>tbody>tr>td.dtr-control:hover::before, table.dataTable.dtr-inline.collapsed>tbody>tr>th.dtr-control:hover::before, table.dataTable.dtr-inline.collapsed>tbody>tr.parent>td.dtr-control:hover::before, table.dataTable.dtr-inline.collapsed>tbody>tr.parent>th.dtr-control:hover::before {
+  background-color: hsl(208deg 28% 63%);
 }
