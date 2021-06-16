@@ -1,5 +1,8 @@
 (() => {
   let tblRole;
+  let treePermission;
+  let adminNode;
+  let operNode;
   let editingRoleId;
 
   function confirmDeleteRole(roleName) {
@@ -23,6 +26,14 @@
     editingRoleId = undefined;
     $('#txtRoleName').val('');
     $('#chkActive').prop('checked', true);
+
+    treePermission.visit(n => {
+      n.setExpanded(false, { noAnimation: true, noEvents: true });
+      n.setSelected(false, { noEvents: true });
+    });
+
+    adminNode.setExpanded(true, { noAnimation: true, noEvents: true });
+    operNode.setExpanded(true, { noAnimation: true, noEvents: true });
   }
 
   function setDataDetailDlg(data) {
@@ -35,6 +46,36 @@
     editingRoleId = role_id;
     $('#txtRoleName').val(role_name);
     $('#chkActive').prop('checked', !!+role_active);
+
+    treePermission.visit(n => {
+      n.setExpanded(false, { noAnimation: true, noEvents: true });
+      n.setSelected(false, { noEvents: true });
+    });
+
+    adminNode.setExpanded(true, { noAnimation: true, noEvents: true });
+    operNode.setExpanded(true, { noAnimation: true, noEvents: true });
+
+    $.ajax({
+      url: 'role/menu-actions',
+      data: { roleId: role_id },
+      // dataType: 'json',
+      success: function (res) {
+        const d = res.data;
+
+        for (let i = 0; i < d.length; i++) {
+          const actionNode = treePermission.getNodeByKey(d[i].rm_menu_id + '_' + d[i].rm_action_id);
+
+          if (actionNode) {
+            actionNode.setSelected(true, { noEvents: true });
+            actionNode.getParent().setExpanded(true, { noAnimation: true, noEvents: true });
+            actionNode.getParent().getParent().setExpanded(true, { noAnimation: true, noEvents: true });
+          }
+        }
+
+        adminNode.setExpanded(true, { noAnimation: true, noEvents: true });
+        operNode.setExpanded(true, { noAnimation: true, noEvents: true });
+      }
+    });
   }
 
   function validateInput() {
@@ -44,6 +85,28 @@
     }
 
     return true;
+  }
+
+  function getSelectedPermissions() {
+    const selectedNodes = treePermission.getSelectedNodes();
+    const menuActionArr = $.map(selectedNodes, n => ({
+      menu: n.parent.key,
+      action: +n.key.split('_')[1],
+    }));
+    const parentMenuActionArr = selectedNodes.reduce((prev, cur) => {
+      const menu = cur.parent.parent.key;
+
+      if (!prev.find(p => p.menu === menu)) {
+        prev.push({
+          menu,
+          action: 4
+        });
+      }
+
+      return prev;
+    }, []);
+
+    return [...parentMenuActionArr, ...menuActionArr];
   }
 
   tblRole = $('#tblRole').DataTable({
@@ -152,6 +215,19 @@
     scrollX: true,
   });
 
+  treePermission = $.ui.fancytree.createTree('#treePermission', {
+    source: {
+      url: 'menu/get-permission-tree'
+    },
+    checkbox: true,
+    clickFolderMode: 3,
+    selectMode: 3,
+    init: (e, d) => {
+      adminNode = d.tree.getNodeByKey('admin');
+      operNode = d.tree.getNodeByKey('default');
+    }
+  });
+
   $('#detailDlg').on('shown.bs.modal', e => {
     $('#txtRoleName').focus();
   });
@@ -171,6 +247,7 @@
         role_name: $('#txtRoleName').val().trim(),
         role_active: $('#chkActive').is(':checked') ? 1 : 0,
       },
+      role_menu: getSelectedPermissions(),
     };
 
     let url;

@@ -61,17 +61,19 @@ class Admin_RoleController extends Zend_Controller_Action
                 $body = $req->getRawBody();
                 $data = json_decode($body);
                 $roleObj = json_decode(json_encode($data->role), true);
+                $roleMenu = json_decode(json_encode($data->role_menu), true);
 
                 try {
                     $roleModel = new Admin_Model_Role();
                     $roleObj['role_id'] = $roleModel->insertRole($roleObj);
+                    $roleModel->insertRoleMenuAction($roleObj['role_id'], $roleMenu);
 
                     $result = array(
                         'data' => $roleObj,
                         'status' => 1,
                     );
                 } catch (Exception $err2) {
-                    if ($err2->message === 'role_name') {
+                    if ($err2->getMessage() === 'role_name') {
                         $result = array(
                             'message' => 'NAME_DUP',
                             'status' => 0,
@@ -108,17 +110,19 @@ class Admin_RoleController extends Zend_Controller_Action
                 $body = $req->getRawBody();
                 $data = json_decode($body);
                 $roleObj = json_decode(json_encode($data->role), true);
+                $roleMenu = json_decode(json_encode($data->role_menu), true);
 
                 try {
                     $roleModel = new Admin_Model_Role();
                     $roleModel->updateRole($roleObj);
+                    $roleModel->insertRoleMenuAction($roleObj['role_id'], $roleMenu);
 
                     $result = array(
                         'data' => $roleObj,
                         'status' => 1,
                     );
                 } catch (Exception $err2) {
-                    if ($err2->message === 'role_name') {
+                    if ($err2->getMessage() === 'role_name') {
                         $result = array(
                             'message' => 'NAME_DUP',
                             'status' => 0,
@@ -228,6 +232,21 @@ class Admin_RoleController extends Zend_Controller_Action
         }
 
         echo json_encode($result);
+    }
+
+    public function menuActionsAction()
+    {
+        $req = $this->getRequest();
+
+        if ($req->isGet()) {
+            $roleId = $req->getQuery('roleId');
+            $roleModel = new Admin_Model_Role();
+            $data = $roleModel->loadMenuActionsByRole($roleId);
+        } else {
+            $data = array();
+        }
+
+        echo json_encode(array('data' => $data));
     }
 
     // --------------- PRIVATE FUNCTIONS ---------------

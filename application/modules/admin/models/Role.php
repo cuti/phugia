@@ -48,6 +48,18 @@ class Admin_Model_Role extends Zend_Db_Table_Abstract
         return $result;
     }
 
+    public function loadMenuActionsByRole($roleId)
+    {
+        $sql = 'SELECT rm.rm_menu_id, rm.rm_action_id
+                  FROM role_menu rm
+                       JOIN menu m ON rm.rm_menu_id = m.menu_id
+                 WHERE rm.rm_role_id = ? AND m.menu_active = 1 AND m.menu_parent_id IS NOT NULL';
+
+        $result = $this->getAdapter()->fetchAll($sql, array($roleId));
+
+        return $result;
+    }
+
     /**
      * Insert role to DB.
      *
@@ -98,6 +110,24 @@ class Admin_Model_Role extends Zend_Db_Table_Abstract
                 return $affectedCount;
             } else {
                 throw new Exception('role_name');
+            }
+        } catch (Exception $err) {
+            throw $err;
+        }
+    }
+
+    public function insertRoleMenuAction($roleId, $data)
+    {
+        try {
+            $sql = 'DELETE FROM role_menu WHERE rm_role_id = ?';
+            $this->getAdapter()->query($sql, array($roleId));
+
+            $sql = 'INSERT INTO role_menu(rm_role_id, rm_menu_id, rm_action_id) VALUES (?, ?, ?)';
+            //$stm = $this->getAdapter()->query($sql, array());
+            $stm = new Zend_Db_Statement_Sqlsrv($this->getAdapter(), $sql);
+
+            foreach ($data as $menuAction) {
+                $stm->execute(array($roleId, $menuAction['menu'], $menuAction['action']));
             }
         } catch (Exception $err) {
             throw $err;
