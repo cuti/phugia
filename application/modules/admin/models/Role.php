@@ -123,11 +123,10 @@ class Admin_Model_Role extends Zend_Db_Table_Abstract
             $this->getAdapter()->query($sql, array($roleId));
 
             $sql = 'INSERT INTO role_menu(rm_role_id, rm_menu_id, rm_action_id) VALUES (?, ?, ?)';
-            //$stm = $this->getAdapter()->query($sql, array());
-            $stm = new Zend_Db_Statement_Sqlsrv($this->getAdapter(), $sql);
+            $adapter = $this->getAdapter();
 
             foreach ($data as $menuAction) {
-                $stm->execute(array($roleId, $menuAction['menu'], $menuAction['action']));
+                $adapter->query($sql, array($roleId, $menuAction['menu'], $menuAction['action']));
             }
         } catch (Exception $err) {
             throw $err;
@@ -146,7 +145,7 @@ class Admin_Model_Role extends Zend_Db_Table_Abstract
         try {
             $adapter = $this->getAdapter();
 
-            // Tự động gỡ người dùng và menu liên quan đến nhóm này, theo CASCADE DELETE
+            // Tự động gỡ người dùng và menu ra khỏi nhóm này, theo CASCADE DELETE
             $affectedCount = $this->delete(
                 array(
                     $adapter->quoteInto('role_id = ?', $roleId),
