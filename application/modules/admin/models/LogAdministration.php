@@ -14,12 +14,12 @@ class Admin_Model_LogAdministration extends Zend_Db_Table_Abstract
     public function writeLog($action)
     {
         try {
-            $userId = Zend_Auth::getInstance()->getIdentity()['user_id'];
+            $staffId = Zend_Auth::getInstance()->getIdentity()['staff_id'];
 
             $data = array(
                 'log_action' => $action,
                 'log_time' => date('Y-m-d H:i:s'),
-                'log_user_id' => $userId,
+                'log_staff_id' => $staffId,
             );
 
             $log_id = $this->insert($data);

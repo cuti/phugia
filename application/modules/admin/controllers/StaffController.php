@@ -1,6 +1,6 @@
 <?php
 
-class Admin_UserController extends Zend_Controller_Action
+class Admin_StaffController extends Zend_Controller_Action
 {
     public function init()
     {
@@ -25,14 +25,14 @@ class Admin_UserController extends Zend_Controller_Action
 
     public function indexAction()
     {
-        $this->view->pageTitle = 'Quản Lý Người Dùng';
+        $this->view->pageTitle = 'Quản Lý Nhân Viên';
     }
 
     public function getAllAction()
     {
         if ($this->getRequest()->isGet()) {
-            $user = new Admin_Model_User();
-            $data = $user->loadUser();
+            $staffModel = new Admin_Model_Staff();
+            $data = $staffModel->loadStaff();
         } else {
             $data = array();
         }
@@ -47,13 +47,13 @@ class Admin_UserController extends Zend_Controller_Action
         if ($req->isXmlHttpRequest() && $req->isPost()) {
             $body = $req->getRawBody();
             $data = json_decode($body);
-            $user = json_decode(json_encode($data->user), true);
+            $staff = json_decode(json_encode($data->staff), true);
             $roleId = $data->roleId;
 
-            $userModel = new Admin_Model_User();
-            $result = $userModel->insertUser($user, $roleId);
+            $staffModel = new Admin_Model_Staff();
+            $result = $staffModel->insertStaff($staff, $roleId);
 
-            if ($result === 'user_username') {
+            if ($result === 'staff_username') {
                 $result = array(
                     'message' => 'UNAME_DUP',
                     'status' => 0,
@@ -81,14 +81,14 @@ class Admin_UserController extends Zend_Controller_Action
         if ($req->isXmlHttpRequest() && $req->isPost()) {
             $body = $req->getRawBody();
             $data = json_decode($body);
-            $user = json_decode(json_encode($data->user), true);
-            $userId = $data->userId;
+            $staff = json_decode(json_encode($data->staff), true);
+            $staffId = $data->staffId;
             $roleId = $data->roleId;
 
-            $userModel = new Admin_Model_User();
-            $result = $userModel->updateUser($userId, $user, $roleId);
+            $staffModel = new Admin_Model_Staff();
+            $result = $staffModel->updateStaff($staffId, $staff, $roleId);
 
-            if ($result === 'user_username') {
+            if ($result === 'staff_username') {
                 $result = array(
                     'message' => 'UNAME_DUP',
                     'status' => 0,
@@ -117,12 +117,12 @@ class Admin_UserController extends Zend_Controller_Action
             try {
                 $body = $req->getRawBody();
                 $data = json_decode($body);
-                $userId = $data->usrId;
-                $username = $data->uname;
+                $staffId = $data->staffId;
+                $username = $data->username;
                 $email = $data->email;
 
-                $user = new Admin_Model_User();
-                $result = $user->deleteUser($userId, $username, $email);
+                $staffModel = new Admin_Model_Staff();
+                $result = $staffModel->deleteStaff($staffId, $username, $email);
 
                 $result = array(
                     'data' => $result,
@@ -151,10 +151,10 @@ class Admin_UserController extends Zend_Controller_Action
         if ($req->isXmlHttpRequest() && $req->isPost()) {
             $body = $req->getRawBody();
             $data = json_decode($body);
-            $userId = $data->usrId;
+            $staffId = $data->staffId;
 
-            $user = new Admin_Model_User();
-            $result = $user->changeStatusUser($userId);
+            $staffModel = new Admin_Model_Staff();
+            $result = $staffModel->changeStaffStatus($staffId);
 
             $result = array(
                 'data' => $result,
@@ -171,7 +171,7 @@ class Admin_UserController extends Zend_Controller_Action
     }
 
     /**
-     * Reset password for a user.
+     * Reset password for a staff.
      */
     public function rpAction()
     {
@@ -182,18 +182,18 @@ class Admin_UserController extends Zend_Controller_Action
                 $body = $req->getRawBody();
                 $data = json_decode($body);
                 $username = $data->username;
-                $userInfo = $this->getUserInfoByUsername($username);
+                $staffInfo = $this->getStaffInfoByUsername($username);
 
                 require_once 'Utility.php';
 
                 $password = Utility::generateSecret(MIN_PASS_LEN);
 
-                $userModel = new Default_Model_User();
-                $result = $userModel->changeUserPassword($userInfo['user_id'], $password);
+                $staffModel = new Default_Model_Staff();
+                $result = $staffModel->changeUserPassword($staffInfo['staff_id'], $password);
 
                 if ($result > 0) {
-                    $mailBody = $this->prepareBody($userInfo['greetName'], $password);
-                    $mail = $this->prepareMail($userInfo['email'], $userInfo['greetName'], $mailBody);
+                    $mailBody = $this->prepareBody($staffInfo['greetName'], $password);
+                    $mail = $this->prepareMail($staffInfo['email'], $staffInfo['greetName'], $mailBody);
 
                     $config = array(
                         'auth' => 'login',
@@ -242,23 +242,23 @@ class Admin_UserController extends Zend_Controller_Action
         $this->getResponse()->setHeader('Content-Type', 'application/json', true);
     }
 
-    private function getUserInfoByUsername($username)
+    private function getStaffInfoByUsername($username)
     {
-        $userModel = new Admin_Model_User();
-        $userObj = $userModel->getUserByUsername($username);
+        $staffModel = new Admin_Model_Staff();
+        $staffObj = $staffModel->getStaffByUsername($username);
 
-        if ($userObj['user_display_name']) {
-            $greetName = $userObj['user_display_name'];
-        } else if ($userObj['user_fullname']) {
-            $greetName = $userObj['user_fullname'];
+        if ($staffObj['staff_display_name']) {
+            $greetName = $staffObj['staff_display_name'];
+        } else if ($staffObj['staff_fullname']) {
+            $greetName = $staffObj['staff_fullname'];
         } else {
             $greetName = $username;
         }
 
         return array(
-            'user_id'   => $userObj['user_id'],
+            'staff_id'   => $staffObj['staff_id'],
             'greetName' => $greetName,
-            'email'     => $userObj['user_email'],
+            'email'     => $staffObj['staff_email'],
         );
     }
 

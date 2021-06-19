@@ -25,8 +25,8 @@ class LoginController extends Zend_Controller_Action
             $username = $req->getParam('username', '');
             $password = $req->getParam('password', '');
 
-            $users = new Default_Model_User();
-            $result = $users->authenticate($username, $password);
+            $staffModel = new Default_Model_Staff();
+            $result = $staffModel->authenticate($username, $password);
 
             if (count($result) > 0) {
                 Zend_Session::rememberMe(3600); // 1 hour
@@ -34,13 +34,13 @@ class LoginController extends Zend_Controller_Action
 
                 $data = $result[0];
                 $identity = array(
-                    'user_id'      => $data['user_id'],
-                    'fullname'     => $data['user_fullname'],
-                    'display_name' => $data['user_display_name'],
-                    'username'     => $data['user_username'],
-                    'image'        => $data['user_image'],
+                    'staff_id'      => $data['staff_id'],
+                    'fullname'     => $data['staff_fullname'],
+                    'display_name' => $data['staff_display_name'],
+                    'username'     => $data['staff_username'],
+                    'image'        => $data['staff_image'],
                     'department'   => $data['dep_name'],
-                    'email'        => $data['user_email'],
+                    'email'        => $data['staff_email'],
                 );
 
                 // Use session storage, with default namespace 'Zend_Auth'

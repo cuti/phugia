@@ -13,18 +13,18 @@
     <div class="col-md-12">
       <div class="card shadow mb-4">
         <div class="card-header py-3">
-          <h6 class="m-0 font-weight-bold text-primary">Danh sách người dùng</h6>
+          <h6 class="m-0 font-weight-bold text-primary">Danh sách nhân viên</h6>
         </div>
 
         <div class="card-body">
           <div class="border-bottom mb-3 pb-3">
-            <button type="button" id="btnNewUser" class="btn btn-primary">
+            <button type="button" id="btnNewStaff" class="btn btn-primary">
               <i class="fas fa-user-plus"></i>
-              Thêm người dùng
+              Thêm nhân viên
             </button>
           </div>
 
-          <table id="tblUser" class="table table-bordered table-striped table-hover data-table responsive">
+          <table id="tblStaff" class="table table-bordered table-striped table-hover data-table responsive">
             <thead></thead>
             <tbody></tbody>
           </table>
@@ -41,13 +41,13 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Thông Tin Chi Tiết Người Dùng</h5>
+        <h5 class="modal-title">Thông Tin Chi Tiết Nhân Viên</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">×</span>
         </button>
       </div>
 
-      <form id="formUserDetail" method="post">
+      <form id="formStaffDetail" method="post">
         <div class="modal-body px-0">
           <div class="container-fluid">
             <div class="row">
@@ -67,7 +67,7 @@
                 <input type="email" id="txtEmail" class="form-control">
               </div>
               <div class="col-md-6">
-                <label class="mb-1"><strong>Nhóm người dùng</strong></label>
+                <label class="mb-1"><strong>Nhóm nhân viên</strong></label>
                 <select id="selRole"></select>
               </div>
             </div>
@@ -110,7 +110,7 @@
             <i class="fas fa-times"></i>
             Đóng
           </button>
-          <button id="btnSaveUser" type="submit" class="btn btn-primary">
+          <button type="submit" class="btn btn-primary">
             <i class="fas fa-save"></i>
             Lưu
           </button>
@@ -121,4 +121,4 @@
 </div>
 <!-- /Detail dialog -->
 
-<script src="<?=$this->BaseUrl?>/public/js/admin-user.js"></script>
+<script src="<?=$this->BaseUrl?>/public/js/admin-staff.js"></script>

@@ -16,14 +16,14 @@ class Default_Model_Product extends Zend_Db_Table_Abstract
             'product_unit_measure',
             'product_manufacturer',
             'product_created',
-            'product_created_by_user_id',
+            'product_created_by_staff_id',
             'product_last_updated',
-            'product_last_updated_by_user_id',
+            'product_last_updated_by_staff_id',
         );
 
         $select->from(array('prd' => 'product_catalog'), $productFields)
-            ->joinLeft(array('uc' => 'user'), 'prd.product_created_by_user_id = uc.user_id', array('product_created_by_username' => 'user_username'))
-            ->joinLeft(array('um' => 'user'), 'prd.product_last_updated_by_user_id = um.user_id', array('product_last_updated_by_username' => 'user_username'))
+            ->joinLeft(array('sc' => 'staff'), 'prd.product_created_by_staff_id = sc.staff_id', array('product_created_by_username' => 'staff_username'))
+            ->joinLeft(array('sm' => 'staff'), 'prd.product_last_updated_by_staff_id = sm.staff_id', array('product_last_updated_by_username' => 'staff_username'))
             ->where('product_deleted = 0')
             ->order('product_code ASC');
 
@@ -49,11 +49,11 @@ class Default_Model_Product extends Zend_Db_Table_Abstract
                 array_push($productCodeExists, $data[$i][0]);
             } else {
                 try {
-                    $user = new Default_Model_User();
-                    $userObj = $user->getUserByUsername($username);
+                    $staffModel = new Default_Model_Staff();
+                    $staffObj = $staffModel->getStaffByUsername($username);
 
-                    if ($userObj) {
-                        $userId = $userObj['user_id'];
+                    if ($staffObj) {
+                        $staffId = $staffObj['staff_id'];
                     }
 
                     $importRow = array(
@@ -62,7 +62,7 @@ class Default_Model_Product extends Zend_Db_Table_Abstract
                         'product_unit_measure' => $data[$i][2],
                         'product_manufacturer' => $data[$i][3],
                         'product_created' => date('Y-m-d H:i:s'),
-                        'product_created_by_user_id' => $userId,
+                        'product_created_by_staff_id' => $staffId,
                         'product_deleted' => 0,
                     );
 
@@ -101,15 +101,15 @@ class Default_Model_Product extends Zend_Db_Table_Abstract
     {
         try {
             if (!$this->isProductExists($data['product_code'])) {
-                $user = new Default_Model_User();
-                $userObj = $user->getUserByUsername($username);
+                $staffModel = new Default_Model_Staff();
+                $staffObj = $staffModel->getStaffByUsername($username);
 
-                if ($userObj) {
-                    $userId = $userObj['user_id'];
+                if ($staffObj) {
+                    $staffId = $staffObj['staff_id'];
                 }
 
                 $data['product_created'] = date('Y-m-d H:i:s');
-                $data['product_created_by_user_id'] = $userId;
+                $data['product_created_by_staff_id'] = $staffId;
                 $data['product_deleted'] = 0;
                 $product_id = $this->insert($data);
 
@@ -134,15 +134,15 @@ class Default_Model_Product extends Zend_Db_Table_Abstract
     {
         try {
             if (!$this->isProductExists($data['product_code'], $productId)) {
-                $user = new Default_Model_User();
-                $userObj = $user->getUserByUsername($username);
+                $staffModel = new Default_Model_Staff();
+                $staffObj = $staffModel->getStaffByUsername($username);
 
-                if ($userObj) {
-                    $userId = $userObj['user_id'];
+                if ($staffObj) {
+                    $staffId = $staffObj['staff_id'];
                 }
 
                 $data['product_last_updated'] = date('Y-m-d H:i:s');
-                $data['product_last_updated_by_user_id'] = $userId;
+                $data['product_last_updated_by_staff_id'] = $staffId;
                 $affectedCount = $this->update($data, 'product_id = ' . $productId);
 
                 return $affectedCount;
@@ -166,11 +166,11 @@ class Default_Model_Product extends Zend_Db_Table_Abstract
     public function deleteProduct($productId, $productCode, $productName, $username)
     {
         try {
-            $user = new Default_Model_User();
-            $userObj = $user->getUserByUsername($username);
+            $staffModel = new Default_Model_Staff();
+            $staffObj = $staffModel->getStaffByUsername($username);
 
-            if ($userObj) {
-                $userId = $userObj['user_id'];
+            if ($staffObj) {
+                $staffId = $staffObj['staff_id'];
             }
 
             $affectedCount = $this->update(

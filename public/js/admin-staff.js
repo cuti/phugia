@@ -1,6 +1,6 @@
 (() => {
-  let tblUser;
-  let editingUserId;
+  let tblStaff;
+  let editingStaffId;
 
   function select2SelectedId(id) {
     const data = $(`#${id}`).select2('data');
@@ -12,7 +12,7 @@
     return data[0].id;
   }
 
-  function confirmDeleteUser(username) {
+  function confirmDeleteUser(fullname) {
     return Swal.fire({
       cancelButtonText: 'Hủy',
       confirmButtonText: 'Xóa',
@@ -20,16 +20,16 @@
         confirmButton: 'bg-danger text-white',
         icon: 'border-danger text-danger',
       },
-      html: `Vui lòng xác nhận bạn muốn xóa người dùng<br><strong>${username}</strong>`,
+      html: `Vui lòng xác nhận bạn muốn xóa nhân viên<br><strong>${fullname}</strong>`,
       icon: 'warning',
       reverseButtons: true,
       showCancelButton: true,
-      title: 'Xóa người dùng?',
+      title: 'Xóa nhân viên?',
       width: '500px',
     });
   }
 
-  function confirmResetPass(username) {
+  function confirmResetPass(fullname) {
     return Swal.fire({
       cancelButtonText: 'Hủy',
       confirmButtonText: 'Đồng ý',
@@ -37,7 +37,7 @@
         confirmButton: 'bg-danger text-white',
         icon: 'border-danger text-danger',
       },
-      html: `Vui lòng xác nhận bạn muốn thiết lập lại mật khẩu cho người dùng<br><strong>${username}</strong>`,
+      html: `Vui lòng xác nhận bạn muốn thiết lập lại mật khẩu cho nhân viên<br><strong>${fullname}</strong>`,
       icon: 'warning',
       reverseButtons: true,
       showCancelButton: true,
@@ -47,7 +47,7 @@
   }
 
   function clearDetailDlg() {
-    editingUserId = undefined;
+    editingStaffId = undefined;
     $('#txtUsername').val('');
     $('#txtFullname').val('');
     $('#txtDisplayName').val('');
@@ -59,25 +59,25 @@
 
   function setDataDetailDlg(data) {
     const {
-      user_id,
-      user_fullname,
-      user_display_name,
-      user_username,
-      user_department_id,
-      user_email,
-      user_active,
+      staff_id,
+      staff_fullname,
+      staff_display_name,
+      staff_username,
+      staff_department_id,
+      staff_email,
+      staff_active,
       role_id
     } = data;
 
-    editingUserId = user_id;
-    $('#txtUsername').val(user_username);
-    $('#txtFullname').val(user_fullname);
-    $('#txtDisplayName').val(user_display_name);
+    editingStaffId = staff_id;
+    $('#txtUsername').val(staff_username);
+    $('#txtFullname').val(staff_fullname);
+    $('#txtDisplayName').val(staff_display_name);
     $('#txtPassword').val('(Đã mã hóa)').prop('readonly', true);
-    $('#selDepartment').val(user_department_id).trigger('change');
+    $('#selDepartment').val(staff_department_id).trigger('change');
     $('#selRole').val(role_id).trigger('change');
-    $('#txtEmail').val(user_email);
-    $('#chkActive').prop('checked', !!+user_active);
+    $('#txtEmail').val(staff_email);
+    $('#chkActive').prop('checked', !!+staff_active);
   }
 
   function validateInput() {
@@ -99,9 +99,9 @@
     return true;
   }
 
-  tblUser = $('#tblUser').DataTable({
+  tblStaff = $('#tblStaff').DataTable({
     ajax: {
-      url: 'user/get-all',
+      url: 'staff/get-all',
     },
     columns: [
       {
@@ -124,17 +124,17 @@
         width: '110px',
       },
       {
-        data: 'user_active',
+        data: 'staff_active',
         render: data => {
           let fa_icon, tooltip, btnClass;
 
           if (+data) {
             fa_icon = 'user-check';
-            tooltip = 'Khóa người dùng';
+            tooltip = 'Khóa nhân viên';
             btnClass = 'success';
           } else {
             fa_icon = 'user-lock';
-            tooltip = 'Mở khóa người dùng';
+            tooltip = 'Mở khóa nhân viên';
             btnClass = 'danger';
           }
 
@@ -148,7 +148,7 @@
         width: '40px',
       },
       {
-        data: 'user_username',
+        data: 'staff_username',
         title: 'Username',
         width: '120px',
       },
@@ -158,46 +158,46 @@
         width: '180px',
       },
       {
-        data: 'user_email',
+        data: 'staff_email',
         title: 'Email',
         width: '180px',
       },
       {
-        data: 'user_fullname',
+        data: 'staff_fullname',
         title: 'Họ và tên',
         width: '170px',
       },
       {
-        data: 'user_display_name',
+        data: 'staff_display_name',
         title: 'Tên hiển thị',
         width: '150px',
       },
       {
-        data: 'user_department',
+        data: 'staff_department',
         title: 'Phòng',
         width: '170px',
       },
       {
-        data: 'user_created',
+        data: 'staff_created',
         render: data => Utility.phpDateToVnDate(data),
         title: 'Ngày tạo',
         type: 'date',
         width: '100px',
       },
       {
-        data: 'user_created_by_username',
+        data: 'staff_created_by_username',
         title: 'Người tạo',
         width: '120px',
       },
       {
-        data: 'user_last_updated',
+        data: 'staff_last_updated',
         render: data => Utility.phpDateToVnDate(data),
         title: 'Ngày cập nhật sau cùng',
         type: 'date',
         width: '100px',
       },
       {
-        data: 'user_last_updated_by_username',
+        data: 'staff_last_updated_by_username',
         title: 'Người cập nhật sau cùng',
         width: '120px',
       },
@@ -287,42 +287,42 @@
     $('#txtUsername').focus();
   });
 
-  $('#btnNewUser').click(() => {
+  $('#btnNewStaff').click(() => {
     clearDetailDlg();
     $('#detailDlg').modal('show');
   });
 
-  $('#formUserDetail').submit(e => {
+  $('#formStaffDetail').submit(e => {
     e.preventDefault();
 
     if (!validateInput()) return;
 
-    const user_id = editingUserId;
-    const user_fullname = Utility.nullIfEmpty($('#txtFullname').val().trim());
-    const user_display_name = Utility.nullIfEmpty($('#txtDisplayName').val().trim());
-    const user_department_id = select2SelectedId('selDepartment');
+    const staff_id = editingStaffId;
+    const staff_fullname = Utility.nullIfEmpty($('#txtFullname').val().trim());
+    const staff_display_name = Utility.nullIfEmpty($('#txtDisplayName').val().trim());
+    const staff_department_id = select2SelectedId('selDepartment');
     const role_id = select2SelectedId('selRole');
 
     const data = {
-      user: {
-        user_fullname,
-        user_display_name,
-        user_username: $('#txtUsername').val().trim(),
-        user_department_id,
-        user_email: $('#txtEmail').val().trim(),
-        user_active: $('#chkActive').is(':checked') ? 1 : 0,
+      staff: {
+        staff_fullname,
+        staff_display_name,
+        staff_username: $('#txtUsername').val().trim(),
+        staff_department_id,
+        staff_email: $('#txtEmail').val().trim(),
+        staff_active: $('#chkActive').is(':checked') ? 1 : 0,
       },
       roleId: role_id,
     };
 
     let url;
 
-    if (user_id) {
-      data.userId = user_id;
-      url = 'user/update';
+    if (staff_id) {
+      data.staffId = staff_id;
+      url = 'staff/update';
     } else {
-      data.user.user_password = $('#txtPassword').val();
-      url = 'user/insert';
+      data.staff.staff_password = $('#txtPassword').val();
+      url = 'staff/insert';
     }
 
     $.ajax({
@@ -338,38 +338,38 @@
         }
 
         if (res.status === 1) {
-          Toast.showSuccess('Lưu người dùng thành công.');
-          tblUser.ajax.reload();
+          Toast.showSuccess('Lưu nhân viên thành công.');
+          tblStaff.ajax.reload();
         } else if (res.message === 'UNAME_DUP') {
           Toast.showError('Username đã tồn tại.');
         } else {
-          Toast.showError('Lưu không thành công, vui lòng kiểm tra lại thông tin người dùng.', '400px');
+          Toast.showError('Lưu không thành công, vui lòng kiểm tra lại thông tin nhân viên.', '400px');
         }
       }
     });
   });
 
   $('body').on('click', '.btn-edit', e => {
-    const data = tblUser.row($(e.target).closest('tr')).data();
+    const data = tblStaff.row($(e.target).closest('tr')).data();
 
     setDataDetailDlg(data);
     $('#detailDlg').modal('show');
   });
 
   $('body').on('click', '.btn-delete', e => {
-    const data = tblUser.row($(e.target).closest('tr')).data();
-    const { user_id, user_username, user_email } = data;
+    const data = tblStaff.row($(e.target).closest('tr')).data();
+    const { staff_id, staff_fullname, staff_username, staff_email } = data;
 
-    confirmDeleteUser(user_username).then(result => {
+    confirmDeleteUser(staff_fullname).then(result => {
       if (result.isConfirmed) {
         $.ajax({
           data: JSON.stringify({
-            usrId: user_id,
-            uname: user_username,
-            email: user_email,
+            staffId: staff_id,
+            username: staff_username,
+            email: staff_email,
           }),
           contentType: 'application/json',
-          url: 'user/delete',
+          url: 'staff/delete',
           type: 'POST',
           dataType: 'json',
           success: function (res) {
@@ -379,10 +379,10 @@
             }
 
             if (res.status === 1) {
-              Toast.showSuccess('Xóa người dùng thành công.');
-              tblUser.ajax.reload();
+              Toast.showSuccess('Xóa nhân viên thành công.');
+              tblStaff.ajax.reload();
             } else {
-              Toast.showError('Lỗi, không xóa được người dùng.');
+              Toast.showError('Lỗi, không xóa được nhân viên.');
             }
           }
         });
@@ -391,15 +391,15 @@
   });
 
   $('body').on('click', '.btn-reset-pass', e => {
-    const data = tblUser.row($(e.target).closest('tr')).data();
-    const { user_username } = data;
+    const data = tblStaff.row($(e.target).closest('tr')).data();
+    const { staff_fullname, staff_username } = data;
 
-    confirmResetPass(user_username).then(result => {
+    confirmResetPass(staff_fullname).then(result => {
       if (result.isConfirmed) {
         $.ajax({
-          data: JSON.stringify({ username: user_username }),
+          data: JSON.stringify({ username: staff_username }),
           contentType: 'application/json',
-          url: 'user/rp',
+          url: 'staff/rp',
           type: 'POST',
           dataType: 'json',
           success: function (res) {
@@ -409,7 +409,7 @@
             }
 
             if (res.status === 1) {
-              Toast.showSuccess('Thiết lập lại mật khẩu cho người dùng thành công. Một email với mật khẩu mới đã được gửi đến hộp thư của người dùng.', 10000);
+              Toast.showSuccess('Thiết lập lại mật khẩu cho người dùng thành công. Một email với mật khẩu mới đã được gửi đến hộp thư của nhân viên.', 10000);
             } else {
               Toast.showError('Lỗi, không thiết lập lại mật khẩu cho người dùng được.');
             }
@@ -420,13 +420,13 @@
   });
 
   $('body').on('click', '.btn-toggle-active', e => {
-    const data = tblUser.row($(e.target).closest('tr')).data();
-    const { user_id } = data;
+    const data = tblStaff.row($(e.target).closest('tr')).data();
+    const { staff_id } = data;
 
     $.ajax({
-      data: JSON.stringify({ usrId: user_id }),
+      data: JSON.stringify({ staffId: staff_id }),
       contentType: 'application/json',
-      url: 'user/change-status',
+      url: 'staff/change-status',
       type: 'POST',
       dataType: 'json',
       success: function (res) {
@@ -437,9 +437,9 @@
 
         if (res.status === 1) {
           Toast.showSuccess('', 1500, '90px');
-          tblUser.ajax.reload();
+          tblStaff.ajax.reload();
         } else {
-          Toast.showError('Lỗi, không đổi trạng thái người dùng được.');
+          Toast.showError('Lỗi, không đổi trạng thái nhân viên được.');
         }
       }
     });

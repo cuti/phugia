@@ -18,17 +18,17 @@ class Admin_Model_Role extends Zend_Db_Table_Abstract
                      , r.role_name
                      , r.role_active
                      , r.role_created
-                     , r.role_created_by_user_id
+                     , r.role_created_by_staff_id
                      , r.role_last_updated
-                     , r.role_last_updated_by_user_id
-                     , uc.user_username AS role_created_by_username
-                     , um.user_username AS role_last_updated_by_username
-                     , (SELECT COUNT(DISTINCT ur_user_id)
-                          FROM user_role
-                         WHERE ur_role_id = r.role_id) AS user_count
+                     , r.role_last_updated_by_staff_id
+                     , sc.staff_username AS role_created_by_username
+                     , sm.staff_username AS role_last_updated_by_username
+                     , (SELECT COUNT(DISTINCT sr_staff_id)
+                          FROM staff_role
+                         WHERE sr_role_id = r.role_id) AS staff_count
                   FROM [role] r
-                       LEFT JOIN [user] uc ON r.role_created_by_user_id = uc.user_id
-                       LEFT JOIN [user] um ON r.role_last_updated_by_user_id = um.user_id
+                       LEFT JOIN staff sc ON r.role_created_by_staff_id = sc.staff_id
+                       LEFT JOIN staff sm ON r.role_last_updated_by_staff_id = sm.staff_id
               ORDER BY r.role_name ASC';
 
         $result = $this->getAdapter()->fetchAll($sql);
@@ -71,7 +71,7 @@ class Admin_Model_Role extends Zend_Db_Table_Abstract
         try {
             if (!$this->isRoleExists($data['role_name'])) {
                 $data['role_created'] = date('Y-m-d H:i:s');
-                $data['role_created_by_user_id'] = $this->currentUserId();
+                $data['role_created_by_staff_id'] = $this->currentStaffId();
                 return $this->insert($data);
             } else {
                 throw new Exception('role_name');
@@ -98,7 +98,7 @@ class Admin_Model_Role extends Zend_Db_Table_Abstract
                 }, ARRAY_FILTER_USE_KEY);
 
                 $updateData['role_last_updated'] = date('Y-m-d H:i:s');
-                $updateData['role_last_updated_by_user_id'] = $this->currentUserId();
+                $updateData['role_last_updated_by_staff_id'] = $this->currentStaffId();
 
                 $where = $this->getAdapter()->quoteInto('role_id = ?', $roleId);
 
@@ -145,7 +145,7 @@ class Admin_Model_Role extends Zend_Db_Table_Abstract
         try {
             $adapter = $this->getAdapter();
 
-            // Tự động gỡ người dùng và menu ra khỏi nhóm này, theo CASCADE DELETE
+            // Tự động gỡ nhân viên và menu ra khỏi nhóm này, theo CASCADE DELETE
             $affectedCount = $this->delete(
                 array(
                     $adapter->quoteInto('role_id = ?', $roleId),
@@ -175,12 +175,12 @@ class Admin_Model_Role extends Zend_Db_Table_Abstract
             $sql = "UPDATE [role]
                        SET role_active = ?,
                            role_last_updated = GETDATE(),
-                           role_last_updated_by_user_id = ?
+                           role_last_updated_by_staff_id = ?
                      WHERE role_id = ?";
 
             $bind = array(
                 $isActive ? 1 : 0,
-                $this->currentUserId(),
+                $this->currentStaffId(),
                 $roleId
             );
 
@@ -188,7 +188,7 @@ class Admin_Model_Role extends Zend_Db_Table_Abstract
             $resultRole = $stm->execute();
 
             if (!$isActive) {
-                (new Admin_Model_User())->setInactiveForUserByRoleId($roleId);
+                (new Admin_Model_Staff())->setInactiveForStaffByRoleId($roleId);
             }
 
             $roleObj = $this->getRoleByRoleId($roleId);
@@ -228,11 +228,11 @@ class Admin_Model_Role extends Zend_Db_Table_Abstract
     }
 
     /**
-     * Get current logged in user_id
+     * Get current logged in staff_id
      */
-    private function currentUserId()
+    private function currentStaffId()
     {
         $identity = Zend_Auth::getInstance()->getIdentity();
-        return $identity['user_id'];
+        return $identity['staff_id'];
     }
 }

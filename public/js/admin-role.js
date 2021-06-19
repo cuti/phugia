@@ -158,8 +158,8 @@
         title: 'Tên nhóm',
       },
       {
-        data: 'user_count',
-        title: 'Số lượng người dùng',
+        data: 'staff_count',
+        title: 'Số lượng nhân viên',
       },
       {
         data: 'role_created',

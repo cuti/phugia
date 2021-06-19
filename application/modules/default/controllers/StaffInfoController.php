@@ -1,6 +1,6 @@
 <?php
 
-class UserInfoController extends Zend_Controller_Action
+class StaffInfoController extends Zend_Controller_Action
 {
     public function init()
     {
@@ -25,7 +25,7 @@ class UserInfoController extends Zend_Controller_Action
 
     public function indexAction()
     {
-        $this->view->pageTitle = 'Thông Tin Người Dùng';
+        $this->view->pageTitle = 'Thông Tin Nhân Viên';
         $this->view->data = $this->getUserInfo();
     }
 
@@ -34,15 +34,15 @@ class UserInfoController extends Zend_Controller_Action
         $req = $this->getRequest();
 
         if ($req->isXmlHttpRequest() && $req->isPost()) {
-            $userInfo = $this->getUserInfo();
-            $userId = $userInfo['user_id'];
-            $userName = $userInfo['username'];
+            $staffInfo = $this->getUserInfo();
+            $staffId = $staffInfo['staff_id'];
+            $userName = $staffInfo['username'];
             $oldPass = $req->getParam('oldpass', '');
             $newPass = $req->getParam('newpass', '');
-            $user = new Default_Model_User();
+            $staffModel = new Default_Model_Staff();
 
-            if ($user->validate($userName, MD5($oldPass))) {
-                $affectedCount = $user->changeUserPassword($userId, $newPass);
+            if ($staffModel->validate($userName, MD5($oldPass))) {
+                $affectedCount = $staffModel->changeUserPassword($staffId, $newPass);
 
                 $result = array(
                     'data' => $affectedCount,
@@ -69,27 +69,27 @@ class UserInfoController extends Zend_Controller_Action
         $req = $this->getRequest();
 
         if ($req->isXmlHttpRequest() && $req->isPost()) {
-            $userInfo = $this->getUserInfo();
-            $userId = $userInfo['user_id'];
+            $staffInfo = $this->getUserInfo();
+            $staffId = $staffInfo['staff_id'];
 
             $fullName = $req->getParam('fullName', '');
             $displayName = $req->getParam('displayName', '');
             $email = $req->getParam('email', '');
 
             $data = array(
-                'user_fullname' => $fullName,
-                'user_display_name' => $displayName,
-                'user_email' => $email,
+                'staff_fullname' => $fullName,
+                'staff_display_name' => $displayName,
+                'staff_email' => $email,
             );
 
-            $user = new Default_Model_User();
-            $affectedCount = $user->updateUserInfo($userId, $data);
+            $staffModel = new Default_Model_Staff();
+            $affectedCount = $staffModel->updateStaffInfo($staffId, $data);
 
-            $userInfo['fullname'] = $fullName;
-            $userInfo['display_name'] = $displayName;
-            $userInfo['email'] = $email;
+            $staffInfo['fullname'] = $fullName;
+            $staffInfo['display_name'] = $displayName;
+            $staffInfo['email'] = $email;
 
-            $this->setUserInfo($userInfo);
+            $this->setUserInfo($staffInfo);
 
             $result = array(
                 'data' => $affectedCount,

@@ -32,17 +32,17 @@ class ForgotPasswordController extends Zend_Controller_Action
         if ($req->isXmlHttpRequest() && $req->isPost()) {
             try {
                 $username = $req->getParam('username', '');
-                $userInfo = $this->getUserInfoByUsername($username);
+                $staffInfo = $this->getStaffInfoByUsername($username);
 
-                if ($userInfo) {
+                if ($staffInfo) {
                     $password = Utility::generateSecret(MIN_PASS_LEN);
 
-                    $userModel = new Default_Model_User();
-                    $result = $userModel->changeUserPassword($userInfo['user_id'], $password);
+                    $staffModel = new Default_Model_Staff();
+                    $result = $staffModel->changeUserPassword($staffInfo['staff_id'], $password);
 
                     if ($result > 0) {
-                        $mailBody = $this->prepareBody($userInfo['greetName'], $password);
-                        $mail = $this->prepareMail($userInfo['email'], $userInfo['greetName'], $mailBody);
+                        $mailBody = $this->prepareBody($staffInfo['greetName'], $password);
+                        $mail = $this->prepareMail($staffInfo['email'], $staffInfo['greetName'], $mailBody);
 
                         $config = array(
                             'auth' => 'login',
@@ -98,24 +98,24 @@ class ForgotPasswordController extends Zend_Controller_Action
         $this->getResponse()->setHeader('Content-Type', 'application/json', true);
     }
 
-    private function getUserInfoByUsername($username)
+    private function getStaffInfoByUsername($username)
     {
-        $userModel = new Admin_Model_User();
-        $userObj = $userModel->getUserByUsername($username);
+        $staffModel = new Admin_Model_Staff();
+        $staffObj = $staffModel->getStaffByUsername($username);
 
-        if ($userObj) {
-            if ($userObj['user_display_name']) {
-                $greetName = $userObj['user_display_name'];
-            } else if ($userObj['user_fullname']) {
-                $greetName = $userObj['user_fullname'];
+        if ($staffObj) {
+            if ($staffObj['staff_display_name']) {
+                $greetName = $staffObj['staff_display_name'];
+            } else if ($staffObj['staff_fullname']) {
+                $greetName = $staffObj['staff_fullname'];
             } else {
                 $greetName = $username;
             }
 
             return array(
-                'user_id'   => $userObj['user_id'],
+                'staff_id'   => $staffObj['staff_id'],
                 'greetName' => $greetName,
-                'email'     => $userObj['user_email'],
+                'email'     => $staffObj['staff_email'],
             );
         } else {
             return null;

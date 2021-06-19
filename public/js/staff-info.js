@@ -60,7 +60,7 @@
 
     $.ajax({
       type: 'POST',
-      url: 'user-info/cp',
+      url: 'staff-info/cp',
       data: {
         oldpass: $('#txtOldPass').val(),
         newpass: $('#txtNewPass').val(),
@@ -107,7 +107,7 @@
 
     $.ajax({
       type: 'POST',
-      url: 'user-info/ci',
+      url: 'staff-info/ci',
       data: {
         fullName,
         displayName,
@@ -118,7 +118,7 @@
         if (res.status === 0) {
           Toast.showError(res.message);
         } else {
-          Toast.showSuccess('Cập nhật thông tin người dùng thành công', 3000);
+          Toast.showSuccess('Cập nhật thông tin nhân viên thành công', 3000);
           disableEditing();
 
           if (displayName) {

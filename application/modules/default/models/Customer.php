@@ -49,9 +49,9 @@ class Default_Model_Customer extends Zend_Db_Table_Abstract
             'cus_is_supplier',
             'cus_active',
             'cus_created',
-            'cus_created_by_user_id',
+            'cus_created_by_staff_id',
             'cus_last_updated',
-            'cus_last_updated_by_user_id',
+            'cus_last_updated_by_staff_id',
         );
 
         $select->from(array('cus' => 'customer'), $customerFields)
@@ -60,8 +60,8 @@ class Default_Model_Customer extends Zend_Db_Table_Abstract
             ->joinLeft(array('ccity' => 'city'), 'cus.cus_city_id = ccity.city_id', array('cus_city_name' => 'city_name'))
             ->joinLeft(array('dis' => 'district'), 'cus.cus_district_id = dis.district_id', array('cus_district_name' => 'district_name'))
             ->joinLeft('ward', 'cus.cus_ward_id = ward.ward_id', array('cus_ward_name' => 'ward_name'))
-            ->joinLeft(array('uc' => 'user'), 'cus.cus_created_by_user_id = uc.user_id', array('cus_created_by_username' => 'user_username'))
-            ->joinLeft(array('um' => 'user'), 'cus.cus_last_updated_by_user_id = um.user_id', array('cus_last_updated_by_username' => 'user_username'))
+            ->joinLeft(array('sc' => 'staff'), 'cus.cus_created_by_staff_id = sc.staff_id', array('cus_created_by_username' => 'staff_username'))
+            ->joinLeft(array('sm' => 'staff'), 'cus.cus_last_updated_by_staff_id = sm.staff_id', array('cus_last_updated_by_username' => 'staff_username'))
             ->where('cus_deleted = 0')
             ->order('cus_code ASC');
 
@@ -97,14 +97,14 @@ class Default_Model_Customer extends Zend_Db_Table_Abstract
                     $country = new Default_Model_Country();
                     $district = new Default_Model_District();
                     $ward = new Default_Model_Ward();
-                    $user = new Default_Model_User();
+                    $staffModel = new Default_Model_Staff();
 
                     $bank_city_id = null;
                     $country_id = null;
                     $cus_city_id = null;
                     $district_id = null;
                     $ward_id = null;
-                    $userObj = $user->getUserByUsername($username);
+                    $staffObj = $staffModel->getStaffByUsername($username);
 
                     if ($data[$i][21]) {
                         $bank_city_id = $city->getCityIdByName(trim($data[$i][21]));
@@ -126,8 +126,8 @@ class Default_Model_Customer extends Zend_Db_Table_Abstract
                         $ward_id = $ward->getWardIdByName(trim($data[$i][25]));
                     }
 
-                    if ($userObj) {
-                        $userId = $userObj['user_id'];
+                    if ($staffObj) {
+                        $staffId = $staffObj['staff_id'];
                     }
 
                     $importRow = array(
@@ -169,7 +169,7 @@ class Default_Model_Customer extends Zend_Db_Table_Abstract
                         'cus_is_supplier' => $data[$i][36],
                         'cus_active' => !$data[$i][37],
                         'cus_created' => date('Y-m-d H:i:s'),
-                        'cus_created_by_user_id' => $userId,
+                        'cus_created_by_staff_id' => $staffId,
                         'cus_deleted' => 0,
                     );
 
@@ -227,15 +227,15 @@ class Default_Model_Customer extends Zend_Db_Table_Abstract
     {
         try {
             if (!$this->isCustomerExists($data['cus_code'])) {
-                $user = new Default_Model_User();
-                $userObj = $user->getUserByUsername($username);
+                $staffModel = new Default_Model_Staff();
+                $staffObj = $staffModel->getStaffByUsername($username);
 
-                if ($userObj) {
-                    $userId = $userObj['user_id'];
+                if ($staffObj) {
+                    $staffId = $staffObj['staff_id'];
                 }
 
                 $data['cus_created'] = date('Y-m-d H:i:s');
-                $data['cus_created_by_user_id'] = $userId;
+                $data['cus_created_by_staff_id'] = $staffId;
                 $data['cus_deleted'] = 0;
                 $cus_id = $this->insert($data);
 
@@ -269,15 +269,15 @@ class Default_Model_Customer extends Zend_Db_Table_Abstract
     {
         try {
             if (!$this->isCustomerExists($data['cus_code'], $cusId)) {
-                $user = new Default_Model_User();
-                $userObj = $user->getUserByUsername($username);
+                $staffModel = new Default_Model_Staff();
+                $staffObj = $staffModel->getStaffByUsername($username);
 
-                if ($userObj) {
-                    $userId = $userObj['user_id'];
+                if ($staffObj) {
+                    $staffId = $staffObj['staff_id'];
                 }
 
                 $data['cus_last_updated'] = date('Y-m-d H:i:s');
-                $data['cus_last_updated_by_user_id'] = $userId;
+                $data['cus_last_updated_by_staff_id'] = $staffId;
                 $affectedCount = $this->update($data, 'cus_id = ' . $cusId);
 
                 $cusCustomerType = new Default_Model_CustomerCustomerType();
@@ -310,11 +310,11 @@ class Default_Model_Customer extends Zend_Db_Table_Abstract
     public function deleteCustomer($cusId, $cusCode, $cusName, $username)
     {
         try {
-            $user = new Default_Model_User();
-            $userObj = $user->getUserByUsername($username);
+            $staffModel = new Default_Model_Staff();
+            $staffObj = $staffModel->getStaffByUsername($username);
 
-            if ($userObj) {
-                $userId = $userObj['user_id'];
+            if ($staffObj) {
+                $staffId = $staffObj['staff_id'];
             }
 
             // Also delete data in CUSTOMER__CUSTOMER_TYPE b/c of delete cascade

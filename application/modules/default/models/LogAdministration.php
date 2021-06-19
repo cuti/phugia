@@ -15,11 +15,11 @@ class Default_Model_LogAdministration extends Zend_Db_Table_Abstract
     public function writeLog($action, $username)
     {
         try {
-            $user = new Default_Model_User();
-            $userObj = $user->getUserByUsername($username);
+            $staffModel = new Default_Model_Staff();
+            $staffObj = $staffModel->getStaffByUsername($username);
 
-            if ($userObj) {
-                $userId = $userObj['user_id'];
+            if ($staffObj) {
+                $staffId = $staffObj['staff_id'];
             } else {
                 throw new Exception('Invalid username.');
             }
@@ -27,7 +27,7 @@ class Default_Model_LogAdministration extends Zend_Db_Table_Abstract
             $data = array(
                 'log_action' => $action,
                 'log_time' => date('Y-m-d H:i:s'),
-                'log_user_id' => $userId,
+                'log_staff_id' => $staffId,
             );
 
             $log_id = $this->insert($data);
