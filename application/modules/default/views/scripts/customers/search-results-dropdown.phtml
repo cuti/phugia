@@ -1,8 +1,0 @@
-<?php if($this->cus_status >0): ?>
-    <li class="user-list-item" >
-        <div class="search-list-item-container" >
-            <div class="search-list-item-name">                  
-                    <input class="result-item" type="button" id="detail<?php echo $this->cus_identity_card; ?>" value="<?php echo $this->cus_firstname.' '.$this->cus_lastname.'_'.date('Y', strtotime($this->cus_birthday)).'_'.$this->cus_identity_card; ?>"/>
-            </div>        
-        </div>
-<?php endif; ?>  
