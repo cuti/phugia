@@ -23,9 +23,9 @@ class Admin_Model_Role extends Zend_Db_Table_Abstract
                      , r.role_last_updated_by_staff_id
                      , sc.staff_username AS role_created_by_username
                      , sm.staff_username AS role_last_updated_by_username
-                     , (SELECT COUNT(DISTINCT sr_staff_id)
-                          FROM staff_role
-                         WHERE sr_role_id = r.role_id) AS staff_count
+                     , (SELECT COUNT(DISTINCT sr.sr_staff_id)
+                          FROM staff_role sr JOIN staff s ON sr.sr_staff_id = s.staff_id
+                         WHERE sr_role_id = r.role_id AND s.staff_deleted = 0) AS staff_count
                   FROM [role] r
                        LEFT JOIN staff sc ON r.role_created_by_staff_id = sc.staff_id
                        LEFT JOIN staff sm ON r.role_last_updated_by_staff_id = sm.staff_id

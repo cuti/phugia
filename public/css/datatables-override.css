@@ -2,8 +2,16 @@
   vertical-align: middle;
 }
 
-.dataTables_scrollBody>.data-table>tbody>tr>td:nth-of-type(2) {
+.dataTables_scrollHead .data-table>thead>tr>th {
   text-align: center;
+}
+
+.dataTables_scrollBody>.data-table>tbody>tr>td.center {
+  text-align: center;
+}
+
+.dataTables_scrollBody>.data-table>tbody>tr>td.right {
+  text-align: right;
 }
 
 table.dataTable>tbody>tr.child span.dtr-title {

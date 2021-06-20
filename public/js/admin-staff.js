@@ -48,12 +48,17 @@
 
   function clearDetailDlg() {
     editingStaffId = undefined;
-    $('#txtUsername').val('');
     $('#txtFullname').val('');
-    $('#txtDisplayName').val('');
-    $('#txtPassword').val('').prop('readonly', false);
-    $('#selDepartment').val(null).trigger('change');
+    $('input[name=gender]').prop('checked', false).parent().removeClass('active');
+    $('#selBirthYear').val(null).trigger('change');
+    $('#txtStaffCode').val('');
     $('#txtEmail').val('');
+    $('#txtDisplayName').val('');
+    $('#selDepartment').val(null).trigger('change');
+    $('#txtPosition').val('');
+    $('#txtUsername').val('');
+    $('#txtPassword').val('').prop('readonly', false);
+    $('#selRole').val(null).trigger('change');
     $('#chkActive').prop('checked', true);
   }
 
@@ -61,38 +66,80 @@
     const {
       staff_id,
       staff_fullname,
-      staff_display_name,
-      staff_username,
-      staff_department_id,
+      staff_gender,
+      staff_birth_year,
+      staff_code,
       staff_email,
+      staff_display_name,
+      staff_department_id,
+      staff_position,
+      staff_username,
       staff_active,
       role_id
     } = data;
 
     editingStaffId = staff_id;
-    $('#txtUsername').val(staff_username);
     $('#txtFullname').val(staff_fullname);
-    $('#txtDisplayName').val(staff_display_name);
-    $('#txtPassword').val('(Đã mã hóa)').prop('readonly', true);
-    $('#selDepartment').val(staff_department_id).trigger('change');
-    $('#selRole').val(role_id).trigger('change');
+
+    switch (staff_gender) {
+      case 'Nam':
+        $('#genderMale').prop('checked', true).parent().addClass('active');
+        $('#genderFemale').prop('checked', false).parent().removeClass('active');
+        break;
+      case 'Nữ':
+        $('#genderMale').prop('checked', false).parent().removeClass('active');
+        $('#genderFemale').prop('checked', true).parent().addClass('active');
+        break;
+      default:
+        $('input[name=gender]').prop('checked', false).parent().removeClass('active');
+        break;
+    }
+
+    $('#selBirthYear').val(staff_birth_year).trigger('change');
+    $('#txtStaffCode').val(staff_code);
     $('#txtEmail').val(staff_email);
+    $('#txtDisplayName').val(staff_display_name);
+    $('#selDepartment').val(staff_department_id).trigger('change');
+    $('#txtPosition').val(staff_position);
+    $('#txtUsername').val(staff_username);
+    $('#txtPassword').val('(Đã mã hóa)').prop('readonly', true);
+    $('#selRole').val(role_id).trigger('change');
     $('#chkActive').prop('checked', !!+staff_active);
   }
 
   function validateInput() {
-    if ($('#txtUsername').val().trim() === '') {
-      Toast.showWarning('Chưa nhập username.');
+    if ($('#txtFullname').val().trim() === '') {
+      Toast.showWarning('Chưa nhập họ và tên.', 2000);
       return false;
     }
 
-    if ($('#txtPassword').val() === '') {
-      Toast.showWarning('Chưa nhập mật khẩu.');
+    if ($('input[name=gender]:checked').length === 0) {
+      Toast.showWarning('Chưa chọn giới tính.', 2000);
+      return false;
+    }
+
+    if ($('#selBirthYear').val() === null) {
+      Toast.showWarning('Chưa chọn năm sinh.', 2000);
       return false;
     }
 
     if ($('#txtEmail').val().trim() === '') {
-      Toast.showWarning('Chưa nhập địa chỉ email.');
+      Toast.showWarning('Chưa nhập địa chỉ email.', 2000);
+      return false;
+    }
+
+    if ($('#txtUsername').val().trim() === '') {
+      Toast.showWarning('Chưa nhập username.', 2000);
+      return false;
+    }
+
+    if ($('#txtPassword').val() === '') {
+      Toast.showWarning('Chưa nhập mật khẩu.', 2000);
+      return false;
+    }
+
+    if ($('#selRole').val() === null) {
+      Toast.showWarning('Chưa chọn nhóm người dùng.', 2000);
       return false;
     }
 
@@ -105,7 +152,7 @@
     },
     columns: [
       {
-        className: 'text-center',
+        className: 'center',
         data: null,
         render: () => {
           const btnEdit = `<button type="button" class="btn-edit btn btn-outline-secondary btn-sm" title="Điều chỉnh thông tin">
@@ -120,10 +167,12 @@
 
           return btnEdit + btnDelete + btnResetPass;
         },
+        responsivePriority: 1,
         title: 'Thao tác',
         width: '110px',
       },
       {
+        className: 'center',
         data: 'staff_active',
         render: data => {
           let fa_icon, tooltip, btnClass;
@@ -144,60 +193,97 @@
 
           return btnToggleActive;
         },
+        responsivePriority: 1,
         title: 'Trạng thái',
         width: '40px',
       },
       {
+        data: 'staff_code',
+        responsivePriority: 1,
+        title: 'Mã nhân viên',
+        width: '120px',
+      },
+      {
         data: 'staff_username',
+        responsivePriority: 1,
         title: 'Username',
         width: '120px',
       },
       {
-        data: 'role_name',
-        title: 'Nhóm người dùng',
-        width: '180px',
-      },
-      {
-        data: 'staff_email',
-        title: 'Email',
-        width: '180px',
-      },
-      {
         data: 'staff_fullname',
+        responsivePriority: 2,
         title: 'Họ và tên',
         width: '170px',
       },
       {
         data: 'staff_display_name',
+        responsivePriority: 3,
         title: 'Tên hiển thị',
         width: '150px',
       },
       {
+        data: 'staff_gender',
+        responsivePriority: 4,
+        title: 'Giới tính',
+        width: '150px',
+      },
+      {
+        data: 'staff_birth_year',
+        responsivePriority: 5,
+        title: 'Năm sinh',
+        width: '120px',
+      },
+      {
+        data: 'staff_position',
+        responsivePriority: 6,
+        title: 'Vị trí công việc',
+        width: '200px',
+      },
+      {
+        data: 'role_name',
+        responsivePriority: 7,
+        title: 'Nhóm người dùng',
+        width: '180px',
+      },
+      {
+        data: 'staff_email',
+        responsivePriority: 8,
+        title: 'Email',
+        width: '180px',
+      },
+      {
         data: 'staff_department',
+        responsivePriority: 9,
         title: 'Phòng',
         width: '170px',
       },
       {
+        className: 'center',
         data: 'staff_created',
         render: data => Utility.phpDateToVnDate(data),
+        responsivePriority: 10,
         title: 'Ngày tạo',
         type: 'date',
         width: '100px',
       },
       {
         data: 'staff_created_by_username',
+        responsivePriority: 11,
         title: 'Người tạo',
         width: '120px',
       },
       {
+        className: 'center',
         data: 'staff_last_updated',
         render: data => Utility.phpDateToVnDate(data),
+        responsivePriority: 12,
         title: 'Ngày cập nhật sau cùng',
         type: 'date',
         width: '100px',
       },
       {
         data: 'staff_last_updated_by_username',
+        responsivePriority: 13,
         title: 'Người cập nhật sau cùng',
         width: '120px',
       },
@@ -211,7 +297,7 @@
       {
         targets: [0, 1],
         searchable: false,
-      }
+      },
     ],
     language: {
       emptyTable: 'Không có dữ liệu',
@@ -233,6 +319,11 @@
     ordering: false,
     pagingType: 'full_numbers',
     scrollX: true,
+  });
+
+  $('#selBirthYear').select2({
+    dropdownParent: $('#selBirthYear').parent(),
+    theme: 'bootstrap4'
   });
 
   (function getDepartment() {
@@ -284,7 +375,7 @@
   })();
 
   $('#detailDlg').on('shown.bs.modal', e => {
-    $('#txtUsername').focus();
+    $('#txtFullname').focus();
   });
 
   $('#btnNewStaff').click(() => {
@@ -297,28 +388,39 @@
 
     if (!validateInput()) return;
 
-    const staff_id = editingStaffId;
+    const staffId = editingStaffId;
     const staff_fullname = Utility.nullIfEmpty($('#txtFullname').val().trim());
+    const staff_gender = $('#genderMale').is(':checked') ? 'Nam' : 'Nữ';
+    const staff_birth_year = +$('#selBirthYear').val();
+    const staff_code = Utility.nullIfEmpty($('#txtStaffCode').val().trim());
+    const staff_email = $('#txtEmail').val().trim();
     const staff_display_name = Utility.nullIfEmpty($('#txtDisplayName').val().trim());
     const staff_department_id = select2SelectedId('selDepartment');
-    const role_id = select2SelectedId('selRole');
+    const staff_position = Utility.nullIfEmpty($('#txtPosition').val().trim());
+    const staff_username = $('#txtUsername').val().trim();
+    const staff_active = $('#chkActive').is(':checked') ? 1 : 0;
+    const roleId = select2SelectedId('selRole');
 
     const data = {
       staff: {
         staff_fullname,
+        staff_gender,
+        staff_birth_year,
+        staff_code,
+        staff_email,
         staff_display_name,
-        staff_username: $('#txtUsername').val().trim(),
         staff_department_id,
-        staff_email: $('#txtEmail').val().trim(),
-        staff_active: $('#chkActive').is(':checked') ? 1 : 0,
+        staff_position,
+        staff_username,
+        staff_active,
       },
-      roleId: role_id,
+      roleId,
     };
 
     let url;
 
-    if (staff_id) {
-      data.staffId = staff_id;
+    if (staffId) {
+      data.staffId = staffId;
       url = 'staff/update';
     } else {
       data.staff.staff_password = $('#txtPassword').val();

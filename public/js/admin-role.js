@@ -88,7 +88,7 @@
   }
 
   function getSelectedPermissions() {
-    const selectedNodes = treePermission.getSelectedNodes();
+    const selectedNodes = treePermission.getSelectedNodes().filter(n => !n.folder);
     const menuActionArr = $.map(selectedNodes, n => ({
       menu: n.parent.key,
       action: +n.key.split('_')[1],
