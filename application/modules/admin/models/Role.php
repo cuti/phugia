@@ -23,9 +23,9 @@ class Admin_Model_Role extends Zend_Db_Table_Abstract
                      , r.role_last_updated_by_staff_id
                      , sc.staff_username AS role_created_by_username
                      , sm.staff_username AS role_last_updated_by_username
-                     , (SELECT COUNT(DISTINCT sr.sr_staff_id)
-                          FROM staff_role sr JOIN staff s ON sr.sr_staff_id = s.staff_id
-                         WHERE sr_role_id = r.role_id AND s.staff_deleted = 0) AS staff_count
+                     , (SELECT COUNT(DISTINCT sr.staff_role_staff_id)
+                          FROM staff_role sr JOIN staff s ON sr.staff_role_staff_id = s.staff_id
+                         WHERE staff_role_role_id = r.role_id AND s.staff_deleted = 0) AS staff_count
                   FROM [role] r
                        LEFT JOIN staff sc ON r.role_created_by_staff_id = sc.staff_id
                        LEFT JOIN staff sm ON r.role_last_updated_by_staff_id = sm.staff_id
@@ -50,10 +50,10 @@ class Admin_Model_Role extends Zend_Db_Table_Abstract
 
     public function loadMenuActionsByRole($roleId)
     {
-        $sql = 'SELECT rm.rm_menu_id, rm.rm_action_id
+        $sql = 'SELECT rm.role_menu_menu_id, rm.role_menu_action_id
                   FROM role_menu rm
-                       JOIN menu m ON rm.rm_menu_id = m.menu_id
-                 WHERE rm.rm_role_id = ? AND m.menu_active = 1 AND m.menu_parent_id IS NOT NULL';
+                       JOIN menu m ON rm.role_menu_menu_id = m.menu_id
+                 WHERE rm.role_menu_role_id = ? AND m.menu_active = 1 AND m.menu_parent_id IS NOT NULL';
 
         $result = $this->getAdapter()->fetchAll($sql, array($roleId));
 
@@ -119,10 +119,10 @@ class Admin_Model_Role extends Zend_Db_Table_Abstract
     public function insertRoleMenuAction($roleId, $data)
     {
         try {
-            $sql = 'DELETE FROM role_menu WHERE rm_role_id = ?';
+            $sql = 'DELETE FROM role_menu WHERE role_menu_role_id = ?';
             $this->getAdapter()->query($sql, array($roleId));
 
-            $sql = 'INSERT INTO role_menu(rm_role_id, rm_menu_id, rm_action_id) VALUES (?, ?, ?)';
+            $sql = 'INSERT INTO role_menu(role_menu_role_id, role_menu_menu_id, role_menu_action_id) VALUES (?, ?, ?)';
             $adapter = $this->getAdapter();
 
             foreach ($data as $menuAction) {

@@ -63,7 +63,7 @@
         const d = res.data;
 
         for (let i = 0; i < d.length; i++) {
-          const actionNode = treePermission.getNodeByKey(d[i].rm_menu_id + '_' + d[i].rm_action_id);
+          const actionNode = treePermission.getNodeByKey(d[i].role_menu_menu_id + '_' + d[i].role_menu_action_id);
 
           if (actionNode) {
             actionNode.setSelected(true, { noEvents: true });

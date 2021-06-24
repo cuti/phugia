@@ -1,5 +1,6 @@
 :root {
   --sidebar-width: 240px;
+  --sidebar-toggled-width: 6.5rem;
 }
 
 ::-webkit-scrollbar {
@@ -65,7 +66,11 @@ footer.sticky-footer .copyright {
 }
 
 #wrapper #content-wrapper {
-  width: calc(100% - var(--sidebar-width));
+  width: calc(100% - var(--sidebar-toggled-width));
+}
+
+body.sidebar-toggled #wrapper #content-wrapper {
+  width: 100%;
 }
 
 @media (min-width: 768px) {
@@ -77,5 +82,11 @@ footer.sticky-footer .copyright {
   }
   .sidebar.toggled .nav-item .nav-link span {
     font-size: 0.85rem;
+  }
+  #wrapper #content-wrapper {
+    width: calc(100% - var(--sidebar-width));
+  }
+  body.sidebar-toggled #wrapper #content-wrapper {
+    width: calc(100% - var(--sidebar-toggled-width));
   }
 }

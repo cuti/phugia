@@ -12,6 +12,7 @@
   let city;
   let district;
   let ward;
+  let selectedCustomers = [];
 
   function clearSelect2(id) {
     $(`#${id}`).html('');
@@ -85,6 +86,10 @@
     $('#radToChuc').prop('checked', true);
     $('#chkNhaCC').prop('checked', false);
     $('#chkNgungTheoDoi').prop('checked', false);
+    $('#txtNgayTao').val('');
+    $('#txtNguoiTao').val('');
+    $('#txtNgayCNSauCung').val('');
+    $('#txtNguoiCNSauCung').val('');
   }
 
   function setDataDetailDlg(data) {
@@ -127,7 +132,11 @@
       cus_is_organization,
       cus_is_supplier,
       cus_active,
-      cus_type_ids
+      cus_type_ids,
+      cus_created,
+      cus_created_by_username,
+      cus_last_updated,
+      cus_last_updated_by_username,
     } = data;
 
     $('#hidCusId').val(cus_id);
@@ -170,6 +179,10 @@
     $('#radCaNhan').prop('checked', !+cus_is_organization);
     $('#chkNhaCC').prop('checked', !!+cus_is_supplier);
     $('#chkNgungTheoDoi').prop('checked', !+cus_active);
+    $('#txtNgayTao').val(Utility.phpDateToVnDate(cus_created));
+    $('#txtNguoiTao').val(cus_created_by_username);
+    $('#txtNgayCNSauCung').val(Utility.phpDateToVnDate(cus_last_updated));
+    $('#txtNguoiCNSauCung').val(cus_last_updated_by_username);
   }
 
   tblCustomer = $('#tblCustomer').DataTable({
@@ -178,16 +191,18 @@
     },
     columns: [
       {
-        data: null,
-        responsivePriority: 1,
-        title: 'Chi tiết',
-        width: '50px',
+        data: 'cus_id',
+        width: '30px',
       },
       {
         data: null,
         render: () => {
-          const btnEdit = '<button type="button" class="btn-edit btn btn-outline-dark btn-sm" title="Điều chỉnh thông tin"><i class="fas fa-edit"></i></button>';
-          const btnDelete = '<button type="button" class="btn-delete btn btn-danger btn-sm ml-2" title="Xóa"><i class="fas fa-trash"></i></button>';
+          const btnEdit = `<button type="button" class="btn-edit btn btn-outline-secondary btn-sm" title="Điều chỉnh thông tin">
+              <i class="fas fa-edit"></i>
+            </button>`;
+          const btnDelete = `<button type="button" class="btn-delete btn btn-outline-danger btn-sm ml-2" title="Xóa">
+              <i class="fas fa-trash"></i>
+            </button>`;
 
           return btnEdit + btnDelete;
         },
@@ -486,6 +501,34 @@
     ],
     columnDefs: [
       {
+        targets: 0,
+        checkboxes: {
+          selectRow: true,
+          selectCallback: (nodes, selected) => {
+            const selectedNodesCount = nodes.length;
+
+            if (selected) {
+              for (let i = 0; i < selectedNodesCount; i++) {
+                const tr = $(nodes[i]).closest('tr');
+                const data = tblCustomer.row(tr).data();
+
+                if (selectedCustomers.indexOf(data.cus_id) === -1) {
+                  selectedCustomers.push(data.cus_id);
+                }
+              }
+            } else {
+              for (let i = 0; i < selectedNodesCount; i++) {
+                const tr = $(nodes[i]).closest('tr');
+                const data = tblCustomer.row(tr).data();
+                selectedCustomers.splice(selectedCustomers.indexOf(data.cus_id), 1);
+              }
+            }
+
+            console.log(selectedCustomers);
+          }
+        },
+      },
+      {
         targets: ['_all'],
         orderable: false,
         defaultContent: '',
@@ -493,7 +536,7 @@
       {
         targets: [0, 1],
         searchable: false,
-      }
+      },
     ],
     language: {
       emptyTable: 'Không có dữ liệu',
@@ -510,11 +553,17 @@
       },
       processing: 'Đang xử lý...',
       search: 'Tìm ',
+      select: {
+        rows: '%d dòng được chọn'
+      },
       zeroRecords: 'Không tìm thấy dòng nào phù hợp',
     },
     ordering: false,
     pagingType: 'full_numbers',
     scrollX: true,
+    select: {
+      style: 'multi'
+    }
   });
 
   (function getCustomerTypes() {
@@ -706,6 +755,12 @@
   $('#btnThemKH').click(() => {
     clearDetailDlg();
     $('#detailDlg').modal('show');
+  });
+
+  $('#btnRefresh').click(() => {
+    selectedCustomers = [];
+    tblCustomer.clear().draw();
+    tblCustomer.ajax.reload();
   });
 
   $('#btnSaveCustomer').click(() => {
@@ -932,4 +987,6 @@
       }
     });
   });
+
+  $(window).resize(() => tblCustomer.draw());
 })();

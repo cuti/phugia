@@ -45,8 +45,8 @@ class Admin_Model_Staff extends Zend_Db_Table_Abstract
                        LEFT JOIN department d ON s.staff_department_id = d.dep_id
                        LEFT JOIN staff sc ON s.staff_created_by_staff_id = sc.staff_id
                        LEFT JOIN staff sm ON s.staff_last_updated_by_staff_id = sm.staff_id
-                       LEFT JOIN staff_role sr ON s.staff_id = sr.sr_staff_id
-                       LEFT JOIN [role] r ON sr.sr_role_id = r.role_id
+                       LEFT JOIN staff_role sr ON s.staff_id = sr.staff_role_staff_id
+                       LEFT JOIN [role] r ON sr.staff_role_role_id = r.role_id
                  WHERE s.staff_deleted = 0
               ORDER BY s.staff_username ASC';
 
@@ -72,7 +72,7 @@ class Admin_Model_Staff extends Zend_Db_Table_Abstract
 
                 $staffId = $this->insert($data);
 
-                $sql = 'INSERT INTO staff_role(sr_staff_id, sr_role_id) VALUES (?, ?)';
+                $sql = 'INSERT INTO staff_role(staff_role_staff_id, staff_role_role_id) VALUES (?, ?)';
                 $this->getAdapter()->query($sql, array($staffId, $roleId));
 
                 return $staffId;
@@ -103,8 +103,8 @@ class Admin_Model_Staff extends Zend_Db_Table_Abstract
                 $this->update($data, $where);
 
                 $sql = 'UPDATE staff_role
-                           SET sr_role_id = ?
-                         WHERE sr_staff_id = ?';
+                           SET staff_role_role_id = ?
+                         WHERE staff_role_staff_id = ?';
                 $this->getAdapter()->query($sql, array($roleId, $staffId));
 
                 $logger = new Admin_Model_LogAdministration();
@@ -192,9 +192,9 @@ class Admin_Model_Staff extends Zend_Db_Table_Abstract
                        SET staff_active = 0,
                            staff_last_updated = GETDATE(),
                            staff_last_updated_by_staff_id = ?
-                     WHERE staff_id IN (SELECT sr_staff_id
+                     WHERE staff_id IN (SELECT staff_role_staff_id
                                           FROM staff_role
-                                         WHERE sr_role_id = ?)";
+                                         WHERE staff_role_role_id = ?)";
 
             $bind = array(
                 $this->currentStaffId(),
