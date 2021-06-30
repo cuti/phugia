@@ -1,5 +1,6 @@
 /.git
 /.vscode
-Thumbs.db
-/upload/
 /application/cache
+/upload/
+/vendor/
+Thumbs.db
