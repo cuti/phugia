@@ -47,32 +47,28 @@ class ProductController extends Zend_Controller_Action
         if ($req->isXmlHttpRequest() && $req->isPost()) {
             $content = base64_decode($req->getParam('fileContent'));
             $fileNameWithExt = $req->getParam('fileName');
-            $fileName = substr($fileNameWithExt, 0, strrpos($fileNameWithExt, '.')) . rand(1000000000, 9999999999);
-            $fileExt = substr($fileNameWithExt, strrpos($fileNameWithExt, '.'));
-            $fileDir = ROOT_PATH . '/upload';
 
-            if (!is_dir($fileDir)) {
-                mkdir($fileDir);
-            }
+            require_once 'Utility.php';
 
-            $success = file_put_contents($fileDir . '/' . $fileName . $fileExt, $content);
+            $username = $this->currentUser();
+            $saveResult = Utility::saveFile($fileNameWithExt, $content, 'product', $username);
 
-            if ($success) {
+            if ($saveResult) {
                 require_once 'ExcelReaderWriter.php';
 
-                $fileData = ExcelReaderWriter::read($fileDir . '/' . $fileName . $fileExt, $fileExt);
+                $fileData = ExcelReaderWriter::read($saveResult['path'], $saveResult['ext']);
 
                 $product = new Default_Model_Product();
-                $result = $product->importProduct($fileData, $this->currentUser());
+                $importResult = $product->importProduct($fileData, $username);
             }
         } else {
-            $result = array(
+            $importResult = array(
                 'message' => 'Invalid request',
                 'status' => -1,
             );
         }
 
-        echo json_encode($result);
+        echo json_encode($importResult);
     }
 
     public function insertAction()

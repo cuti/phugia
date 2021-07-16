@@ -17,10 +17,6 @@ class Admin_DepartmentController extends Zend_Controller_Action
                 $this->_redirect('/admin/login');
             }
         }
-
-        if ($this->getRequest()->isXmlHttpRequest()) {
-            $this->setRestResponse();
-        }
     }
 
     public function indexAction()
@@ -30,6 +26,8 @@ class Admin_DepartmentController extends Zend_Controller_Action
 
     public function getAllAction()
     {
+        $this->setRestResponse();
+
         if ($this->getRequest()->isGet()) {
             $department = new Default_Model_Department();
             $data = $department->loadDepartment();

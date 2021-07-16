@@ -338,6 +338,18 @@ class Default_Model_Customer extends Zend_Db_Table_Abstract
         }
     }
 
+    public function getCustomerIdByCustomerCode($cusCode)
+    {
+        $select = $this->select()->from($this)->where('cus_code = ?', trim($cusCode));
+        $customer = $this->fetchRow($select);
+
+        if ($customer) {
+            return $customer['cus_id'];
+        } else {
+            return null;
+        }
+    }
+
     // --------------- PRIVATE FUNCTIONS ---------------
 
     private function appendCustomerTypes(&$customers)

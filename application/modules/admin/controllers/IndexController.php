@@ -17,10 +17,6 @@ class Admin_IndexController extends Zend_Controller_Action
                 $this->_redirect('/admin/login');
             }
         }
-
-        if ($this->getRequest()->isXmlHttpRequest()) {
-            $this->setRestResponse();
-        }
     }
 
     public function indexAction()

@@ -74,4 +74,11 @@ class Default_Model_Staff extends Zend_Db_Table_Abstract
         $where = $adapter->quoteInto('staff_id = ?', $staffId);
         return $adapter->update('staff', $data, $where);
     }
+
+    public function getStaffIdByUsername($username)
+    {
+        $select = $this->select()->from($this)->where('staff_username = ?', $username);
+        $staff = $this->fetchRow($select);
+        return $staff['staff_id'];
+    }
 }

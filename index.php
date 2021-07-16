@@ -2,6 +2,7 @@
 date_default_timezone_set('Asia/Ho_Chi_Minh');
 define('ROOT_PATH', dirname(__FILE__));
 define('APPLICATION_PATH', realpath(ROOT_PATH . '/application'));
+define('UPLOAD_PATH', realpath(ROOT_PATH . '/upload'));
 define('APPLICATION_ENV', 'production');
 define('ADMIN_EMAIL', 'huylm534@gmail.com');
 define('ADMIN_EMAIL_SECRET', 'aHV5bG1AMTIz');
