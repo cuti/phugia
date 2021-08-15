@@ -52,8 +52,8 @@ class Default_Model_Order extends Zend_Db_Table_Abstract {
           $cusModel = new Default_Model_Customer();
           $cusId    = $cusModel->getCustomerIdByCustomerCode($data[$i][3]);
 
-          $documentDate = strtotime($data[$i][0]);
-          $invoiceDate  = strtotime($data[$i][1]);
+          $documentDate = date('Y-m-d H:i:s', PHPExcel_Shared_Date::ExcelToPHP($data[$i][0]));
+          $invoiceDate  = date('Y-m-d H:i:s', PHPExcel_Shared_Date::ExcelToPHP($data[$i][1]));
           $orderId      = $this->getOrderId($cusId, $documentDate, $data[$i][2], $invoiceDate);
 
           if ($orderId === null) {
@@ -82,10 +82,10 @@ class Default_Model_Order extends Zend_Db_Table_Abstract {
               'order_detail_quantity'             => $data[$i][9],
               'order_detail_price'                => $data[$i][10],
               'order_detail_pre_tax_amount'       => $data[$i][11],
-              'order_detail_tax_amount'           => $data[$i][14],
-              'order_detail_total'                => $data[$i][15],
               'order_detail_return_quantity'      => $data[$i][12],
               'order_detail_return_amount'        => $data[$i][13],
+              'order_detail_tax_amount'           => $data[$i][14],
+              'order_detail_total'                => $data[$i][15],
             )
           );
 

@@ -257,6 +257,113 @@
     }
   });
 
+  tblProduct = $('#tblProduct').DataTable({
+    columns: [
+      {
+        data: null,
+        render: () => {
+          const btnEdit = `<button type="button" class="btn-edit btn btn-outline-secondary btn-sm" title="Điều chỉnh">
+              <i class="fas fa-edit"></i>
+            </button>`;
+          const btnDelete = `<button type="button" class="btn-delete btn btn-outline-danger btn-sm ml-2" title="Xóa">
+              <i class="fas fa-trash"></i>
+            </button>`;
+
+          return btnEdit + btnDelete;
+        },
+        title: 'Thao tác',
+        width: '80px',
+      },
+      {
+        data: 'product_code',
+        title: 'Mã hàng',
+        width: '150px',
+      },
+      {
+        data: 'product_name',
+        title: 'Tên hàng',
+        width: '150px',
+      },
+      {
+        data: 'order_detail_product_unit_measure',
+        title: 'Đơn vị tính',
+        width: '150px',
+      },
+      {
+        data: 'order_detail_quantity',
+        title: 'Số lượng bán',
+        width: '150px',
+      },
+      {
+        data: 'order_detail_price',
+        title: 'Đơn giá',
+        width: '150px',
+      },
+      {
+        data: 'order_detail_pre_tax_amount',
+        title: 'Doanh số bán',
+        width: '150px',
+      },
+      {
+        data: 'order_detail_return_quantity',
+        title: 'Số lượng trả lại',
+        width: '150px',
+      },
+      {
+        data: 'order_detail_return_amount',
+        title: 'Giá trị trả lại',
+        width: '150px',
+      },
+      {
+        data: 'order_detail_tax_amount',
+        title: 'Thuế GTGT',
+        width: '150px',
+      },
+      {
+        data: 'order_detail_total',
+        title: 'Tổng thanh toán',
+        width: '150px',
+      },
+    ],
+    columnDefs: [
+      {
+        targets: ['_all'],
+        orderable: false,
+        defaultContent: '',
+      },
+      {
+        targets: [0, 1],
+        searchable: false,
+      },
+    ],
+    language: {
+      emptyTable: 'Không có dữ liệu',
+      info: 'Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục',
+      infoEmpty: 'Đang xem 0 đến 0 trong tổng số 0 mục',
+      infoFiltered: '(được lọc từ _MAX_ mục)',
+      lengthMenu: 'Xem _MENU_ mục',
+      loadingRecords: 'Đang lấy dữ liệu...',
+      paginate: {
+        first: 'Đầu',
+        last: 'Cuối',
+        next: 'Tiếp',
+        previous: 'Trước',
+      },
+      processing: 'Đang xử lý...',
+      search: 'Tìm ',
+      select: {
+        rows: '%d dòng được chọn'
+      },
+      zeroRecords: 'Không tìm thấy dòng nào phù hợp',
+    },
+    ordering: false,
+    pagingType: 'full_numbers',
+    scrollX: true,
+    select: {
+      style: 'multi'
+    }
+  });
+
   (function getCustomers() {
     $.ajax({
       url: 'customer/get-list',
@@ -429,7 +536,7 @@
           fileContent: result,
           fileName: file.name,
         },
-        url: 'customer/import',
+        url: 'order/import',
         type: 'POST',
         dataType: 'json',
         success: function (res) {
@@ -438,34 +545,18 @@
 
           if (res.status === 1) {
             pClass = 'text-success';
-            text = '<p>Import thành công tất cả khách hàng.</p>';
+            text = '<p>Import thành công tất cả đơn hàng.</p>';
             tblOrder.ajax.reload();
           } else if (res.status === 2) {
             pClass = 'text-warning';
-            text = `<p>Import thành công ${res.successCount} khách hàng.</p>`;
-
-            if (res.customerCodeExists.length > 0) {
-              text += '<p>Các mã khách hàng đã tồn tại: ' + res.customerCodeExists.join(', ') + '</p>';
-            }
-
-            if (res.customerCodeError.length > 0) {
-              text += '<p>Các mã khách hàng không import được do lỗi khác: ' + res.customerCodeError.join(', ') + '</p>';
-            }
-
+            text = `<p>Import thành công ${res.successCount} dòng.</p>`;
             tblOrder.ajax.reload();
           } else {
             pClass = 'text-danger';
-            text = '<p>Không import được khách hàng nào.</p>';
-
-            if (res.customerCodeExists.length > 0) {
-              text += '<p>Các mã khách hàng đã tồn tại: ' + res.customerCodeExists.join(', ') + '</p>';
-            }
-
-            if (res.customerCodeError.length > 0) {
-              text += '<p>Các mã khách hàng không import được do lỗi khác: ' + res.customerCodeError.join(', ') + '</p>';
-            }
+            text = '<p>Lỗi, không import được dòng nào.</p>';
           }
 
+          $('#importDlg-result').remove();
           $('#importDlg .modal-body').append(`<div id="importDlg-result" class="${pClass}"><hr>${text}</div>`);
         }
       });
@@ -479,6 +570,30 @@
 
     setDataDetailDlg(data);
     $('#detailDlg').modal('show');
+  });
+
+  $('#dpDocumentDate').daterangepicker({
+    autoApply: true,
+    locale: {
+      format: 'DD/MM/YYYY',
+      daysOfWeek: 'CN,T2,T3,T4,T5,T6,T7'.split(','),
+      monthNames: 'Tháng 1,Tháng 2,Tháng 3,Tháng 4,Tháng 5,Tháng 6,Tháng 7,Tháng 8,Tháng 9,Tháng 10,Tháng 11,Tháng 12'.split(','),
+      firstDay: 1
+    },
+    showDropdowns: true,
+    singleDatePicker: true,
+  });
+
+  $('#dpInvoiceDate').daterangepicker({
+    autoApply: true,
+    locale: {
+      format: 'DD/MM/YYYY',
+      daysOfWeek: 'CN,T2,T3,T4,T5,T6,T7'.split(','),
+      monthNames: 'Tháng 1,Tháng 2,Tháng 3,Tháng 4,Tháng 5,Tháng 6,Tháng 7,Tháng 8,Tháng 9,Tháng 10,Tháng 11,Tháng 12'.split(','),
+      firstDay: 1
+    },
+    showDropdowns: true,
+    singleDatePicker: true,
   });
 
   $(window).resize(() => tblOrder.draw());
