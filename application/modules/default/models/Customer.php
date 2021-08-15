@@ -74,6 +74,18 @@ class Default_Model_Customer extends Zend_Db_Table_Abstract
         return $customers;
     }
 
+    public function loadCustomerShort()
+    {
+        $sql = 'SELECT cus_id AS id, cus_name AS [text]
+                  FROM customer
+                 WHERE cus_deleted = 0
+              ORDER BY cus_name ASC';
+
+        $result = $this->getAdapter()->fetchAll($sql);
+
+        return $result;
+    }
+
     /**
      * Import customers to DB.
      *

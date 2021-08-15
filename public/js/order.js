@@ -9,7 +9,7 @@
   };
 
   let products;
-  let selectedCustomers = [];
+  let selectedOrders = [];
   let tblOrder;
   let tblProduct;
 
@@ -45,6 +45,23 @@
     });
   }
 
+  function confirmRemoveProduct() {
+    return Swal.fire({
+      cancelButtonText: 'Hủy',
+      confirmButtonText: 'Xóa',
+      customClass: {
+        confirmButton: 'bg-danger text-white',
+        icon: 'border-danger text-danger',
+      },
+      html: `Vui lòng xác nhận bạn muốn xóa hàng hóa này?`,
+      icon: 'warning',
+      reverseButtons: true,
+      showCancelButton: true,
+      title: 'Xóa hàng hóa?',
+      width: '500px',
+    });
+  }
+
   function clearDetailDlg() {
     $('#hidOrderId').val('');
     $('#selCustomer').val(null).trigger('change');
@@ -68,24 +85,37 @@
     $('#hidOrderId').val(order_id);
     $('#selCustomer').val(order_customer_id).trigger('change');
     $('#txtOrderDescription').val(order_description);
-    order_document_date && $('#dpDocumentDate').data('daterangepicker').setStartDate(new Date(order_document_date));
-    order_invoice_date && $('#dpInvoiceDate').data('daterangepicker').setStartDate(new Date(order_invoice_date));
+
+    if (order_document_date) {
+      $('#dpDocumentDate').data('daterangepicker').setStartDate(new Date(order_document_date));
+    } else {
+      $('#dpDocumentDate').data('daterangepicker').setStartDate(null);
+    }
+
+    if (order_invoice_date) {
+      $('#dpInvoiceDate').data('daterangepicker').setStartDate(new Date(order_invoice_date));
+    } else {
+      $('#dpInvoiceDate').data('daterangepicker').setStartDate(null);
+    }
+
     $('#txtInvoiceNumber').val(order_invoice_number);
 
-
-    // TODO request order detail
-    // tblProduct.clear().draw();
+    $.ajax({
+      url: 'order-detail/get-by-order',
+      data: JSON.stringify({ orderId: order_id }),
+      contentType: 'application/json',
+      dataType: 'json',
+      success: function (res) {
+        tblProduct.clear().rows.add(res.data).draw();
+      }
+    });
   }
 
   tblOrder = $('#tblOrder').DataTable({
     ajax: {
-      url: 'customer/get-all',
+      url: 'order/get-all',
     },
     columns: [
-      {
-        data: 'cus_id',
-        width: '30px',
-      },
       {
         data: null,
         render: () => {
@@ -98,295 +128,64 @@
 
           return btnEdit + btnDelete;
         },
-        responsivePriority: 1,
         title: 'Thao tác',
         width: '80px',
       },
       {
+        data: 'order_document_date',
+        render: data => Utility.phpDateToVnDate(data),
+        title: 'Ngày chứng từ',
+        type: 'date',
+        width: '140px',
+      },
+      {
+        data: 'order_invoice_date',
+        render: data => Utility.phpDateToVnDate(data),
+        title: 'Ngày hóa đơn',
+        type: 'date',
+        width: '140px',
+      },
+      {
+        data: 'order_invoice_number',
+        title: 'Số hóa đơn',
+        width: '150px',
+      },
+      {
         data: 'cus_code',
-        responsivePriority: 1,
         title: 'Mã khách hàng',
         width: '150px',
       },
       {
         data: 'cus_name',
-        responsivePriority: 1,
         title: 'Tên khách hàng',
         width: '150px',
       },
       {
-        data: 'cus_address',
-        responsivePriority: 1,
-        title: 'Địa chỉ',
+        data: 'order_description',
+        title: 'Diễn giải chung',
         width: '200px',
       },
       {
-        data: 'cus_phone',
-        responsivePriority: 1,
-        title: 'Điện thoại',
-        width: '100px',
-      },
-      {
-        data: 'cus_mobile',
-        responsivePriority: 1,
-        title: 'ĐT di động',
-        width: '100px',
-      },
-      {
-        data: 'cus_tax_code',
-        responsivePriority: 2,
-        title: 'Mã số thuế',
-        width: '100px',
-      },
-      {
-        data: 'cus_types',
-        responsivePriority: 2,
-        title: 'Nhóm KH, NCC',
-        width: '100px',
-      },
-      {
-        data: 'cus_fax',
-        responsivePriority: 2,
-        title: 'Fax',
-        width: '100px',
-      },
-      {
-        data: 'cus_email',
-        responsivePriority: 2,
-        title: 'Email',
-        width: '100px',
-      },
-      {
-        data: 'cus_website',
-        responsivePriority: 2,
-        title: 'Website',
-        width: '100px',
-      },
-      {
-        data: 'cus_citizen_identity_card_number',
-        responsivePriority: 2,
-        title: 'Số CMND',
-        width: '100px',
-      },
-      {
-        data: 'cus_citizen_identity_card_date',
+        data: 'order_created',
         render: data => Utility.phpDateToVnDate(data),
-        title: 'Ngày cấp',
-        responsivePriority: 2,
-        type: 'date',
-        width: '100px',
-      },
-      {
-        data: 'cus_citizen_identity_card_issued_by',
-        responsivePriority: 2,
-        title: 'Nơi cấp',
-        width: '100px',
-      },
-      {
-        data: 'cus_payment_terms',
-        responsivePriority: 2,
-        title: 'Điều khoản TT',
-        width: '100px',
-      },
-      {
-        data: 'cus_owed_days',
-        title: 'Số ngày được nợ',
-        responsivePriority: 2,
-        type: 'num',
-        width: '100px',
-      },
-      {
-        data: 'cus_max_owed',
-        render: $.fn.dataTable.render.number('.', ',', 0, '', ' đ'),
-        title: 'Số nợ tối đa',
-        responsivePriority: 2,
-        type: 'num',
-        width: '100px',
-      },
-      {
-        data: 'cus_staff',
-        responsivePriority: 2,
-        title: 'Nhân viên',
-        width: '100px',
-      },
-      {
-        data: 'cus_staff_name',
-        responsivePriority: 2,
-        title: 'Tên nhân viên',
-        width: '100px',
-      },
-      {
-        data: 'cus_bank_account',
-        responsivePriority: 2,
-        title: 'TK ngân hàng',
-        width: '100px',
-      },
-      {
-        data: 'cus_bank_name',
-        responsivePriority: 2,
-        title: 'Tên ngân hàng',
-        width: '100px',
-      },
-      {
-        data: 'cus_bank_branch_name',
-        responsivePriority: 2,
-        title: 'Chi nhánh TK ngân hàng',
-        width: '100px',
-      },
-      {
-        data: 'cus_bank_city_name',
-        responsivePriority: 2,
-        title: 'Tỉnh/TP TK ngân hàng',
-        width: '100px',
-      },
-      {
-        data: 'cus_country_name',
-        responsivePriority: 2,
-        title: 'Quốc gia',
-        width: '100px',
-      },
-      {
-        data: 'cus_city_name',
-        responsivePriority: 2,
-        title: 'Tỉnh/TP',
-        width: '100px',
-      },
-      {
-        data: 'cus_district_name',
-        responsivePriority: 2,
-        title: 'Quận/Huyện',
-        width: '100px',
-      },
-      {
-        data: 'cus_ward_name',
-        responsivePriority: 2,
-        title: 'Phường/Xã',
-        width: '100px',
-      },
-      {
-        data: 'cus_title',
-        responsivePriority: 2,
-        title: 'Xưng hô',
-        width: '100px',
-      },
-      {
-        data: 'cus_contact_person',
-        responsivePriority: 2,
-        title: 'Người liên hệ',
-        width: '100px',
-      },
-      {
-        data: 'cus_contact_position',
-        responsivePriority: 2,
-        title: 'Chức danh',
-        width: '100px',
-      },
-      {
-        data: 'cus_contact_mobile1',
-        responsivePriority: 2,
-        title: 'ĐT di động',
-        width: '100px',
-      },
-      {
-        data: 'cus_contact_mobile2',
-        responsivePriority: 2,
-        title: 'ĐTDĐ khác',
-        width: '100px',
-      },
-      {
-        data: 'cus_contact_phone',
-        responsivePriority: 2,
-        title: 'ĐT cố định',
-        width: '100px',
-      },
-      {
-        data: 'cus_contact_email',
-        responsivePriority: 2,
-        title: 'Email',
-        width: '100px',
-      },
-      {
-        data: 'cus_contact_address',
-        responsivePriority: 2,
-        title: 'Địa chỉ',
-        width: '100px',
-      },
-      {
-        data: 'cus_delivery_location',
-        responsivePriority: 2,
-        title: 'Địa điểm giao hàng',
-        width: '100px',
-      },
-      {
-        data: 'cus_is_organization',
-        render: data => {
-          let input = '<input type="checkbox" disabled';
-
-          if (data === '1') {
-            input += ' checked';
-          }
-
-          return input + '>';
-        },
-        responsivePriority: 2,
-        title: 'Tổ chức/Cá nhân',
-        width: '100px',
-      },
-      {
-        data: 'cus_is_supplier',
-        render: data => {
-          let input = '<input type="checkbox" disabled';
-
-          if (data === '1') {
-            input += ' checked';
-          }
-
-          return input + '>';
-        },
-        responsivePriority: 2,
-        title: 'Là nhà cung cấp',
-        width: '100px',
-      },
-      {
-        data: 'cus_active',
-        render: data => {
-          let input = '<input type="checkbox" disabled';
-
-          if (data === '1') {
-            input += ' checked';
-          }
-
-          return input + '>';
-        },
-        responsivePriority: 2,
-        title: 'Theo dõi',
-        width: '100px',
-      },
-      {
-        data: 'cus_created',
-        render: data => Utility.phpDateToVnDate(data),
-        responsivePriority: 2,
         title: 'Ngày tạo',
         type: 'date',
         width: '100px',
       },
       {
-        data: 'cus_created_by_username',
-        responsivePriority: 2,
+        data: 'order_created_by_username',
         title: 'Người tạo',
         width: '100px',
       },
       {
-        data: 'cus_last_updated',
+        data: 'order_last_updated',
         render: data => Utility.phpDateToVnDate(data),
-        responsivePriority: 2,
         title: 'Ngày cập nhật sau cùng',
         type: 'date',
         width: '100px',
       },
       {
-        data: 'cus_last_updated_by_username',
-        responsivePriority: 2,
+        data: 'order_last_updated_by_username',
         title: 'Người cập nhật sau cùng',
         width: '100px',
       },
@@ -404,19 +203,19 @@
                 const tr = $(nodes[i]).closest('tr');
                 const data = tblOrder.row(tr).data();
 
-                if (selectedCustomers.indexOf(data.cus_id) === -1) {
-                  selectedCustomers.push(data.cus_id);
+                if (selectedOrders.indexOf(data.order_id) === -1) {
+                  selectedOrders.push(data.order_id);
                 }
               }
             } else {
               for (let i = 0; i < selectedNodesCount; i++) {
                 const tr = $(nodes[i]).closest('tr');
                 const data = tblOrder.row(tr).data();
-                selectedCustomers.splice(selectedCustomers.indexOf(data.cus_id), 1);
+                selectedOrders.splice(selectedOrders.indexOf(data.order_id), 1);
               }
             }
 
-            console.log(selectedCustomers);
+            console.log(selectedOrders);
           }
         },
       },
@@ -458,15 +257,15 @@
     }
   });
 
-  (function getCustomerTypes() {
+  (function getCustomers() {
     $.ajax({
-      url: 'customer-type/get-all',
+      url: 'customer/get-list',
       dataType: 'json',
       success: function (res) {
-        $('#selNhomKH').select2({
+        $('#selCustomer').select2({
           allowClear: true,
           data: res.data,
-          dropdownParent: $('#selNhomKH').parent(),
+          dropdownParent: $('#selCustomer').parent(),
           placeholder: 'Chọn...',
           theme: 'bootstrap4',
         });
@@ -480,11 +279,12 @@
   });
 
   $('#btnRefresh').click(() => {
-    selectedCustomers = [];
+    selectedOrders = [];
     tblOrder.clear().draw();
     tblOrder.ajax.reload();
   });
 
+  // TODO save order
   $('#btnSaveOrder').click(() => {
     if ($('#txtCustomerCode').val().trim() === '') {
       Toast.showWarning('Chưa nhập mã khách hàng.');

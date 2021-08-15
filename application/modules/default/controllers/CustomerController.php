@@ -40,6 +40,18 @@ class CustomerController extends Zend_Controller_Action
         echo json_encode(array('data' => $data));
     }
 
+    public function getListAction()
+    {
+        if ($this->getRequest()->isGet()) {
+            $customer = new Default_Model_Customer();
+            $data = $customer->loadCustomerShort();
+        } else {
+            $data = array();
+        }
+
+        echo json_encode(array('data' => $data));
+    }
+
     public function importAction()
     {
         $req = $this->getRequest();

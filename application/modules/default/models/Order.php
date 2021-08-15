@@ -6,26 +6,21 @@ class Default_Model_Order extends Zend_Db_Table_Abstract {
 
   public function loadOrder() {
     try {
-      $sql = 'SELECT o.order_document_date
+      $sql = 'SELECT o.order_id
+                   , o.order_document_date
                    , o.order_invoice_date
                    , o.order_invoice_number
                    , c.cus_code
                    , c.cus_name
                    , o.order_description
-                   , pc.product_code
-                   , pc.product_name
-                   , pc.product_unit_measure
-                   , od.order_detail_quantity
-                   , od.order_detail_price
-                   , od.order_detail_pre_tax_amount
-                   , od.order_detail_return_quantity
-                   , od.order_detail_return_amount
-                   , od.order_detail_tax_amount
-                   , od.order_detail_total
-                FROM order_detail od
-                     JOIN [order] o ON od.order_detail_order_id = o.order_id
-                     JOIN product_catalog pc ON od.order_detail_product_id = pc.product_id
+                   , o.order_created
+                   , sc.staff_username AS order_created_by_username
+                   , o.order_last_updated
+                   , sm.staff_username AS order_last_updated_by_username
+                FROM [order] o
                      JOIN customer c ON o.order_customer_id = c.cus_id
+                     LEFT JOIN staff sc ON o.order_created_by_staff_id = sc.staff_id
+                     LEFT JOIN staff sm ON o.order_last_updated_by_staff_id = sm.staff_id
             ORDER BY o.order_document_date ASC, c.cus_code ASC';
 
       $orders = $this->getAdapter()->fetchAll($sql);
